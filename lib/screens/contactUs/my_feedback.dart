@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
@@ -17,22 +18,27 @@ class MyFeedback extends StatefulWidget{
   static final String title = 'My Feedback';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
-  const MyFeedback({Key? key, this.onMenuTap}) : super(key: key);
+  final Future<PatientProfilePodo>? patientProfile;
+
+  const MyFeedback({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
 
   @override
   _MyFeedbackState createState() => _MyFeedbackState();
 }
 
 class _MyFeedbackState extends State<MyFeedback> {
+
   @override
   Widget build(BuildContext context) {
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
-    
+
+
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 6,),
+      drawer: NavigationDrawerWidget(indexNum: 6,patientprofile: profile,),
       appBar: AppBar(
         title: Text(MyFeedback.title),
         centerTitle: true,

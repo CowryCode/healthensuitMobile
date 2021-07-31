@@ -7,8 +7,6 @@ import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
 import 'package:intl/intl.dart';
 
 class Workflow{
-
-
   SleepDiariesPODO getSleepDiary(List<SleepDiariesPODO>? sleepdiaries, {bool todaySleepDiary = false, bool yesterdaySleepDiary = false}){
     final now = DateTime.now();
     final dummy = DateTime(now.year, now.month, now.day - 10);
@@ -84,5 +82,28 @@ class Workflow{
         }
       }
     }
+  }
+
+  DateTime getPastdate({required DateTime date, required int numberOfdaysBack}){
+    final now = DateTime.now();
+    final pastDate = DateTime(now.year, now.month, now.day - numberOfdaysBack);
+    return pastDate;
+  }
+
+  String convertDatetoStringforAPI({required DateTime dateTime}){
+    String sMonth ;
+    String sDay ;
+    if(dateTime.month < 10){
+      sMonth = "0${dateTime.month}";
+    }else{
+      sMonth = "${dateTime.month}";
+    }
+    if(dateTime.day < 10){
+      sDay = "0${dateTime.day}";
+    }else{
+      sDay = "${dateTime.day}";
+    }
+    String date = "${dateTime.year}-${sMonth}-${sDay}";
+    return date;
   }
 }

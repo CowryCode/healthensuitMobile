@@ -1,7 +1,14 @@
 
+import 'package:healthensuite/api/networkUtilities.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Localstorage  {
+  String? stringval;
+
+
+  Localstorage({this.stringval});
+
   // Save meta data
   void saveString(String key, String value) async{
     final pref = await SharedPreferences.getInstance();
@@ -23,11 +30,28 @@ class Localstorage  {
     pref.setBool(key, value);
   }
 
+  void saveBasicDetails(PatientProfilePodo profile){
+    saveString(keyUsername, profile.firstName!);
+    saveString(keyUseremail, profile.email!);
+  }
+
   // Get meta data
   Future<String?> getString(String key) async{
     final pref = await SharedPreferences.getInstance();
     return pref.getString(key)?? null;
   }
+
+  String? getStringvalue(String key){
+    Future<String?> future = getString(key);
+    future.then((value) => {
+      }).whenComplete(() => {
+    });
+    return this.stringval;
+  }
+  void setString(String val){
+    this.stringval = val;
+  }
+
 
   Future<int?> getInteger(String key) async{
     final pref = await SharedPreferences.getInstance();

@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:healthensuite/api/networkmodels/mysleepclock.dart';
+import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'networkUtilities.dart';
 import 'networkmodels/loginPodo.dart';
 import 'networkmodels/otherMedicationsPODO.dart';
@@ -50,8 +53,8 @@ class ApiAccess {
     });
 
     if (response.statusCode == 200) {
-      PatientProfilePodo profile =
-          PatientProfilePodo.fromJson(jsonDecode(response.body));
+      PatientProfilePodo profile =  PatientProfilePodo.fromJson(jsonDecode(response.body));
+      Localstorage().saveBasicDetails(profile);
       return profile;
     } else {
       throw Exception("Couldn't pull patient profile");
@@ -117,4 +120,43 @@ class ApiAccess {
       throw Exception("Couldn't pull patient profile , status code ${response.statusCode} " );
     }
   }
+
+  Future<MysleepClock> getMysleepClock() async {
+    var date = DateTime.now();
+
+    var sDate = Workflow().getPastdate(date: date, numberOfdaysBack: 21);
+    var eDate =   Workflow().getPastdate(date: date, numberOfdaysBack: 0);
+
+
+    String startDate = Workflow().convertDatetime2date(sDate.toString());
+    String endDate =   Workflow().convertDatetime2date(eDate.toString());
+
+    String? token;
+    Future<String?> tk = Localstorage().getString(key_login_token);
+    await tk.then((value) => {token = value!});
+    print("Start date is ${startDate}");
+    print("End date is ${endDate}");
+    print("The token is : ${token}");
+
+    final response = await http.post(Uri.parse(my_sleepclock_url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(<String, dynamic>{
+        "startDate": startDate,
+        "endDate": endDate
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      MysleepClock sleepClock = MysleepClock.fromJson(jsonDecode(response.body));
+      print("${sleepClock.toString()}");
+      return sleepClock;
+    } else {
+      throw Exception("Couldn't pull my sleep Clock , status code ${response.statusCode} " );
+    }
+  }
+
 }

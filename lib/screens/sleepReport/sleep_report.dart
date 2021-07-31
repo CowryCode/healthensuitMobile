@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -11,8 +13,10 @@ class SleepReport extends StatefulWidget {
   final Function? onMenuTap;
   static final String title = 'Sleep Report';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
+  final Future<PatientProfilePodo>? patientProfile;
 
-  const SleepReport({Key? key, this.onMenuTap}) : super(key: key);
+
+  const SleepReport({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
 
   @override
   _SleepReportState createState() => _SleepReportState();
@@ -34,19 +38,20 @@ class _SleepReportState extends State<SleepReport> {
   //     return dateRgText;
     
   // }
-    
 
-  @override
+
+
+    @override
   Widget build(BuildContext context) {
-
-    final Size size = MediaQuery.of(context).size;
+      Future<PatientProfilePodo>? profile = widget.patientProfile;
+      final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     final _formKey = GlobalKey<FormBuilderState>();
     double pad = 18;
     double innerPad = 10;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 3,),
+      drawer: NavigationDrawerWidget(indexNum: 3,patientprofile: profile,),
       appBar: AppBar(
         title: Text(SleepReport.title),
         centerTitle: true,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/screens/programs/level1/level_1.dart';
@@ -9,8 +10,9 @@ class ProgramContent extends StatefulWidget{
   final Function? onMenuTap;
    static final String title = 'Program Content';
    static final sidePad = EdgeInsets.symmetric(horizontal: 18);
+  final Future<PatientProfilePodo>? patientProfile;
 
-  const ProgramContent({Key? key, this.onMenuTap}) : super(key: key);
+  const ProgramContent({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
 
   @override
   _ProgramContentState createState() => _ProgramContentState();
@@ -22,12 +24,13 @@ class _ProgramContentState extends State<ProgramContent> {
 
    @override
   Widget build(BuildContext context) {
+     Future<PatientProfilePodo>? profile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 4,),
+      drawer: NavigationDrawerWidget(indexNum: 4, patientprofile: profile,),
       appBar: AppBar(
         title: Text(ProgramContent.title),
         centerTitle: true,

@@ -195,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
               showAlertDialog(context)
             }else{
               Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => HomeScreen()))
+                  context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
             }
           } );
 

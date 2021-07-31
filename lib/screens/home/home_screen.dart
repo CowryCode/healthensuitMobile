@@ -10,6 +10,8 @@ import 'package:healthensuite/models/option_button.dart';
 import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
 
 class HomeScreen extends StatefulWidget {
+  Future<PatientProfilePodo>? futureProfile;
+  HomeScreen({required this.futureProfile});
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -25,7 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    patientprofile = ApiAccess().getPatientProfile();
+    patientprofile = widget.futureProfile;
+    if(patientprofile == null ){
+      patientprofile = ApiAccess().getPatientProfile();
+    }
   }
 
   @override
@@ -35,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     double pad = 18;
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 0,),
+      drawer: NavigationDrawerWidget(indexNum: 0, patientprofile: patientprofile,),
       appBar: AppBar(
         title: Text(title),
         centerTitle: true,
@@ -202,8 +207,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-
 
 }
 

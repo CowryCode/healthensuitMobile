@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/mysleepclock.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
@@ -10,60 +13,83 @@ class SleepClock extends StatefulWidget {
   final Function? onMenuTap;
   static final String title = 'Sleep Clock';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
+  final Future<PatientProfilePodo>? patientProfile;
 
-  const SleepClock({Key? key, this.onMenuTap}) : super(key: key);
+  const SleepClock({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
 
   @override
   _SleepClockState createState() => _SleepClockState();
 }
 
 class _SleepClockState extends State<SleepClock> {
+
+  Future<MysleepClock>? futureMysleepClock;
+
+  @override
+  void initState() {
+    super.initState();
+    futureMysleepClock = ApiAccess().getMysleepClock();
+  }
+
   @override
   Widget build(BuildContext context) {
-
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
     double innerPad = 10;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 2,),
+      drawer: NavigationDrawerWidget(indexNum: 2,patientprofile: profile,),
       appBar: AppBar(
         title: Text(SleepClock.title),
         centerTitle: true,
       ),
-      body: Container(
-        width: size.width,
-        height: size.height,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: pad,),
-            Padding(
-              padding: SleepClock.sidePad,
-              child: Text("It’s time to adjust your sleep clock. Let’s review your sleep patterns from the past week.",
-                style: themeData.textTheme.headline5,
-              ),
-            ),
-            SizedBox(height: pad,),
-            tableTitle(themeData, text: "Sleep Window:"),
-            sleepWindowDataTable(themeData),
-            SizedBox(height: pad,),
-            tableTitle(themeData, text: "Sleep Time & Efficiency"),
-            sleepAverageDataTable(themeData),
-            SizedBox(height: pad,),
-            Center(
-                child: Column(
-                  children: [
-                    IconUserButton(buttonText: "View Recommendation Info", buttonEvent: () {createAlertDialog(context);}, buttonIcon: Icons.info,),
-                    IconUserButton(buttonText: "Set Next Week Sleep Window", buttonEvent: () {displaySleepWindowDialog(context);}, buttonIcon: Icons.alarm)
-                  ],
-                )
-            ),
-
-          ],
-        ),
+      body:  FutureBuilder<MysleepClock>(
+        future: futureMysleepClock,
+        builder: (BuildContext context, AsyncSnapshot<MysleepClock> snapshot){
+          if(snapshot.hasData){
+            MysleepClock sleepclock = snapshot.data!;
+            return getContent(themeData: themeData, size: size, pad: pad, sleepclock: sleepclock);
+          }else{
+            return Container(
+              child: Center(child: CircularProgressIndicator(),),
+            );
+          }
+        },
       ),
+      // body: Container(
+      //   width: size.width,
+      //   height: size.height,
+      //   child: Column(
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: [
+      //       SizedBox(height: pad,),
+      //       Padding(
+      //         padding: SleepClock.sidePad,
+      //         child: Text("It’s time to adjust your sleep clock. Let’s review your sleep patterns from the past week.",
+      //           style: themeData.textTheme.headline5,
+      //         ),
+      //       ),
+      //       SizedBox(height: pad,),
+      //       tableTitle(themeData, text: "Sleep Window:"),
+      //       sleepWindowDataTable(themeData),
+      //       SizedBox(height: pad,),
+      //       tableTitle(themeData, text: "Sleep Time & Efficiency"),
+      //       sleepAverageDataTable(themeData),
+      //       SizedBox(height: pad,),
+      //       Center(
+      //           child: Column(
+      //             children: [
+      //               IconUserButton(buttonText: "View Recommendation Info", buttonEvent: () {createAlertDialog(context);}, buttonIcon: Icons.info,),
+      //               IconUserButton(buttonText: "Set Next Week Sleep Window", buttonEvent: () {displaySleepWindowDialog(context);}, buttonIcon: Icons.alarm)
+      //             ],
+      //           )
+      //       ),
+      //
+      //     ],
+      //   ),
+      // ),
       
     );
   }
@@ -152,6 +178,41 @@ class _SleepClockState extends State<SleepClock> {
   displaySleepWindowDialog(BuildContext context){
     Navigator.push(
       context, new MaterialPageRoute(builder: (context) => SleepWindow())
+    );
+  }
+
+  Container getContent({required ThemeData themeData,required Size size,required double pad, required MysleepClock sleepclock}){
+    return Container(
+      width: size.width,
+      height: size.height,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: pad,),
+          Padding(
+            padding: SleepClock.sidePad,
+            child: Text("It’s time to adjust your sleep clock. Let’s review your sleep patterns from the past week.",
+              style: themeData.textTheme.headline5,
+            ),
+          ),
+          SizedBox(height: pad,),
+          tableTitle(themeData, text: "Sleep Window:"),
+          sleepWindowDataTable(themeData),
+          SizedBox(height: pad,),
+          tableTitle(themeData, text: "Sleep Time & Efficiency"),
+          sleepAverageDataTable(themeData),
+          SizedBox(height: pad,),
+          Center(
+              child: Column(
+                children: [
+                  IconUserButton(buttonText: "View Recommendation Info", buttonEvent: () {createAlertDialog(context);}, buttonIcon: Icons.info,),
+                  IconUserButton(buttonText: "Set Next Week Sleep Window", buttonEvent: () {displaySleepWindowDialog(context);}, buttonIcon: Icons.alarm)
+                ],
+              )
+          ),
+
+        ],
+      ),
     );
   }
 }

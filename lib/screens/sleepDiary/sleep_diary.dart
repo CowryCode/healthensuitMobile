@@ -642,7 +642,7 @@ class _SleepDiaryState extends State<SleepDiary> {
             .totalWakeUpduration} "
             "Current Med 2 amount : , Duration before sleep ${value.bedTime} "
             "New Med Name : , New Med Amount : , Other things : "),
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
       });
     }
   }

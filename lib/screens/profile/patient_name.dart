@@ -4,7 +4,7 @@ class PatientName extends StatelessWidget{
   final String? patientNameText;
   final Function? buttonEvent;
 
-  PatientName({this.patientNameText, this.buttonEvent});
+  PatientName({ required this.patientNameText, this.buttonEvent});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class PatientName extends StatelessWidget{
           child: Row(
             children: <Widget> [
               Text(
-              'Ifeanyi Paul',
+                patientNameText.toString(),
               style: TextStyle(
                 color: Colors.blueAccent,
                 fontWeight: FontWeight.bold,

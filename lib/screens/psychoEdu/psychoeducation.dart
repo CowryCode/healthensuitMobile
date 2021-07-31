@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 //import 'package:healthensuite/utilities/constants.dart';
 
 
-class PsychoEducation extends StatelessWidget {
+class PsychoEducation extends StatefulWidget {
 
   final Function? onMenuTap;
   static final String title = 'Psychoeducation';
 
-  const PsychoEducation({Key? key, this.onMenuTap}) : super(key: key);
+  final Future<PatientProfilePodo>? patientProfile;
 
+  const PsychoEducation({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+
+  @override
+  _PsychoEducationState createState() => _PsychoEducationState();
+}
+
+class _PsychoEducationState extends State<PsychoEducation> {
    @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 5,),
+     Future<PatientProfilePodo>? profile = widget.patientProfile;
+     return Scaffold(
+      drawer: NavigationDrawerWidget(indexNum: 5, patientprofile: profile,),
       appBar: AppBar(
-        title: Text(title),
+        title: Text(PsychoEducation.title),
         centerTitle: true,
       ),
-      
+
     );
   }
 }

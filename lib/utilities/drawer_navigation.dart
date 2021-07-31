@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/default.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
@@ -8,113 +9,219 @@ import 'package:healthensuite/screens/contactUs/my_feedback.dart';
 import 'package:healthensuite/screens/contactUs/voluntary_withdrawal.dart';
 import 'package:healthensuite/screens/programs/program_content.dart';
 import 'package:healthensuite/screens/psychoEdu/psychoeducation.dart';
-import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
 import 'package:healthensuite/screens/sleepClock/sleep_clock.dart';
 import 'package:healthensuite/screens/sleepReport/sleep_report.dart';
 
 int? indexClicked = 0;
-final name = 'Ifeanyi Paul';
-final email = 'mail@mail.com';
+// final name1 = 'Ifeanyi Paul';
+// final email1 = 'mail@mail.com';
 final assetImage ='assets/images/form-user.jpg';
 
-class NavigationDrawerWidget extends StatelessWidget {
-  final padding = EdgeInsets.symmetric(horizontal: 20);
+class NavigationDrawerWidget extends StatefulWidget {
   final int? indexNum;
+  Future<PatientProfilePodo>? patientprofile;
 
-  NavigationDrawerWidget({this. indexNum});
+  NavigationDrawerWidget({this. indexNum, required this.patientprofile });
+
+  @override
+  _NavigationDrawerWidgetState createState() => _NavigationDrawerWidgetState();
+}
+
+class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
+  final padding = EdgeInsets.symmetric(horizontal: 20);
+
+
 
   @override
   Widget build(BuildContext context) {
-    
-      indexClicked = indexNum;
+    Future<PatientProfilePodo>?  futureProfile = widget.patientprofile;
 
+      indexClicked = widget.indexNum;
     return Drawer(
-      child: Material(
-        color:  appBackgroundColor,
-        //color: Color.fromRGBO(50, 75, 205, 1),
-        child: ListView(
-          children: <Widget>[
-            buildHeader(
-              assetImage: assetImage,
-              name: name,
-              email: email,
-              onClicked: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PatientScreen(
-                  name: name,
-                  email: email,
-                ),
-              )),
-            ),
-            Divider(color: Defaults.drawerItemColor),
-            Container(
-              padding: padding,
-              child: Column(
-                children: [
-                  MenuItem(
-                      index: 0,
-                      onClicked: () => selectedItem(context, 0)
-                    ),
-                    MenuItem(
-                      index: 1,
-                      onClicked: () => selectedItem(context, 1)
-                    ),
-                    MenuItem(
-                      index: 2,
-                      onClicked: () => selectedItem(context, 2)
-                    ),
-                    MenuItem(
-                      index: 3,
-                      onClicked: () => selectedItem(context, 3)
-                    ),
-                    MenuItem(
-                      index: 4,
-                      onClicked: () => selectedItem(context, 4)
-                    ),
-                    MenuItem(
-                      index: 5,
-                      onClicked: () => selectedItem(context, 5)
-                    ),
-                    MenuItem(
-                      index: 6,
-                      onClicked: () => selectedItem(context, 6)
-                    ),
-                    MenuItem(
-                      index: 7,
-                      onClicked: () => selectedItem(context, 7)
-                    ),
-                    // MenuItem(
-                    //   index: 8,
-                    //   onClicked: () => selectedItem(context, 8)
-                    // ),
-                    SizedBox(height: 10.0,),
-                    Divider(
-                      height: 1.0,
-                      thickness: 1.0,
-                      color: Defaults.drawerItemColor,
-                      indent: 3,
-                      endIndent: 3,
-                    ),
-                    SizedBox(height: 10.0),
-                    Center(
-                      child: Text("Health enSuite",
-                        style: GoogleFonts.sanchez(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 22.0,
-                          color: Defaults.drawerItemColor,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20.0),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+        child: FutureBuilder<PatientProfilePodo>(
+        future: futureProfile,
+        builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
+          if(snapshot.hasData){
+            PatientProfilePodo profile = snapshot.data!;
+            return drawerContent(profile, futureProfile);
+          }else{
+            return Container(
+              child: Center(child: CircularProgressIndicator(),),
+            );
+          }
+        },
+      )
+
+    // child: Material(
+    //     color:  appBackgroundColor,
+    //     //color: Color.fromRGBO(50, 75, 205, 1),
+    //     child: ListView(
+    //       children: <Widget>[
+    //         buildHeader(
+    //           assetImage: assetImage,
+    //           name: "Full Name",
+    //           email: "patientemail@gmail.com",
+    //           onClicked: () => Navigator.of(context).push(MaterialPageRoute(
+    //             builder: (context) => PatientScreen(
+    //               name: "Full Name",
+    //               email: "patientemail@gmail.com",
+    //             ),
+    //           )),
+    //         ),
+    //         Divider(color: Defaults.drawerItemColor),
+    //         Container(
+    //           padding: padding,
+    //           child: Column(
+    //             children: [
+    //               MenuItem(
+    //                   index: 0,
+    //                   onClicked: () => selectedItem(context, 0)
+    //                 ),
+    //                 MenuItem(
+    //                   index: 1,
+    //                   onClicked: () => selectedItem(context, 1)
+    //                 ),
+    //                 MenuItem(
+    //                   index: 2,
+    //                   onClicked: () => selectedItem(context, 2)
+    //                 ),
+    //                 MenuItem(
+    //                   index: 3,
+    //                   onClicked: () => selectedItem(context, 3)
+    //                 ),
+    //                 MenuItem(
+    //                   index: 4,
+    //                   onClicked: () => selectedItem(context, 4)
+    //                 ),
+    //                 MenuItem(
+    //                   index: 5,
+    //                   onClicked: () => selectedItem(context, 5)
+    //                 ),
+    //                 MenuItem(
+    //                   index: 6,
+    //                   onClicked: () => selectedItem(context, 6)
+    //                 ),
+    //                 MenuItem(
+    //                   index: 7,
+    //                   onClicked: () => selectedItem(context, 7)
+    //                 ),
+    //                 // MenuItem(
+    //                 //   index: 8,
+    //                 //   onClicked: () => selectedItem(context, 8)
+    //                 // ),
+    //                 SizedBox(height: 10.0,),
+    //                 Divider(
+    //                   height: 1.0,
+    //                   thickness: 1.0,
+    //                   color: Defaults.drawerItemColor,
+    //                   indent: 3,
+    //                   endIndent: 3,
+    //                 ),
+    //                 SizedBox(height: 10.0),
+    //                 Center(
+    //                   child: Text("Health enSuite",
+    //                     style: GoogleFonts.sanchez(
+    //                       fontWeight: FontWeight.w500,
+    //                       fontSize: 22.0,
+    //                       color: Defaults.drawerItemColor,
+    //                     ),
+    //                   ),
+    //                 ),
+    //                 SizedBox(height: 20.0),
+    //             ],
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
     );
   }
 
-  //Builder Widget Below
+  Material drawerContent(PatientProfilePodo profile, Future<PatientProfilePodo>?  futureProfile ){
+    return Material(
+      color:  appBackgroundColor,
+      //color: Color.fromRGBO(50, 75, 205, 1),
+      child: ListView(
+        children: <Widget>[
+          buildHeader(
+            assetImage: assetImage,
+            name: profile.firstName.toString(),
+            email: profile.email.toString(),
+            onClicked: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PatientScreen(
+                // name: "Full Name",
+                // email: "patientemail@gmail.com",
+                patientProfile: futureProfile,
+              ),
+            )),
+          ),
+          Divider(color: Defaults.drawerItemColor),
+          Container(
+            padding: padding,
+            child: Column(
+              children: [
+                MenuItem(
+                    index: 0,
+                    onClicked: () => selectedItem(context, 0,futureProfile)
+                ),
+                MenuItem(
+                    index: 1,
+                    onClicked: () => selectedItem(context, 1,futureProfile)
+                ),
+                MenuItem(
+                    index: 2,
+                    onClicked: () => selectedItem(context, 2,futureProfile)
+                ),
+                MenuItem(
+                    index: 3,
+                    onClicked: () => selectedItem(context, 3,futureProfile)
+                ),
+                MenuItem(
+                    index: 4,
+                    onClicked: () => selectedItem(context, 4,futureProfile)
+                ),
+                MenuItem(
+                    index: 5,
+                    onClicked: () => selectedItem(context, 5,futureProfile)
+                ),
+                MenuItem(
+                    index: 6,
+                    onClicked: () => selectedItem(context, 6,futureProfile)
+                ),
+                MenuItem(
+                    index: 7,
+                    onClicked: () => selectedItem(context, 7,futureProfile)
+                ),
+                // MenuItem(
+                //   index: 8,
+                //   onClicked: () => selectedItem(context, 8)
+                // ),
+                SizedBox(height: 10.0,),
+                Divider(
+                  height: 1.0,
+                  thickness: 1.0,
+                  color: Defaults.drawerItemColor,
+                  indent: 3,
+                  endIndent: 3,
+                ),
+                SizedBox(height: 10.0),
+                Center(
+                  child: Text("Health enSuite",
+                    style: GoogleFonts.sanchez(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 22.0,
+                      color: Defaults.drawerItemColor,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget buildHeader({
     required String assetImage,
@@ -144,12 +251,11 @@ class NavigationDrawerWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
             ],
           ),
         ),
       );
-
 
   Widget buildMenuItem({
     required String text,
@@ -167,21 +273,22 @@ class NavigationDrawerWidget extends StatelessWidget {
     );
   }
 
-  void selectedItem(BuildContext context, int index) {
+  void selectedItem(BuildContext context, int index, Future<PatientProfilePodo>?  profile ) {
     Navigator.of(context).pop();
 
     switch (index) {
       case 0:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => HomeScreen(),
+          builder: (context) => HomeScreen(futureProfile: profile,),
         ));
         break;
 
       case 1:
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => PatientScreen(
-            name: name,
-            email: email,
+            // name: "Patient Name",
+            // email: "patientEmail@gmail.com",
+            patientProfile: profile,
           ),
         ));
         break;
@@ -194,36 +301,36 @@ class NavigationDrawerWidget extends StatelessWidget {
 
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SleepClock(),
+          builder: (context) => SleepClock(patientProfile: profile,),
         ));
         break;
       case 3:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SleepReport(),
+          builder: (context) => SleepReport(patientProfile: profile,),
         ));
         break;
 
       case 4:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProgramContent(),
+          builder: (context) => ProgramContent(patientProfile: profile,),
         ));
         break;
 
       case 5:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PsychoEducation(),
+          builder: (context) => PsychoEducation(patientProfile: profile,),
         ));
         break;
-
+      //  profile = widget.patientprofile;
       case 6:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => MyFeedback(),
+          builder: (context) => MyFeedback(patientProfile: widget.patientprofile,),
         ));
         break;
 
       case 7:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => VoluntaryWithdrawal(),
+          builder: (context) => VoluntaryWithdrawal(patientProfile: profile,),
         ));
         break;
     }
