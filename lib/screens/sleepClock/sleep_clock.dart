@@ -23,7 +23,7 @@ class SleepClock extends StatefulWidget {
 
 class _SleepClockState extends State<SleepClock> {
 
-  Future<MysleepClock>? futureMysleepClock;
+  Future<SleepClockDTO>? futureMysleepClock;
 
   @override
   void initState() {
@@ -45,11 +45,11 @@ class _SleepClockState extends State<SleepClock> {
         title: Text(SleepClock.title),
         centerTitle: true,
       ),
-      body:  FutureBuilder<MysleepClock>(
+      body:  FutureBuilder<SleepClockDTO>(
         future: futureMysleepClock,
-        builder: (BuildContext context, AsyncSnapshot<MysleepClock> snapshot){
+        builder: (BuildContext context, AsyncSnapshot<SleepClockDTO> snapshot){
           if(snapshot.hasData){
-            MysleepClock sleepclock = snapshot.data!;
+            SleepClockDTO sleepclock = snapshot.data!;
             return getContent(themeData: themeData, size: size, pad: pad, sleepclock: sleepclock);
           }else{
             return Container(
@@ -58,38 +58,6 @@ class _SleepClockState extends State<SleepClock> {
           }
         },
       ),
-      // body: Container(
-      //   width: size.width,
-      //   height: size.height,
-      //   child: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       SizedBox(height: pad,),
-      //       Padding(
-      //         padding: SleepClock.sidePad,
-      //         child: Text("It’s time to adjust your sleep clock. Let’s review your sleep patterns from the past week.",
-      //           style: themeData.textTheme.headline5,
-      //         ),
-      //       ),
-      //       SizedBox(height: pad,),
-      //       tableTitle(themeData, text: "Sleep Window:"),
-      //       sleepWindowDataTable(themeData),
-      //       SizedBox(height: pad,),
-      //       tableTitle(themeData, text: "Sleep Time & Efficiency"),
-      //       sleepAverageDataTable(themeData),
-      //       SizedBox(height: pad,),
-      //       Center(
-      //           child: Column(
-      //             children: [
-      //               IconUserButton(buttonText: "View Recommendation Info", buttonEvent: () {createAlertDialog(context);}, buttonIcon: Icons.info,),
-      //               IconUserButton(buttonText: "Set Next Week Sleep Window", buttonEvent: () {displaySleepWindowDialog(context);}, buttonIcon: Icons.alarm)
-      //             ],
-      //           )
-      //       ),
-      //
-      //     ],
-      //   ),
-      // ),
       
     );
   }
@@ -101,28 +69,28 @@ class _SleepClockState extends State<SleepClock> {
           );
   }
 
-  Padding sleepWindowDataTable(ThemeData themeData) {
+  Padding sleepWindowDataTable({required ThemeData themeData, required SleepClockDTO sleepclock}) {
     return Padding(
             padding: SleepClock.sidePad,
             child: DataTable(
               columns: tableHeaderWidget(themeData),
               rows: [
-                rowWidget(themeData, desc: "Your Bed Time", value: "21:00"),
-                rowWidget(themeData, desc: "Your RiseTime", value: "05:40"),
+                rowWidget(themeData, desc: "Your Bed Time", value: "${sleepclock.averagebedtiime}"),
+                rowWidget(themeData, desc: "Your RiseTime", value: "${sleepclock.averagerisetime}"),
               ],
             )
           );
   }
 
-  Padding sleepAverageDataTable(ThemeData themeData) {
+  Padding sleepAverageDataTable({required ThemeData themeData, required SleepClockDTO sleepClockDTO}) {
     return Padding(
             padding: SleepClock.sidePad,
             child: DataTable(
               columns: tableHeaderWidget(themeData),
               rows: [
-                rowWidget(themeData, desc: "Average Time in Bed per Night", value: "21:00"),
-                rowWidget(themeData, desc: "Average Total Sleep Time per Night", value: "15:40"),
-                rowWidget(themeData, desc: "Average Sleep Efficiency", value: "92%"),
+                rowWidget(themeData, desc: "Average Time in Bed per Night", value: "${sleepClockDTO.averagetimeinbed}"),
+                rowWidget(themeData, desc: "Average Total Sleep Time per Night", value: "${sleepClockDTO.averagenumberofsleephours}"),
+                rowWidget(themeData, desc: "Average Sleep Efficiency", value: "${sleepClockDTO.averagesleepefficiency}%"),
               ],
             )
           );
@@ -154,14 +122,15 @@ class _SleepClockState extends State<SleepClock> {
           );
   }
 
-   createAlertDialog(BuildContext context){
+   createAlertDialog({required BuildContext context, required SleepClockDTO sleepClockDTO}){
      final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       builder: (context){
         return AlertDialog(
           title: Text("Sleep Efficiency Message", style: themeData.textTheme.headline5,),
-          content: Text("Your sleep efficiency is between 90%-94%. This is a great result! At this point, you can extend your sleep window by 15 minutes. We recommend moving your bed time 15 minutes earlier.", 
+          content: Text("${sleepClockDTO.message}",
+        //  content: Text("Your sleep efficiency is between 90%-94%. This is a great result! At this point, you can extend your sleep window by 15 minutes. We recommend moving your bed time 15 minutes earlier.",
           style: themeData.textTheme.bodyText2,),
           actions: [
             MaterialButton(
@@ -181,7 +150,7 @@ class _SleepClockState extends State<SleepClock> {
     );
   }
 
-  Container getContent({required ThemeData themeData,required Size size,required double pad, required MysleepClock sleepclock}){
+  Container getContent({required ThemeData themeData,required Size size,required double pad, required SleepClockDTO sleepclock}){
     return Container(
       width: size.width,
       height: size.height,
@@ -197,15 +166,15 @@ class _SleepClockState extends State<SleepClock> {
           ),
           SizedBox(height: pad,),
           tableTitle(themeData, text: "Sleep Window:"),
-          sleepWindowDataTable(themeData),
+          sleepWindowDataTable(themeData: themeData, sleepclock: sleepclock),
           SizedBox(height: pad,),
           tableTitle(themeData, text: "Sleep Time & Efficiency"),
-          sleepAverageDataTable(themeData),
+          sleepAverageDataTable(themeData: themeData, sleepClockDTO: sleepclock),
           SizedBox(height: pad,),
           Center(
               child: Column(
                 children: [
-                  IconUserButton(buttonText: "View Recommendation Info", buttonEvent: () {createAlertDialog(context);}, buttonIcon: Icons.info,),
+                  IconUserButton(buttonText: "View Recommendation Info", buttonEvent: () {createAlertDialog(context: context, sleepClockDTO: sleepclock);}, buttonIcon: Icons.info,),
                   IconUserButton(buttonText: "Set Next Week Sleep Window", buttonEvent: () {displaySleepWindowDialog(context);}, buttonIcon: Icons.alarm)
                 ],
               )

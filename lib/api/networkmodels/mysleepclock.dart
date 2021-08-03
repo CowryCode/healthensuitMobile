@@ -1,15 +1,15 @@
 
-class MysleepClock {
+class SleepClockDTO {
   String? averagebedtiime;
   String? averagerisetime;
-  int? averagetimeinbed;
-  int? averagetotalsleeptime;
+  double? averagetimeinbed;
+  double? averagetotalsleeptime;
   double? averagesleepefficiency;
   double? averagenumberofsleephours;
-  int? averagenumberofbedhours;
+  double? averagenumberofbedhours;
   String? message;
 
-  MysleepClock({this.averagebedtiime,
+  SleepClockDTO({this.averagebedtiime,
     this.averagerisetime,
     this.averagetimeinbed,
     this.averagetotalsleeptime,
@@ -18,7 +18,7 @@ class MysleepClock {
     this.averagenumberofbedhours,
     this.message});
 
-  MysleepClock.fromJson(Map<String, dynamic> json) {
+  SleepClockDTO.fromJson(Map<String, dynamic> json) {
     averagebedtiime = json['averagebedtiime'];
     averagerisetime = json['averagerisetime'];
     averagetimeinbed = json['averagetimeinbed'];

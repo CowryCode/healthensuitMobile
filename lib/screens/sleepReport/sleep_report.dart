@@ -51,52 +51,101 @@ class _SleepReportState extends State<SleepReport> {
     double innerPad = 10;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 3,patientprofile: profile,),
+      drawer: NavigationDrawerWidget(indexNum: 3,patientprofile: profile),
       appBar: AppBar(
         title: Text(SleepReport.title),
         centerTitle: true,
       ),
-      body: Container(
-              width: size.width,
-              height: size.height,
+      body: getContent(themeData, size, pad, _formKey),
+
+
+
+      // body: Container(
+      //         width: size.width,
+      //         height: size.height,
+      //         child: Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             SizedBox(height: pad,),
+      //             dateRangeFormBuilder(_formKey, themeData),
+      //             SizedBox(height: pad,),
+      //             Center(
+      //               child: IconUserButton(buttonText: "Generate Report", buttonEvent: () {}, buttonIcon: Icons.book_online_rounded,)
+      //             ),
+      //             SizedBox(height: pad,),
+      //             SingleChildScrollView(
+      //               scrollDirection: Axis.vertical,
+      //               physics: ClampingScrollPhysics(),
+      //               child: Column(
+      //                 crossAxisAlignment: CrossAxisAlignment.start,
+      //                 children: [
+      //                   Padding(
+      //                     padding: SleepReport.sidePad,
+      //                     child: Text("Report Detail:", style: themeData.textTheme.headline4,),
+      //                   ),
+      //                   sleepReportDataTable(themeData),
+      //                   SizedBox(height: pad,),
+      //
+      //                   Row(
+      //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //                     children: [
+      //                       IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
+      //                       IconUserButton(buttonText: "Share Report", buttonEvent: () {}, buttonIcon: Icons.share)
+      //                     ],
+      //                   ),
+      //                   SizedBox(height: pad,),
+      //
+      //                 ],
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //     ),
+      );
+  }
+
+
+  Container getContent(ThemeData themeData, Size size, double pad, var _formKey,  ){
+      return Container(
+        width: size.width,
+        height: size.height,
+        child: ListView(
+         // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: pad,),
+            dateRangeFormBuilder(_formKey, themeData),
+            SizedBox(height: pad,),
+            Center(
+                child: IconUserButton(buttonText: "Generate Report", buttonEvent: () {}, buttonIcon: Icons.book_online_rounded,)
+            ),
+            SizedBox(height: pad,),
+            SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: ClampingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: SleepReport.sidePad,
+                    child: Text("Report Detail:", style: themeData.textTheme.headline4,),
+                  ),
+                  sleepReportDataTable(themeData),
                   SizedBox(height: pad,),
-                  dateRangeFormBuilder(_formKey, themeData),
-                  SizedBox(height: pad,),
-                  Center(
-                    child: IconUserButton(buttonText: "Generate Report", buttonEvent: () {}, buttonIcon: Icons.book_online_rounded,)
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
+                      IconUserButton(buttonText: "Share Report", buttonEvent: () {}, buttonIcon: Icons.share)
+                    ],
                   ),
                   SizedBox(height: pad,),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    physics: ClampingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: SleepReport.sidePad,
-                          child: Text("Report Detail:", style: themeData.textTheme.headline4,),
-                        ),
-                        sleepReportDataTable(themeData),
-                        SizedBox(height: pad,),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
-                            IconUserButton(buttonText: "Share Report", buttonEvent: () {}, buttonIcon: Icons.share)
-                          ],
-                        ),
-                        SizedBox(height: pad,),
-
-                      ],
-                    ),
-                  ),
                 ],
               ),
-          ),
+            ),
+          ],
+        ),
       );
   }
 
