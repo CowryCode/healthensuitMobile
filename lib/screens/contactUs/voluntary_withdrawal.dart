@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
@@ -21,6 +23,11 @@ class VoluntaryWithdrawal extends StatefulWidget{
 }
 
 class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
+
+  TextEditingController withdrawalNote = TextEditingController();
+
+  get patientProfile => widget.patientProfile;
+
   @override
   Widget build(BuildContext context) {
 
@@ -93,6 +100,7 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
               borderSide: BorderSide(color: appItemColorBlue)
               ),
           ),
+          controller: withdrawalNote,
         ),
       );
   }
@@ -110,7 +118,17 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
             MaterialButton(
               child: Text("Submit", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
               onPressed: (){
-                Navigator.of(context).pop();
+                String txt = withdrawalNote.value.text;
+                Future<bool> response = ApiAccess().voluntaryWithdrawal(withdrawalNote:txt);
+                response.then((value) => {
+                  if(value){
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                  }else{
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                  }
+                });
+
+              //  Navigator.of(context).pop();
               }
             ),
           ],

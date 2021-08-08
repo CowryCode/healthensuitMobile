@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/mysleepreport.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -15,8 +16,10 @@ class SleepReport extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
 
+  Future<SleepReportDTO>? sleepreport;
 
-  const SleepReport({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+//  const SleepReport({Key? key, this.onMenuTap, required this.patientProfile,  this.sleepreport}) : super(key: key);
+  SleepReport({Key? key, this.onMenuTap, required this.patientProfile,  this.sleepreport}) : super(key: key);
 
   @override
   _SleepReportState createState() => _SleepReportState();
@@ -28,18 +31,15 @@ class _SleepReportState extends State<SleepReport> {
     DateTime firstDate = DateTime(2021);
     DateTime lastDate = DateTime(2030);
 
-  // DateTimeRange setVal(dateRgText){
-    
-  //     setState( (){
-  //       if (dateRgText == null){
-  //         dateRgText = DateTimeRange(start: firstDate, end: lastDate);
-  //       }
-  //     });
-  //     return dateRgText;
-    
-  // }
+   // Future<SleepReportDTO>? sleepreport;
 
+    String? dateRange;
 
+    @override
+    void initState() {
+      super.initState();
+      widget.sleepreport = ApiAccess().getMysleepReport(null, null);
+    }
 
     @override
   Widget build(BuildContext context) {
@@ -56,56 +56,23 @@ class _SleepReportState extends State<SleepReport> {
         title: Text(SleepReport.title),
         centerTitle: true,
       ),
-      body: getContent(themeData, size, pad, _formKey),
-
-
-
-      // body: Container(
-      //         width: size.width,
-      //         height: size.height,
-      //         child: Column(
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             SizedBox(height: pad,),
-      //             dateRangeFormBuilder(_formKey, themeData),
-      //             SizedBox(height: pad,),
-      //             Center(
-      //               child: IconUserButton(buttonText: "Generate Report", buttonEvent: () {}, buttonIcon: Icons.book_online_rounded,)
-      //             ),
-      //             SizedBox(height: pad,),
-      //             SingleChildScrollView(
-      //               scrollDirection: Axis.vertical,
-      //               physics: ClampingScrollPhysics(),
-      //               child: Column(
-      //                 crossAxisAlignment: CrossAxisAlignment.start,
-      //                 children: [
-      //                   Padding(
-      //                     padding: SleepReport.sidePad,
-      //                     child: Text("Report Detail:", style: themeData.textTheme.headline4,),
-      //                   ),
-      //                   sleepReportDataTable(themeData),
-      //                   SizedBox(height: pad,),
-      //
-      //                   Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //                     children: [
-      //                       IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
-      //                       IconUserButton(buttonText: "Share Report", buttonEvent: () {}, buttonIcon: Icons.share)
-      //                     ],
-      //                   ),
-      //                   SizedBox(height: pad,),
-      //
-      //                 ],
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //     ),
+      body:   FutureBuilder<SleepReportDTO>(
+        future: widget.sleepreport,
+        builder: (BuildContext context, AsyncSnapshot<SleepReportDTO> snapshot){
+          if(snapshot.hasData){
+            SleepReportDTO sleepReportDTO = snapshot.data!;
+            return getContent(themeData, size, pad, _formKey,sleepReportDTO );
+          }else{
+            return Container(
+              child: Center(child: CircularProgressIndicator(),),
+            );
+          }
+        },
+      ),
       );
   }
 
-
-  Container getContent(ThemeData themeData, Size size, double pad, var _formKey,  ){
+  Container getContent(ThemeData themeData, Size size, double pad, var _formKey, SleepReportDTO sleepReport ){
       return Container(
         width: size.width,
         height: size.height,
@@ -116,7 +83,9 @@ class _SleepReportState extends State<SleepReport> {
             dateRangeFormBuilder(_formKey, themeData),
             SizedBox(height: pad,),
             Center(
-                child: IconUserButton(buttonText: "Generate Report", buttonEvent: () {}, buttonIcon: Icons.book_online_rounded,)
+                child: IconUserButton(buttonText: "Generate Report", buttonEvent: () {
+                  generateReport();
+                }, buttonIcon: Icons.book_online_rounded,)
             ),
             SizedBox(height: pad,),
             SingleChildScrollView(
@@ -129,7 +98,7 @@ class _SleepReportState extends State<SleepReport> {
                     padding: SleepReport.sidePad,
                     child: Text("Report Detail:", style: themeData.textTheme.headline4,),
                   ),
-                  sleepReportDataTable(themeData),
+                  sleepReportDataTable(themeData, sleepReport),
                   SizedBox(height: pad,),
 
                   Row(
@@ -151,18 +120,25 @@ class _SleepReportState extends State<SleepReport> {
 
   //Builder Widget Below
 
-  Padding sleepReportDataTable(ThemeData themeData) {
+  Padding sleepReportDataTable(ThemeData themeData, SleepReportDTO sleepreportDTO) {
+      String avgBedtime = sleepreportDTO.averageBedtime?? "00:00";
+      double latency = sleepreportDTO.sleeplatency?? 0.0;
+      double WASO = sleepreportDTO.waso?? 0.0;
+      double tib = sleepreportDTO.tib?? 0.0;
+      double tst = sleepreportDTO.tst?? 0.0;
+      double sleepefficiency = sleepreportDTO.se?? 0.0;
+
     return Padding(
             padding: SleepReport.sidePad,
             child: DataTable(
               columns: tableHeaderWidget(themeData),
               rows: [
-                rowWidget(themeData, desc: "Average Bed Time", value: "21:00"),
-                rowWidget(themeData, desc: "Sleep Latency", value: "95%"),
-                rowWidget(themeData, desc: "Average Duration of Awakenings (WASO)", value: "05:29"),
-                rowWidget(themeData, desc: "Time In Bed (TIB)", value: "20:40"),
-                rowWidget(themeData, desc: "Total Sleep Time (TST)", value: "15:40"),
-                rowWidget(themeData, desc: "Sleep Efficiency", value: "92%"),
+                rowWidget(themeData, desc: "Average Bed Time", value: "${avgBedtime}"),
+                rowWidget(themeData, desc: "Sleep Latency", value: "${latency}%"),
+                rowWidget(themeData, desc: "Average Duration of Awakenings (WASO)", value: "${WASO}"),
+                rowWidget(themeData, desc: "Time In Bed (TIB)", value: "${tib}"),
+                rowWidget(themeData, desc: "Total Sleep Time (TST)", value: "${tst}"),
+                rowWidget(themeData, desc: "Sleep Efficiency", value: "${sleepefficiency}%"),
               ],
             )
           );
@@ -213,7 +189,7 @@ class _SleepReportState extends State<SleepReport> {
               lastDate: lastDate,
               format: DateFormat("yyyy-MM-dd"),
               initialValue: dateRgText,
-              //onChanged: getFormValue(_formKey),
+             // onChanged: getFormValue(_formKey),
               decoration: InputDecoration(
                 hintText: "Click here to pick your date range",
                 hintStyle: themeData.textTheme.bodyText2,
@@ -231,11 +207,26 @@ class _SleepReportState extends State<SleepReport> {
   getFormValue(GlobalKey<FormBuilderState> key){
         if(key.currentState!.saveAndValidate()){
           dateRgText = key.currentState!.fields["dateRange"]!.value;
+          dateRange = dateRgText.toString();
           //key.currentState.fields["dateRange"].didChange(dateRgText);
           print("Date Range value: $dateRgText");
+         // generateReport();
         }
   }
-  
+
+  generateReport(){
+      if(dateRange != null){
+       var dateArray=   dateRange!.split(" ");
+       String start = dateArray[0];
+       String end = dateArray[3];
+       print("Start date is : ${start}");
+       print("End date is : ${end}");
+       setState(() {
+         widget.sleepreport = ApiAccess().getMysleepReport(start, end);
+         // setState in Dropdown
+       });
+      }
+  }
 
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
@@ -28,6 +30,10 @@ class MyFeedback extends StatefulWidget{
 
 class _MyFeedbackState extends State<MyFeedback> {
 
+  TextEditingController feedbackNote = TextEditingController();
+
+  get patientProfile => widget.patientProfile;
+
   @override
   Widget build(BuildContext context) {
     Future<PatientProfilePodo>? profile = widget.patientProfile;
@@ -35,7 +41,6 @@ class _MyFeedbackState extends State<MyFeedback> {
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
-
 
     return Scaffold(
       drawer: NavigationDrawerWidget(indexNum: 6,patientprofile: profile,),
@@ -66,7 +71,18 @@ class _MyFeedbackState extends State<MyFeedback> {
               //SizedBox(height: pad,),
               //Spacer(),
               Center(
-                child: IconUserButton(buttonText: "Submit Your Feedback", buttonEvent: () {}, buttonIcon: Icons.feedback,)
+                child: IconUserButton(buttonText: "Submit Your Feedback", buttonEvent: () {
+                  String txt = feedbackNote.value.text;
+                  Future<bool> response = ApiAccess().feedback(feedback:txt);
+                  Center(child: CircularProgressIndicator(),);
+                  response.then((value) => {
+                    if(value){
+                          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                     }else{
+                         Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                     }
+                  });
+                }, buttonIcon: Icons.feedback,)
               ),
             ],
           ),
@@ -91,6 +107,7 @@ class _MyFeedbackState extends State<MyFeedback> {
               borderSide: BorderSide(color: appItemColorBlue)
               ),
           ),
+          controller: feedbackNote,
         ),
       );
   }
