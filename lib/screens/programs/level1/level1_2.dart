@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level1/level1_3.dart';
@@ -9,6 +11,11 @@ class Level1of2 extends StatefulWidget {
 
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
+  static final optionPad = EdgeInsets.only(bottom: 10.0);
+  final Future<PatientProfilePodo>? patientProfile;
+
+
+  Level1of2(this.patientProfile);
 
   @override
   _Level1of2State createState() => _Level1of2State();
@@ -19,6 +26,7 @@ class _Level1of2State extends State<Level1of2> {
 
   @override
   Widget build(BuildContext context) {
+    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     final _formKey = GlobalKey<FormBuilderState>();
@@ -29,7 +37,7 @@ class _Level1of2State extends State<Level1of2> {
         title: Text(Level1of2.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context),
+      bottomNavigationBar: buttomBarWidget(context, _formKey, futureprofile),
       body: Container(
         width: size.width,
         height: size.height,
@@ -97,6 +105,14 @@ class _Level1of2State extends State<Level1of2> {
           );
   }
 
+  Padding optionTextWidget(ThemeData themeData, {required String text}) {
+    return Padding(
+              padding: Level1of2.optionPad,
+              child: Text(text, 
+                style: themeData.textTheme.bodyText1,),
+            );
+  }
+
   FormBuilder checkBoxBuilderWidget(GlobalKey<FormBuilderState> _formKey, ThemeData themeData) {
     return FormBuilder(
                      key: _formKey,
@@ -105,26 +121,34 @@ class _Level1of2State extends State<Level1of2> {
                         options: [
                           FormBuilderFieldOption(
                             value: "It often takes me more than 30 minutes to fall asleep.",
-                            child: bodyTextWidget(themeData, text: "It often takes me more than 30 minutes to fall asleep."),
+                            child: optionTextWidget(themeData, text: "It often takes me more than 30 minutes to fall asleep."),
                           ),
                           FormBuilderFieldOption(
                             value: "I wake up frequently throughout the night and have trouble getting back to sleep.",
-                            child: bodyTextWidget(themeData, text: "It often takes me more than 30 minutes to fall asleep."),
+                            child: optionTextWidget(themeData, text: "I wake up frequently throughout the night and have trouble getting back to sleep."),
                           ),
                           FormBuilderFieldOption(
                             value: "I regularly wake up too early in the morning and cannot get back to sleep.",
-                            child: bodyTextWidget(themeData, text: "It often takes me more than 30 minutes to fall asleep."),
+                            child: optionTextWidget(themeData, text: "I regularly wake up too early in the morning and cannot get back to sleep."),
                           ),
                           FormBuilderFieldOption(
                             value: "My sleep quality is poor. I would like to improve the quality of my sleep.",
-                            child: bodyTextWidget(themeData, text: "My sleep quality is poor. I would like to improve the quality of my sleep."),
+                            child: optionTextWidget(themeData, text: "My sleep quality is poor. I would like to improve the quality of my sleep."),
                           ),
                         ],
                       ),
                    );
   }
 
-  SafeArea buttomBarWidget(BuildContext context) {
+  InterventionlevelOne getSelectedValue(GlobalKey<FormBuilderState> key){
+    var result = key.currentState!.fields["situationList"]!.value;
+    InterventionlevelOne levelOne = InterventionlevelOne();
+    String choice = result[0]; // You have to loop through this result when it starts populating
+    levelOne.setwhichBestdescribesYoursituation(choice);
+    return levelOne;
+  }
+
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, Future<PatientProfilePodo>? futureProfile) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -139,8 +163,9 @@ class _Level1of2State extends State<Level1of2> {
               }),
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
-                  Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of3())
+                InterventionlevelOne levelone = getSelectedValue(key);
+                Navigator.push(
+                    context, new MaterialPageRoute(builder: (context) => Level1of3(levelone, futureProfile))
                     );
                 }
               ),

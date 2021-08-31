@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/mysleepclock.dart';
+import 'package:healthensuite/api/networkmodels/sleepwindowsPODO.dart';
 //import 'package:intl/intl.dart';
 import 'package:healthensuite/models/icon_button.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -13,8 +16,9 @@ class SleepWindow extends StatelessWidget {
   static final String title = 'Sleep Window';
   final _formKey = GlobalKey<FormBuilderState>();
   TimeOfDay? time;
+  final SleepClockDTO sleepClockDTO;
 
-  SleepWindow({Key? key, this.onMenuTap}) : super(key: key);
+  SleepWindow({Key? key, this.onMenuTap, required this.sleepClockDTO}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -60,8 +64,13 @@ class SleepWindow extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          IconUserButton(buttonText: "OK", buttonEvent: () { Navigator.of(context).pop(); }, buttonIcon: Icons.arrow_forward,),
-                          IconUserButton(buttonText: "Cancel", buttonEvent: () {  Navigator.of(context).pop(); }, buttonIcon: Icons.cancel)
+                          IconUserButton(buttonText: "OK", buttonEvent: () {
+                            saveSleepwindow(_formKey, sleepClockDTO);
+                            Navigator.of(context).pop();
+                          }, buttonIcon: Icons.arrow_forward,),
+                          IconUserButton(buttonText: "Cancel", buttonEvent: () {
+                            Navigator.of(context).pop();
+                            }, buttonIcon: Icons.cancel)
                         ],
                       ),
                       SizedBox(height: pad,),
@@ -75,6 +84,24 @@ class SleepWindow extends StatelessWidget {
         onChanged: () => print("Form has changed"),
       ), 
     );
+  }
+
+  void saveSleepwindow(GlobalKey<FormBuilderState> key, SleepClockDTO sleepclock){
+    var revisedbedtime = key.currentState!.fields["bTime"]!.value;
+    var revisedRisetime = key.currentState!.fields["rTime"]!.value;
+    print("Revised bed time is ${revisedbedtime}");
+    print("Revised rise time is ${revisedRisetime}");
+    print("Formal bed time is ${sleepclock.averagebedtiime}");
+    print("Formal rise time is ${sleepclock.averagerisetime}");
+
+    Sleepwindows sleepwindow = Sleepwindows();
+    sleepwindow.setbedtime("${sleepclock.averagebedtiime}");
+    sleepwindow.setrisetime("${sleepclock.averagerisetime}");
+    sleepwindow.setrevisedbedtime("${revisedbedtime}");
+    sleepwindow.setrevisedrisetime("${revisedRisetime}");
+
+    ApiAccess().submitsleepwindow(sleepwindow: sleepwindow);
+
   }
 
 

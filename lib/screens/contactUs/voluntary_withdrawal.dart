@@ -127,7 +127,6 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
                     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
                   }
                 });
-
               //  Navigator.of(context).pop();
               }
             ),

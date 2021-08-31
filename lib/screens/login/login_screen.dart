@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
+import 'package:healthensuite/api/services/push_notification_service.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
@@ -193,16 +194,13 @@ class _LoginScreenState extends State<LoginScreen> {
             // loginDetail = value
             if(value == null){
               showAlertDialog(context)
-            }else{
-              Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
+          }else{
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
             }
           } );
 
 
         },
-
-
         child: Text(
           'LOGIN',
           style: TextStyle(
@@ -217,6 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     );
   }
+
 
   showAlertDialog(BuildContext context) {
 

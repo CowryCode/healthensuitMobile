@@ -107,5 +107,9 @@ class Workflow{
     return date;
   }
 
+  double changeDecimalplaces({required double value, required int decimalplaces}){
+    double newNum = double.parse((12.5668).toStringAsFixed(decimalplaces));
+    return newNum;
+  }
 
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level1/level1_2.dart';
@@ -8,6 +9,10 @@ class Level1 extends StatefulWidget {
 
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
+  final Future<PatientProfilePodo>? patientProfile;
+
+
+  Level1(this.patientProfile);
 
   @override
   _Level1State createState() => _Level1State();
@@ -18,18 +23,17 @@ class _Level1State extends State<Level1> {
 
   @override
   Widget build(BuildContext context) {
+    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
-
     //Future.delayed(Duration.zero, () => createAlertDialog(context, themeData));
-
     return Scaffold(
       appBar: AppBar(
         title: Text(Level1.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context),
+      bottomNavigationBar: buttomBarWidget(context, futureprofile),
       body: Container(
         width: size.width,
         height: size.height,
@@ -72,7 +76,7 @@ class _Level1State extends State<Level1> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context) {
+  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -86,7 +90,7 @@ class _Level1State extends State<Level1> {
                 child: Text("Next", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                 onPressed: (){
                   Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level1of2())
+                  context, new MaterialPageRoute(builder: (context) => Level1of2(futureProfile))
                   );
                 }
               ),

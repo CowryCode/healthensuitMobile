@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/screens/programs/level1/level_1.dart';
+import 'package:healthensuite/screens/programs/level2/level_2.dart';
+import 'package:healthensuite/screens/programs/level3/level_3.dart';
+import 'package:healthensuite/screens/programs/level4/level_4.dart';
+import 'package:healthensuite/screens/programs/level5/level_5.dart';
+import 'package:healthensuite/screens/programs/level6/level_6.dart';
 
 
 class ProgramContent extends StatefulWidget{
@@ -11,6 +17,7 @@ class ProgramContent extends StatefulWidget{
    static final String title = 'Program Content';
    static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
+
 
   const ProgramContent({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
 
@@ -25,12 +32,12 @@ class _ProgramContentState extends State<ProgramContent> {
    @override
   Widget build(BuildContext context) {
      Future<PatientProfilePodo>? profile = widget.patientProfile;
-    final Size size = MediaQuery.of(context).size;
+     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 4, patientprofile: profile,),
+      drawer: NavigationDrawerWidget(indexNum: 4,patientprofile: profile,),
       appBar: AppBar(
         title: Text(ProgramContent.title),
         centerTitle: true,
@@ -44,14 +51,14 @@ class _ProgramContentState extends State<ProgramContent> {
             SizedBox(height: pad,),
             sectionOneCard(pad, themeData, size),
 
-            sectionTwoCard(themeData, pad, context),
+            sectionTwoCard(themeData, pad, context, profile),
           ],
         ),
       ),
     );
   }
 
-   Card sectionTwoCard(ThemeData themeData, double pad, BuildContext context) {
+   Card sectionTwoCard(ThemeData themeData, double pad, BuildContext context, Future<PatientProfilePodo>? patientProfile) {
      return Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,14 +80,39 @@ class _ProgramContentState extends State<ProgramContent> {
                 levelButtonWidget(topic: "Level 1: Introduction to Health enSuite Insomnia", 
                 action: (){
                   Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level1())
+                  context, new MaterialPageRoute(builder: (context) => Level1(patientProfile))
                   );
                 }),
-                levelButtonWidget(topic: "Level 2: Introduction to Sleep Restriction", action: (){}),
-                levelButtonWidget(topic: "Level 3: Sleep Hygiene", action: (){}),
-                levelButtonWidget(topic: "Level 4: Relaxation techniques", action: (){}),
-                levelButtonWidget(topic: "Level 5: Changing Thoughts", action: (){}),
-                levelButtonWidget(topic: "Level 6: Maintaining Your Progress", action: (){}),
+                levelButtonWidget(topic: "Level 2: Introduction to Sleep Restriction", 
+                action: (){
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => Level2(patientProfile))
+                  );
+                }),
+                levelButtonWidget(topic: "Level 3: Sleep Hygiene", 
+                action: (){
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => Level3(patientProfile))
+                  );
+                }),
+                levelButtonWidget(topic: "Level 4: Relaxation techniques", 
+                action: (){
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => Level4(patientProfile))
+                  );
+                }),
+                levelButtonWidget(topic: "Level 5: Changing Thoughts", 
+                action: (){
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => Level5(patientProfile))
+                  );
+                }),
+                levelButtonWidget(topic: "Level 6: Maintaining Your Progress", 
+                action: (){
+                  Navigator.push(
+                  context, new MaterialPageRoute(builder: (context) => Level6(patientProfile))
+                  );
+                }),
                 
               ],
             ),

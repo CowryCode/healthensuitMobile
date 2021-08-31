@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level1/level1_6.dart';
@@ -11,11 +13,17 @@ class MyChoice{
   MyChoice({this.choice, this.index, this.choiceValue});
 }
 
+int choiceglobal = 0;
 
 class Level1of5 extends StatefulWidget {
 
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
+  final InterventionlevelOne levelone;
+
+  final Future<PatientProfilePodo>? patientProfile;
+
+  Level1of5(this.levelone, this.patientProfile);
 
   @override
   _Level1of5State createState() => _Level1of5State();
@@ -26,6 +34,8 @@ class _Level1of5State extends State<Level1of5> {
 
   @override
   Widget build(BuildContext context) {
+    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+    InterventionlevelOne level1 = widget.levelone;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
@@ -35,7 +45,7 @@ class _Level1of5State extends State<Level1of5> {
         title: Text(Level1of5.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context),
+      bottomNavigationBar: buttomBarWidget(context, level1, futureprofile),
       body: Container(
         width: size.width,
         height: size.height,
@@ -75,7 +85,7 @@ class _Level1of5State extends State<Level1of5> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context) {
+  SafeArea buttomBarWidget(BuildContext context, InterventionlevelOne levelone, Future<PatientProfilePodo>? futureProfile) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -90,8 +100,14 @@ class _Level1of5State extends State<Level1of5> {
               }),
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
+                print("This thing got here :::::::::::::::::::::::::");
+
+
+                InterventionlevelOne updatedLevelone = getSelectedValue(levelone);
+
+
                  Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of6())
+                    context, new MaterialPageRoute(builder: (context) => Level1of6(updatedLevelone, futureProfile))
                     );
               }),
             ],
@@ -100,6 +116,20 @@ class _Level1of5State extends State<Level1of5> {
         elevation: 100,
       ),
     );
+  }
+
+  InterventionlevelOne getSelectedValue(InterventionlevelOne levelone){
+
+    if(choiceglobal == 0){
+      levelone.sethowIsitgoingSofar("I feel confident I will be able to stick to this plan.");
+    }
+    if(choiceglobal == 1){
+      levelone.sethowIsitgoingSofar("I think it will be very difficult for me to stick to this plan.");
+    }
+    if(choiceglobal == 2){
+      levelone.sethowIsitgoingSofar("I don’t know what the plan is. What can I do to find out?");
+    }
+    return levelone;
   }
 
   SingleChildScrollView headerWidget(ThemeData themeData) {
@@ -156,22 +186,24 @@ class _Level1of5State extends State<Level1of5> {
               padding: Level1of5.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
-            );
+    );
   }
-
 }
 
 
+
 class RadioGroup extends StatefulWidget {
+  int patientchoice = -1;
   @override
   _RadioGroupState createState() => _RadioGroupState();
 }
 
 class _RadioGroupState extends State<RadioGroup> {
   String? defaultChoice = "";
-    int? defaultIndex = -1; 
+    int? defaultIndex = -1;
+    int patientchoice = -1;
 
-    List<MyChoice> choices = [
+  List<MyChoice> choices = [
       MyChoice(index: 0, choice: "I feel confident I will be able to stick to this plan.", choiceValue: ""),
       MyChoice(index: 1, choice: "I think it will be very difficult for me to stick to this plan.", choiceValue: ""),
       MyChoice(index: 2, choice: "I don’t know what the plan is. What can I do to find out?", choiceValue: ""),
@@ -192,17 +224,22 @@ class _RadioGroupState extends State<RadioGroup> {
                   groupValue: defaultIndex,
                   value: data.index,
                   onChanged: (dynamic value){
+                 //   patientchoice = data.index!;
+                    setPatientchoice(value);
                     setState(() {
                         defaultChoice = data.choice; 
-                        defaultIndex = data.index; 
+                        defaultIndex = data.index;
                         if(value == 0){
                           createAlertDialog(context, head: "Great!", body: "You can track your progress in the Medication Log.");
+                          choiceglobal = 0;
                         }
                         else if(value == 1){
                           createAlertDialog(context, head: "Change can be difficult!", body: "This app provides tools that should help make it easier for you. If you need to modify the plan please consult your health care provider.");
+                          choiceglobal = 1;
                         }
                         else if(value == 2){
                           createAlertDialog(context, head: "Attention!", body: "Use the medications tab on the dashboard to view your tapering schedule.");
+                          choiceglobal = 2;
                         }
                         print('You clicked me: $value');         
                     });
@@ -214,6 +251,10 @@ class _RadioGroupState extends State<RadioGroup> {
         ),
       ],
     );
+  }
+
+  void setPatientchoice(int choice){
+    this.patientchoice = choice;
   }
 
   createAlertDialog(BuildContext context, {String? head, String? body}){

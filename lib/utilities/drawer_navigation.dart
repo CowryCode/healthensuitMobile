@@ -52,88 +52,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         },
       )
 
-    // child: Material(
-    //     color:  appBackgroundColor,
-    //     //color: Color.fromRGBO(50, 75, 205, 1),
-    //     child: ListView(
-    //       children: <Widget>[
-    //         buildHeader(
-    //           assetImage: assetImage,
-    //           name: "Full Name",
-    //           email: "patientemail@gmail.com",
-    //           onClicked: () => Navigator.of(context).push(MaterialPageRoute(
-    //             builder: (context) => PatientScreen(
-    //               name: "Full Name",
-    //               email: "patientemail@gmail.com",
-    //             ),
-    //           )),
-    //         ),
-    //         Divider(color: Defaults.drawerItemColor),
-    //         Container(
-    //           padding: padding,
-    //           child: Column(
-    //             children: [
-    //               MenuItem(
-    //                   index: 0,
-    //                   onClicked: () => selectedItem(context, 0)
-    //                 ),
-    //                 MenuItem(
-    //                   index: 1,
-    //                   onClicked: () => selectedItem(context, 1)
-    //                 ),
-    //                 MenuItem(
-    //                   index: 2,
-    //                   onClicked: () => selectedItem(context, 2)
-    //                 ),
-    //                 MenuItem(
-    //                   index: 3,
-    //                   onClicked: () => selectedItem(context, 3)
-    //                 ),
-    //                 MenuItem(
-    //                   index: 4,
-    //                   onClicked: () => selectedItem(context, 4)
-    //                 ),
-    //                 MenuItem(
-    //                   index: 5,
-    //                   onClicked: () => selectedItem(context, 5)
-    //                 ),
-    //                 MenuItem(
-    //                   index: 6,
-    //                   onClicked: () => selectedItem(context, 6)
-    //                 ),
-    //                 MenuItem(
-    //                   index: 7,
-    //                   onClicked: () => selectedItem(context, 7)
-    //                 ),
-    //                 // MenuItem(
-    //                 //   index: 8,
-    //                 //   onClicked: () => selectedItem(context, 8)
-    //                 // ),
-    //                 SizedBox(height: 10.0,),
-    //                 Divider(
-    //                   height: 1.0,
-    //                   thickness: 1.0,
-    //                   color: Defaults.drawerItemColor,
-    //                   indent: 3,
-    //                   endIndent: 3,
-    //                 ),
-    //                 SizedBox(height: 10.0),
-    //                 Center(
-    //                   child: Text("Health enSuite",
-    //                     style: GoogleFonts.sanchez(
-    //                       fontWeight: FontWeight.w500,
-    //                       fontSize: 22.0,
-    //                       color: Defaults.drawerItemColor,
-    //                     ),
-    //                   ),
-    //                 ),
-    //                 SizedBox(height: 20.0),
-    //             ],
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
     );
   }
 
@@ -192,10 +110,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     index: 7,
                     onClicked: () => selectedItem(context, 7,futureProfile)
                 ),
-                // MenuItem(
-                //   index: 8,
-                //   onClicked: () => selectedItem(context, 8)
-                // ),
                 SizedBox(height: 10.0,),
                 Divider(
                   height: 1.0,
@@ -247,9 +161,10 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   const SizedBox(height: 4),
                   Text(
                     email,
+                    overflow:TextOverflow.fade,
                     style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
-                ],
+               ],
               ),
 
             ],

@@ -144,9 +144,9 @@ class _SleepClockState extends State<SleepClock> {
       });
   }
 
-  displaySleepWindowDialog(BuildContext context){
+  displaySleepWindowDialog(BuildContext context, SleepClockDTO sleepclock){
     Navigator.push(
-      context, new MaterialPageRoute(builder: (context) => SleepWindow())
+      context, new MaterialPageRoute(builder: (context) => SleepWindow(sleepClockDTO: sleepclock,))
     );
   }
 
@@ -175,7 +175,9 @@ class _SleepClockState extends State<SleepClock> {
               child: Column(
                 children: [
                   IconUserButton(buttonText: "View Recommendation Info", buttonEvent: () {createAlertDialog(context: context, sleepClockDTO: sleepclock);}, buttonIcon: Icons.info,),
-                  IconUserButton(buttonText: "Set Next Week Sleep Window", buttonEvent: () {displaySleepWindowDialog(context);}, buttonIcon: Icons.alarm)
+                  IconUserButton(buttonText: "Set Next Week Sleep Window", buttonEvent: () {
+                    displaySleepWindowDialog(context, sleepclock);
+                    }, buttonIcon: Icons.alarm)
                 ],
               )
           ),

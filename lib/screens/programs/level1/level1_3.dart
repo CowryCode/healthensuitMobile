@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level1/level1_4.dart';
@@ -8,6 +10,11 @@ class Level1of3 extends StatefulWidget {
 
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
+  final InterventionlevelOne levelone;
+
+  final Future<PatientProfilePodo>? patientProfile;
+
+  Level1of3(this.levelone, this.patientProfile);
 
   @override
   _Level1of3State createState() => _Level1of3State();
@@ -18,6 +25,8 @@ class _Level1of3State extends State<Level1of3> {
 
   @override
   Widget build(BuildContext context) {
+    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+    InterventionlevelOne level1 = widget.levelone;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
@@ -27,7 +36,7 @@ class _Level1of3State extends State<Level1of3> {
         title: Text(Level1of3.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context),
+      bottomNavigationBar: buttomBarWidget(context, level1, futureprofile),
       body: Container(
         width: size.width,
         height: size.height,
@@ -51,7 +60,6 @@ class _Level1of3State extends State<Level1of3> {
                      ),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet8"]!),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet9"]!),
-
                    ],
                 ),
               ),
@@ -63,7 +71,7 @@ class _Level1of3State extends State<Level1of3> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context) {
+  SafeArea buttomBarWidget(BuildContext context, InterventionlevelOne levelone, Future<PatientProfilePodo>? futureProfile) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -79,7 +87,7 @@ class _Level1of3State extends State<Level1of3> {
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
                  Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of4())
+                    context, new MaterialPageRoute(builder: (context) => Level1of4(levelone, futureProfile))
                     );
               }),
             ],

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/models/icon_button.dart';
@@ -14,10 +18,13 @@ class MyChoice{
 
 
 class Level1of7 extends StatefulWidget {
-
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  
+  final InterventionlevelOne levelone;
+
+  final Future<PatientProfilePodo>? patientProfile;
+
+  Level1of7(this.levelone, this.patientProfile);
 
   @override
   _Level1of7State createState() => _Level1of7State();
@@ -30,12 +37,17 @@ class _Level1of7State extends State<Level1of7> {
   bool formFieldIsVisible = false;
   int? defaultIndexbase = -1;
   int? defaultIndexAlone = -1;
-  int? defaultIndexRoomate = -1; 
+  int? defaultIndexRoomate = -1;
+
+  String sleepalone = "";
   
   static final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
+    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+
+    InterventionlevelOne levelone = widget.levelone;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
@@ -77,7 +89,7 @@ class _Level1of7State extends State<Level1of7> {
                     Visibility(child: radioButtonAlone(themeData, context), visible: radioAloneIsVisible,),
                     Visibility(child: radioButtonRoomate(themeData), visible: radioRoomateIsVisible,),
                     SizedBox(height: pad,),
-                    Visibility(child: formFieldWidget(themeData), visible: formFieldIsVisible,),
+                    Visibility(child: formFieldWidget(themeData, _formKey, levelone, futureprofile), visible: formFieldIsVisible,),
 
                    ],
                 ),
@@ -90,7 +102,7 @@ class _Level1of7State extends State<Level1of7> {
 
   }
 
-  FormBuilder formFieldWidget(ThemeData themeData) {
+  FormBuilder formFieldWidget(ThemeData themeData, GlobalKey<FormBuilderState> key ,  InterventionlevelOne levelone, Future<PatientProfilePodo>? futureProfile) {
     return FormBuilder(
                     key: _formKey,
                     child: Column(
@@ -140,11 +152,28 @@ class _Level1of7State extends State<Level1of7> {
                           ),
                         ),
                         Center(
-                          child: IconUserButton(buttonText: "Submit", buttonEvent: () {}, buttonIcon: Icons.send,),
+                          child: IconUserButton(buttonText: "Submit", buttonEvent: () {
+                            InterventionlevelOne level1 = getLevelone(key, levelone);
+                            ApiAccess().submitLevelone(levelone: level1);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                          }, buttonIcon: Icons.send,),
                         ),
                       ],
                     ),
                   );
+  }
+
+  InterventionlevelOne getLevelone(GlobalKey<FormBuilderState> key, InterventionlevelOne levelone){
+    String suportname = key.currentState!.fields["supName"]!.value ?? "";
+    String relationship = key.currentState!.fields["dropdown"]!.value ?? "";
+    String supemail = key.currentState!.fields["supEmail"]!.value ?? "";
+    String stayalone = sleepalone;
+    levelone.setsupportPersonname(suportname);
+    levelone.setsupportPersonrelationshipt(relationship);
+    levelone.setsupportPersonemail(supemail);
+    levelone.setsleepalone(stayalone);
+    return levelone;
   }
 
   SafeArea buttomBarWidget(BuildContext context) {
@@ -258,6 +287,7 @@ class _Level1of7State extends State<Level1of7> {
                             radioAloneIsVisible = true;
                             radioRoomateIsVisible = false;
                             formFieldIsVisible = false;
+                            sleepalone = "I sleep alone";
                           });
                         }
                         else if(value == 1){
@@ -265,9 +295,13 @@ class _Level1of7State extends State<Level1of7> {
                             radioRoomateIsVisible = true;
                             radioAloneIsVisible = false;
                             formFieldIsVisible = false;
+                            sleepalone = "I share my bedroom with another person, but I sleep in my own bed.";
+                          });
+                        }else if(value == 2) {
+                          setState(() {
+                            sleepalone = "I share a bed with another person.";
                           });
                         }
-
                         print('You clicked me: $value');  
                   },
                 )).toList(),

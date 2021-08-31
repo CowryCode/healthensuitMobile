@@ -54,4 +54,17 @@ class Sleepwindows {
     data['date_Created'] = this.dateCreated;
     return data;
   }
+
+  void setbedtime(String value){
+    this.bedtime = value;
+  }
+  void setrisetime(String value){
+    this.risetime = value;
+  }
+  void setrevisedbedtime(String value){
+    this.revisedbedtime = value;
+  }
+  void setrevisedrisetime(String value){
+    this.revisedrisetime = value;
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/mysleepreport.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +18,8 @@ class SleepReport extends StatefulWidget {
   final Future<PatientProfilePodo>? patientProfile;
 
   Future<SleepReportDTO>? sleepreport;
+
+  bool showreport = false;
 
 //  const SleepReport({Key? key, this.onMenuTap, required this.patientProfile,  this.sleepreport}) : super(key: key);
   SleepReport({Key? key, this.onMenuTap, required this.patientProfile,  this.sleepreport}) : super(key: key);
@@ -35,6 +38,8 @@ class _SleepReportState extends State<SleepReport> {
 
     String? dateRange;
 
+  get reportStatus => widget.showreport;
+
     @override
     void initState() {
       super.initState();
@@ -49,6 +54,8 @@ class _SleepReportState extends State<SleepReport> {
     final _formKey = GlobalKey<FormBuilderState>();
     double pad = 18;
     double innerPad = 10;
+
+    bool reportStatus  = widget.showreport;
 
     return Scaffold(
       drawer: NavigationDrawerWidget(indexNum: 3,patientprofile: profile),
@@ -88,45 +95,68 @@ class _SleepReportState extends State<SleepReport> {
                 }, buttonIcon: Icons.book_online_rounded,)
             ),
             SizedBox(height: pad,),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: ClampingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: SleepReport.sidePad,
-                    child: Text("Report Detail:", style: themeData.textTheme.headline4,),
-                  ),
-                  sleepReportDataTable(themeData, sleepReport),
-                  SizedBox(height: pad,),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
-                      IconUserButton(buttonText: "Share Report", buttonEvent: () {}, buttonIcon: Icons.share)
-                    ],
-                  ),
-                  SizedBox(height: pad,),
-
-                ],
-              ),
-            ),
+            ((){
+              print("Show report is : ${widget.showreport} and status is ${reportStatus}");
+              if(reportStatus){
+                print("Show report is : ${widget.showreport} and status is ${reportStatus}");
+                return getReporttable(themeData, sleepReport, pad);
+              }else{
+                return  SizedBox(height: 0.0,);
+              }
+            }()),
           ],
         ),
       );
+  }
+
+  Widget getReporttable(ThemeData themeData, SleepReportDTO sleepReport, double pad){
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      physics: ClampingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: SleepReport.sidePad,
+            child: Text("Report Detail:", style: themeData.textTheme.headline4,),
+          ),
+          sleepReportDataTable(themeData, sleepReport),
+          SizedBox(height: pad,),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
+              IconUserButton(buttonText: "Share Report", buttonEvent: () {
+                shareSleepReport(sleepReportDTO: sleepReport);
+              }, buttonIcon: Icons.share)
+            ],
+          ),
+          SizedBox(height: pad,),
+
+        ],
+      ),
+    );
+  }
+
+  void shareSleepReport({required SleepReportDTO sleepReportDTO}){
+    ApiAccess().sharesleepReport(sleeport: sleepReportDTO);
   }
 
   //Builder Widget Below
 
   Padding sleepReportDataTable(ThemeData themeData, SleepReportDTO sleepreportDTO) {
       String avgBedtime = sleepreportDTO.averageBedtime?? "00:00";
-      double latency = sleepreportDTO.sleeplatency?? 0.0;
-      double WASO = sleepreportDTO.waso?? 0.0;
-      double tib = sleepreportDTO.tib?? 0.0;
-      double tst = sleepreportDTO.tst?? 0.0;
-      double sleepefficiency = sleepreportDTO.se?? 0.0;
+      double rawlatency =  sleepreportDTO.sleeplatency?? 0.0;
+      double latency =  Workflow().changeDecimalplaces(value: rawlatency, decimalplaces: 2);
+      double rawWASO = sleepreportDTO.waso?? 0.0;
+      double WASO = Workflow().changeDecimalplaces(value: rawWASO, decimalplaces: 2);
+      double rawtib = sleepreportDTO.tib?? 0.0;
+      double tib = Workflow().changeDecimalplaces(value: rawtib, decimalplaces: 2);
+      double rawtst = sleepreportDTO.tst?? 0.0;
+      double tst = Workflow().changeDecimalplaces(value: rawtst, decimalplaces: 2);
+      double rawsleepefficiency = sleepreportDTO.se?? 0.0;
+      double sleepefficiency = Workflow().changeDecimalplaces(value: rawsleepefficiency, decimalplaces: 2);
 
     return Padding(
             padding: SleepReport.sidePad,
@@ -223,6 +253,7 @@ class _SleepReportState extends State<SleepReport> {
        print("End date is : ${end}");
        setState(() {
          widget.sleepreport = ApiAccess().getMysleepReport(start, end);
+         widget.showreport = true;
          // setState in Dropdown
        });
       }
