@@ -155,31 +155,40 @@ class PatientProfilePodo {
     // }
     return data;
   }
+
+  StatusEntity? getStatusEntity(){
+    return this.statusEntity;
+  }
+
+  int? getTrialtype(){
+    return this.trialType;
+  }
+
 }
 
 
 
-class BedTime {
-  int? hour;
-  int? minute;
-  int? second;
-  int? nano;
-
-  BedTime({this.hour, this.minute, this.second, this.nano});
-
-  BedTime.fromJson(Map<String, dynamic> json) {
-    hour = json['hour'];
-    minute = json['minute'];
-    second = json['second'];
-    nano = json['nano'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['hour'] = this.hour;
-    data['minute'] = this.minute;
-    data['second'] = this.second;
-    data['nano'] = this.nano;
-    return data;
-  }
-}
+// class BedTime1 {
+//   int? hour
+//   int? minute;
+//   int? second;
+//   int? nano;
+//
+//   BedTime({this.hour, this.minute, this.second, this.nano});
+//
+//   BedTime.fromJson(Map<String, dynamic> json) {
+//     hour = json['hour'];
+//     minute = json['minute'];
+//     second = json['second'];
+//     nano = json['nano'];
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['hour'] = this.hour;
+//     data['minute'] = this.minute;
+//     data['second'] = this.second;
+//     data['nano'] = this.nano;
+//     return data;
+//   }
+// }

@@ -56,6 +56,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   }
 
   Material drawerContent(PatientProfilePodo profile, Future<PatientProfilePodo>?  futureProfile ){
+     bool enableSleepClock = profile.statusEntity!.enableSleepclock()?? false;
     return Material(
       color:  appBackgroundColor,
       //color: Color.fromRGBO(50, 75, 205, 1),
@@ -86,9 +87,18 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     index: 1,
                     onClicked: () => selectedItem(context, 1,futureProfile)
                 ),
-                MenuItem(
-                    index: 2,
-                    onClicked: () => selectedItem(context, 2,futureProfile)
+                // MenuItem(
+                //     index: 2,
+                //     onClicked: () => selectedItem(context, 2,futureProfile)
+                // ),
+                Center(
+                  child: ((){
+                    if(enableSleepClock){
+                     return  optionalItem(futureProfile);
+                    }else{
+                      SizedBox(height: 10.0,);
+                  }
+                  }())
                 ),
                 MenuItem(
                     index: 3,
@@ -134,6 +144,13 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget optionalItem(Future<PatientProfilePodo>? futureProfile ){
+    return MenuItem(
+        index: 2,
+        onClicked: () => selectedItem(context, 2,futureProfile)
     );
   }
 

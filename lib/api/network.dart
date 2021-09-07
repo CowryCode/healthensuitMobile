@@ -144,7 +144,7 @@ class ApiAccess {
 
   Future<SleepClockDTO> getMysleepClock() async {
       var date = DateTime.now();
-      var sDate = Workflow().getPastdate(date: date, numberOfdaysBack: 21);
+      var sDate = Workflow().getPastdate(date: date, numberOfdaysBack: 7);
       var eDate = Workflow().getPastdate(date: date, numberOfdaysBack: 0);
       String startDate = Workflow().convertDatetime2date(sDate.toString());
       String endDate = Workflow().convertDatetime2date(eDate.toString());
@@ -172,8 +172,7 @@ class ApiAccess {
           print("TIME IN BED : ${sleepClock.averagetimeinbed}");
           return sleepClock;
         } else {
-          throw Exception("Couldn't pull my sleep Clock , status code ${response
-              .statusCode} ");
+          throw Exception("Couldn't pull my sleep Clock , status code ${response.statusCode} ");
         }
       } catch (e) {
         print("The error is  ${e.toString()}");

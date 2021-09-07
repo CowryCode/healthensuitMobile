@@ -99,4 +99,12 @@ class StatusEntity {
     data['date_Created'] = this.dateCreated;
     return data;
   }
+
+  int? getInterventionLevel(){
+    return this.interventionLevel;
+  }
+
+  bool? enableSleepclock(){
+    return this.enableSleepClockbutton;
+  }
 }

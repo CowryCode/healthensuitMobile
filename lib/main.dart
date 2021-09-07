@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
 
     return new MaterialApp(
       theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
-    //  home: LoginScreen(),
-      home: AppNotification(),
+      home: LoginScreen(),
+     // home: AppNotification(),
     );
   }
 }
