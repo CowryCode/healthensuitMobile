@@ -50,15 +50,74 @@ class _ProgramContentState extends State<ProgramContent> {
           children: [
             SizedBox(height: pad,),
             sectionOneCard(pad, themeData, size),
+            //  sectionTwoCard(themeData, pad, context, profile),
+            Center(
+             // child: sectionTwoCard(themeData, pad, context, profile, 1)
+               child: FutureBuilder<PatientProfilePodo>(
+                  future: profile,
+                  builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
+                    if(snapshot.hasData){
+                      PatientProfilePodo profileData = snapshot.data!;
+                      int interventionLevel = profileData.statusEntity!.getInterventionLevel() ?? - 1;
+                      setProgressBar(interventionLevel);
+                      return  getInterventionLevel(themeData, pad, context, profile, interventionLevel);
 
-            sectionTwoCard(themeData, pad, context, profile),
+                    }else{
+                      return Container(
+                        child: Center(child: CircularProgressIndicator(),),
+                      );
+                    }
+                  },
+                )
+            ),
           ],
         ),
       ),
     );
   }
 
-   Card sectionTwoCard(ThemeData themeData, double pad, BuildContext context, Future<PatientProfilePodo>? patientProfile) {
+  void setProgressBar(int interventionLevel){
+    switch(interventionLevel){
+      case 1: {
+        progress = .15;
+        levelVal = 1;
+      }
+      break;
+      case 2: {
+          this.progress = .35;
+          this.levelVal = 2;
+      }
+      break;
+      case 3: {
+        progress = .50;
+        levelVal = 3;
+      }
+      break;
+      case 4: {
+        progress = .65;
+        levelVal = 4;
+      }
+      break;
+      case 5: {
+        progress = .85;
+        levelVal = 5;
+      }
+      break;
+      case 6: {
+        progress = .80;
+        levelVal = 6;
+      }
+      break;
+
+    }
+  }
+
+  Widget getInterventionLevel(ThemeData themeData, double pad, BuildContext context, Future<PatientProfilePodo>? patientProfile, int interventionLevel){
+    return  sectionTwoCard(themeData, pad, context, patientProfile, interventionLevel);
+  }
+
+
+   Card sectionTwoCard(ThemeData themeData, double pad, BuildContext context, Future<PatientProfilePodo>? patientProfile, int interventionLevel) {
      return Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,47 +136,155 @@ class _ProgramContentState extends State<ProgramContent> {
                     style: themeData.textTheme.headline5,
                   ),
                 ),
-                levelButtonWidget(topic: "Level 1: Introduction to Health enSuite Insomnia", 
-                action: (){
-                  Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level1(patientProfile))
-                  );
-                }),
-                levelButtonWidget(topic: "Level 2: Introduction to Sleep Restriction", 
-                action: (){
-                  Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level2(patientProfile))
-                  );
-                }),
-                levelButtonWidget(topic: "Level 3: Sleep Hygiene", 
-                action: (){
-                  Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level3(patientProfile))
-                  );
-                }),
-                levelButtonWidget(topic: "Level 4: Relaxation techniques", 
-                action: (){
-                  Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level4(patientProfile))
-                  );
-                }),
-                levelButtonWidget(topic: "Level 5: Changing Thoughts", 
-                action: (){
-                  Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level5(patientProfile))
-                  );
-                }),
-                levelButtonWidget(topic: "Level 6: Maintaining Your Progress", 
-                action: (){
-                  Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level6(patientProfile))
-                  );
-                }),
-                
+                // levelButtonWidget(topic: "Level 1: Introduction to Health enSuite Insomnia",
+                // action: (){
+                //   Navigator.push(
+                //   context, new MaterialPageRoute(builder: (context) => Level1(patientProfile))
+                //   );
+                // }),
+                Container(
+                  child:((){
+                    if(interventionLevel >= 0 ){
+                      return getLevelOne(patientProfile);
+                    }else{
+                      SizedBox(height: 2.0,);
+                    }
+                  }()) ,
+                ),
+                // levelButtonWidget(topic: "Level 2: Introduction to Sleep Restriction",
+                // action: (){
+                //   Navigator.push(
+                //   context, new MaterialPageRoute(builder: (context) => Level2(patientProfile))
+                //   );
+                // }),
+                Container(
+                  child:((){
+                    if(interventionLevel >= 1){
+                      return getLeveltwo(patientProfile);
+                    }else{
+                      SizedBox(height: 2.0,);
+                    }
+                  }()) ,
+                ),
+                // levelButtonWidget(topic: "Level 3: Sleep Hygiene",
+                // action: (){
+                //   Navigator.push(
+                //   context, new MaterialPageRoute(builder: (context) => Level3(patientProfile))
+                //   );
+                // }),
+                Container(
+                  child:((){
+                    if(interventionLevel >= 2){
+                      return getLevelthree(patientProfile);
+                    }else{
+                      SizedBox(height: 2.0,);
+                    }
+                  }()) ,
+                ),
+                // levelButtonWidget(topic: "Level 4: Relaxation techniques",
+                // action: (){
+                //   Navigator.push(
+                //   context, new MaterialPageRoute(builder: (context) => Level4(patientProfile))
+                //   );
+                // }),
+                Container(
+                  child:((){
+                    if(interventionLevel >= 3){
+                      return getLevelfour(patientProfile);
+                    }else{
+                      SizedBox(height: 2.0,);
+                    }
+                  }()) ,
+                ),
+                // levelButtonWidget(topic: "Level 5: Changing Thoughts",
+                // action: (){
+                //   Navigator.push(
+                //   context, new MaterialPageRoute(builder: (context) => Level5(patientProfile))
+                //   );
+                // }),
+                Container(
+                  child:((){
+                    if(interventionLevel >= 4){
+                      return getLevelfive(patientProfile);
+                    }else{
+                      SizedBox(height: 2.0,);
+                    }
+                  }()) ,
+                ),
+                // levelButtonWidget(topic: "Level 6: Maintaining Your Progress",
+                // action: (){
+                //   Navigator.push(
+                //   context, new MaterialPageRoute(builder: (context) => Level6(patientProfile))
+                //   );
+                // }),
+                Container(
+                  child:((){
+                    if(interventionLevel >= 5){
+                      return getLevelsix(patientProfile);
+                    }else{
+                      SizedBox(height: 2.0,);
+                    }
+                  }()) ,
+                ),
+
               ],
             ),
           );
    }
+
+  Widget getLevelOne(Future<PatientProfilePodo>? patientProfile ){
+   return  levelButtonWidget(topic: "Level 1: Introduction to Health enSuite Insomnia",
+        action: (){
+          Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => Level1(patientProfile))
+          );
+        });
+  }
+
+  Widget getLeveltwo(Future<PatientProfilePodo>? patientProfile ){
+    return  levelButtonWidget(topic: "Level 2: Introduction to Sleep Restriction",
+        action: (){
+          Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => Level2(patientProfile))
+          );
+        });
+  }
+
+  Widget getLevelthree(Future<PatientProfilePodo>? patientProfile ){
+    return   levelButtonWidget(topic: "Level 3: Sleep Hygiene",
+        action: (){
+          Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => Level3(patientProfile))
+          );
+        });
+  }
+
+  Widget getLevelfour(Future<PatientProfilePodo>? patientProfile ){
+    return  levelButtonWidget(topic: "Level 4: Relaxation techniques",
+        action: (){
+          Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => Level4(patientProfile))
+          );
+        });
+  }
+
+  Widget getLevelfive(Future<PatientProfilePodo>? patientProfile ){
+    return levelButtonWidget(topic: "Level 5: Changing Thoughts",
+        action: (){
+          Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => Level5(patientProfile))
+          );
+        });
+  }
+
+  Widget getLevelsix(Future<PatientProfilePodo>? patientProfile ){
+    return levelButtonWidget(topic: "Level 6: Maintaining Your Progress",
+        action: (){
+          Navigator.push(
+              context, new MaterialPageRoute(builder: (context) => Level6(patientProfile))
+          );
+        });
+  }
 
    MaterialButton levelButtonWidget({required String topic, Function? action}) {
      return MaterialButton(

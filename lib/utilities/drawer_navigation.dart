@@ -94,7 +94,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 Center(
                   child: ((){
                     if(enableSleepClock){
-                     return  optionalItem(futureProfile);
+                     return  getSleepClock(futureProfile);
                     }else{
                       SizedBox(height: 10.0,);
                   }
@@ -147,7 +147,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     );
   }
 
-  Widget optionalItem(Future<PatientProfilePodo>? futureProfile ){
+  Widget getSleepClock(Future<PatientProfilePodo>? futureProfile ){
     return MenuItem(
         index: 2,
         onClicked: () => selectedItem(context, 2,futureProfile)
