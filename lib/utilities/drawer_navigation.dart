@@ -233,7 +233,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SleepClock(patientProfile: profile,),
+          builder: (context) => SleepClock(patientProfile: profile, timedout: true,),
         ));
         break;
       case 3:
@@ -308,4 +308,7 @@ class MenuItem extends StatelessWidget {
       ),
     );
   }
+
+  // ALERT SESSION
+
 }

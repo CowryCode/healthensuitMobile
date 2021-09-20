@@ -72,10 +72,8 @@ class _Level2of4State extends State<Level2of4> {
                      SizedBox(height: pad,),
 
                              sleepReportButtonWidget(topic: "Sleep efficiency report for the last week", action: (){gotoSleepReport(context, profile);}),
-                             SizedBox(height: pad,),
-                             bodyTextWidget(themeData, text: "${l2variable.message}"),
-
-
+                             bodyTextWidget(themeData,
+                                 text: "${l2variable.message ?? " No Sleep Report for Last Week, this may be because you didn't fill all required sleep diary"}"),
                     // bodyTextWidget(themeData, text: LEVEL1_DATA["bullet43"]!),
                     // bodyTextWidget(themeData, text: LEVEL1_DATA["bullet44"]!),
                     // bodyTextWidget(themeData, text: LEVEL1_DATA["bullet45"]!),

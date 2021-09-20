@@ -1,9 +1,14 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
+import 'package:healthensuite/screens/login/login_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/models/option_button.dart';
@@ -11,11 +16,11 @@ import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
 
 class HomeScreen extends StatefulWidget {
   Future<PatientProfilePodo>? futureProfile;
-  HomeScreen({required this.futureProfile});
+  bool timedout;
+  HomeScreen({required this.futureProfile, this.timedout: false });
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
-
 
 class _HomeScreenState extends State<HomeScreen> {
 
@@ -29,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     patientprofile = widget.futureProfile;
     if(patientprofile == null ){
-      patientprofile = ApiAccess().getPatientProfile();
+      patientprofile = ApiAccess().getPatientProfile(null);
     }
   }
 
@@ -55,6 +60,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 PatientProfilePodo profile = snapshot.data!;
                 return homescreenContent(profile);
               }else{
+                if(widget.timedout){
+                  Timer.periodic(Duration(seconds: timeout_duration), (timer){
+                    print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
+                    if(timer.tick >= 1){
+                      setState(() {
+                        widget.timedout = false;
+                      });
+                      timer.cancel();
+                    }else {
+                      print("Timer ran . . . . . . ${timer.tick}");
+                      showAlertDialog(
+                          context: context, title: "oops !",
+                          message: "Kindly Check your network connection",
+                          patientprofile: patientprofile
+                      );
+                    }
+                  });
+                 }
                 return Container(
                   child: Center(child: CircularProgressIndicator(),),
                 );
@@ -207,6 +230,39 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+
+  bool countDownComplete = false;
+
+
+  showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      // title: Text("My title"),
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 
 }
 

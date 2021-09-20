@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/screens/login/login_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 
@@ -9,6 +10,8 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  TextEditingController pwordcontroller = TextEditingController();
+  TextEditingController confirmpwordcontroller = TextEditingController();
 
   Widget _buildEmailTF() {
     return Column(
@@ -39,6 +42,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               hintText: 'Enter your new Password',
               hintStyle: kHintTextStyle,
             ),
+            controller: pwordcontroller,
           ),
         ),
       ],
@@ -74,6 +78,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               hintText: 'Re-enter your new Password',
               hintStyle: kHintTextStyle,
             ),
+            controller: confirmpwordcontroller,
           ),
         ),
       ],
@@ -110,9 +115,20 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           borderRadius: BorderRadius.circular(30.0),
           ),
         ),
-        onPressed: () {Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => LoginScreen())
-          );},
+        onPressed: () {
+          String pwd = pwordcontroller.value.text.toString().trim();
+          String confirmpwd = pwordcontroller.value.text.toString().trim();
+          if(pwd == confirmpwd){
+            Future<bool> changepword =  ApiAccess().changePassword(newPassword: pwd);
+            changepword.then((value) => {
+              if(value){
+                Navigator.push(context, new MaterialPageRoute(builder: (context) => LoginScreen()))
+               }else{
+                print(" the Password was not changed")
+              }
+            });
+           }
+          },
         child: Text(
           'SUBMIT',
           style: TextStyle(

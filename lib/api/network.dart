@@ -17,6 +17,7 @@ import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/psychoeducationPODO.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/sleepwindowsPODO.dart';
+import 'package:healthensuite/api/networkmodels/textexchangePODO.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,8 @@ import 'networkmodels/mysleepreport.dart';
 
 class ApiAccess {
 
-  Future<LoginPodo> login({String? username, String? password}) async {
+ // Future<LoginPodo> login({String? username, String? password}) async {
+  Future<PatientProfilePodo>? login({String? username, String? password}) async {
       final response = await http.post(
         Uri.parse(loginURL),
         headers: <String, String>{
@@ -39,26 +41,107 @@ class ApiAccess {
         LoginPodo cc = LoginPodo.fromJson(jsonDecode(response.body));
         print("Person ID : ${cc.personID}");
         print("Token : ${cc.token} ");
-        String? token = cc.token ?? "";
+        String? token = cc.token??"";
         print("Token 2 :  $token");
         Localstorage().saveString(key_login_token, token);
-        return cc;
+
+        PatientProfilePodo profile = await getPatientProfile(cc.token)?? PatientProfilePodo();
+        if(profile.firstName != null){
+          return profile;
+        }else{
+          throw Exception("Could not pull Profile");
+        }
       } else {
         throw Exception("Couldn't login, possible wrong passoword");
       }
   }
 
-  String? getLoginToken() {
-    String? token;
-    Future<String?> tk = Localstorage().getString(key_login_token);
-    tk.then((value) => {token = value!});
-    return token;
+
+  Future<bool> confirmUser({String? username}) async {
+    final response = await http.post(
+      Uri.parse(confirmUsername_URL),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+          <String, String?>{"code": username}),
+    );
+
+    if (response.statusCode == 302) {
+      TextexchangePODO textexchange = TextexchangePODO.fromJson(jsonDecode(response.body));
+      print(" The payload Code ${textexchange.code}");
+      print(" The payload Code1 ${textexchange.code1}");
+      Localstorage().saveString(key_login_token, textexchange.code??"");
+      Localstorage().saveString(key_temp_int, textexchange.code1??"nothing");
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  Future<PatientProfilePodo>? getPatientProfile() async {
+  Future<bool> changePasswordverifyCode({String? code}) async {
+    String token = await Localstorage().getString(key_login_token)??"";
+    String tempCode = await Localstorage().getString(key_temp_int)??"";
+    print(" Local Payload token ${token}");
+    print(" Local Payload tempcode ${tempCode}");
+    print(" Inputed Code ${code}");
+    if(tempCode != code) {
+       return false;
+      }else{
+      final response = await http.post(
+        Uri.parse(loginwithCode_URL),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(
+            <String, String?>{"code": token}),
+      );
+
+      if (response.statusCode == 200) {
+        TextexchangePODO textexchange = TextexchangePODO.fromJson(
+            jsonDecode(response.body));
+        print("The response is :  ${textexchange.code}");
+        Localstorage().saveString(key_login_token, token);
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  Future<bool> changePassword({String? newPassword}) async {
+    String token = await Localstorage().getString(key_login_token)??"";
+    final response = await http.post(
+      Uri.parse(changepassword_URL),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(
+          <String, String?>{"code": newPassword}),
+    );
+
+    if (response.statusCode == 200) {
+      print("Password changed successfully :  ${jsonDecode(response.body)}");
+      // String token = jsonDecode(response.body);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  Future<PatientProfilePodo>? getPatientProfile(String? code) async {
       String? token;
-      Future<String?> tk = Localstorage().getString(key_login_token);
-      await tk.then((value) => {token = value!});
+      if(code == null){
+        Future<String?> tk = Localstorage().getString(key_login_token);
+        await tk.then((value) => {token = value!});
+      }else{
+        token = code;
+      }
       final response = await http.get(
           Uri.parse(patientprofile_url), headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -602,3 +685,4 @@ class ApiAccess {
   }
 
 }
+

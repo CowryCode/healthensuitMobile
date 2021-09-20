@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/screens/login/forgot_password.dart';
 import 'package:healthensuite/screens/login/login_screen.dart';
 import 'package:healthensuite/screens/login/reset_password.dart';
 import 'package:healthensuite/utilities/constants.dart';
 
-class AuthScreen extends StatefulWidget {
+class AuthScreenEmail extends StatefulWidget {
   @override
-  _AuthScreenState createState() => _AuthScreenState();
+  _AuthScreenEmailState createState() => _AuthScreenEmailState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenEmailState extends State<AuthScreenEmail> {
 
-  TextEditingController codeController = TextEditingController();
+  TextEditingController usernamecontroller = TextEditingController();
 
 
   Widget _buildEmailTF() {
@@ -20,7 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Secret Code',
+          'Email Address',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -41,10 +42,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 Icons.security_rounded,
                 color: Colors.white,
               ),
-              hintText: 'Enter the secret code here',
+              hintText: 'Enter your email address here',
               hintStyle: kHintTextStyle,
             ),
-            controller: codeController,
+            controller: usernamecontroller,
           ),
         ),
       ],
@@ -56,8 +57,8 @@ class _AuthScreenState extends State<AuthScreen> {
       alignment: Alignment.centerRight,
       child: FlatButton(
         onPressed: ()  {Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => LoginScreen())
-          );},
+            context, new MaterialPageRoute(builder: (context) => LoginScreen())
+        );},
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Sign in instead',
@@ -73,29 +74,23 @@ class _AuthScreenState extends State<AuthScreen> {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-        primary: Colors.white, // background
-        //onPrimary: Colors.red, // foreground
-        elevation: 5.0,
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
+          primary: Colors.white, // background
+          //onPrimary: Colors.red, // foreground
+          elevation: 5.0,
+          padding: EdgeInsets.all(15.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
           ),
         ),
         onPressed: () {
-          if(codeController.value.text.isNotEmpty){
-            String password = codeController.value.text.trim();
-            Future<bool> checkCode =  ApiAccess().changePasswordverifyCode(code: password);
-            checkCode.then((value) => {
-              if(value){
-                Navigator.push(context, new MaterialPageRoute(builder: (context) => ResetPasswordScreen()))
-              }else{
-                print("This is code you put here no work ni ooooo")
-              }
-            });
-          }else{
-            print("Do nothing . . . ");
-          }
-         },
+          if(usernamecontroller.value.text.isNotEmpty){
+            String un = usernamecontroller.value.text.trim();
+            ApiAccess().confirmUser(username: un);
+            Navigator.push(context, new MaterialPageRoute(builder: (context) => AuthScreen()));
+            }else{
+            print("Do nothing");
+             }
+          },
         child: Text(
           'SUBMIT',
           style: TextStyle(
@@ -159,7 +154,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       SizedBox(height: 30.0),
                       Text(
-                        'To reset your password, please enter the secret code that was sent to your registered email address. You may need to check your spam folder.',
+                        'To reset your password, enter your email address, you will receive an email if the email address is the one used for signup. You may need to check your spam folder.',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Montserrat',

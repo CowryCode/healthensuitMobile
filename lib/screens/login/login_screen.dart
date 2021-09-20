@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/services/push_notification_service.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
+import 'package:healthensuite/screens/login/forgot_password_email.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:healthensuite/utilities/constants.dart';
@@ -131,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
       alignment: Alignment.centerRight,
       child: FlatButton(
         onPressed: ()  {Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => AuthScreen())
+            context, new MaterialPageRoute(builder: (context) => AuthScreenEmail())
         );},
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
@@ -185,19 +187,19 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         //onPressed: () => print('Login Button Pressed'),
         onPressed: ()  {
-
           String un = usernamecontroller.value.text.trim();
           String pass = passwordcontroller.value.text.trim();
-          _logindetailFuture =  ApiAccess().login(username: un, password: pass);
-
-          _logindetailFuture!.then((value) => {
-            // loginDetail = value
-            if(value == null){
-              showAlertDialog(context)
-          }else{
-              Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
-            }
-          } );
+         // _logindetailFuture =  ApiAccess().login(username: un, password: pass);
+          Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: profile, timedout: true )));
+          // _logindetailFuture!.then((value) => {
+          //   // loginDetail = value
+          //   if(value == null){
+          //     showAlertDialog(context)
+          // }else{
+          //     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
+          //   }
+          // } );
 
 
         },

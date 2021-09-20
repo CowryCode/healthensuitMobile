@@ -86,8 +86,8 @@ class _Level1of7State extends State<Level1of7> {
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["radioQ1"]!, textStyle: themeData.textTheme.headline5),
                      radioButtonBase(themeData),
 
-                    Visibility(child: radioButtonAlone(themeData, context), visible: radioAloneIsVisible,),
-                    Visibility(child: radioButtonRoomate(themeData), visible: radioRoomateIsVisible,),
+                    Visibility(child: radioButtonAlone(themeData, context, _formKey, levelone, futureprofile), visible: radioAloneIsVisible,),
+                    Visibility(child: radioButtonRoomate(themeData,  _formKey, levelone, futureprofile), visible: radioRoomateIsVisible,),
                     SizedBox(height: pad,),
                     Visibility(child: formFieldWidget(themeData, _formKey, levelone, futureprofile), visible: formFieldIsVisible,),
 
@@ -153,11 +153,19 @@ class _Level1of7State extends State<Level1of7> {
                         ),
                         Center(
                           child: IconUserButton(buttonText: "Submit", buttonEvent: () {
+                            createAlertDialog(
+                                context: context,
+                                title: "Save",
+                                message: "Do you want to save the changes ?",
+                                key: key,
+                                levelone: levelone,
+                                futureProfile: futureProfile);
                             InterventionlevelOne level1 = getLevelone(key, levelone);
                             ApiAccess().submitLevelone(levelone: level1);
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => HomeScreen(futureProfile: futureProfile)));
-                          }, buttonIcon: Icons.send,),
+                          },
+                            buttonIcon: Icons.send,),
                         ),
                       ],
                     ),
@@ -165,9 +173,9 @@ class _Level1of7State extends State<Level1of7> {
   }
 
   InterventionlevelOne getLevelone(GlobalKey<FormBuilderState> key, InterventionlevelOne levelone){
-    String suportname = key.currentState!.fields["supName"]!.value ?? "";
-    String relationship = key.currentState!.fields["dropdown"]!.value ?? "";
-    String supemail = key.currentState!.fields["supEmail"]!.value ?? "";
+    String suportname = key.currentState!.fields["supName"]!.value ;
+    String relationship = key.currentState!.fields["dropdown"]!.value;
+    String supemail = key.currentState!.fields["supEmail"]!.value;
     String stayalone = sleepalone;
     levelone.setsupportPersonname(suportname);
     levelone.setsupportPersonrelationshipt(relationship);
@@ -313,7 +321,7 @@ class _Level1of7State extends State<Level1of7> {
     );
   }
 
-  Column radioButtonAlone(ThemeData themeData, BuildContext context){
+  Column radioButtonAlone(ThemeData themeData, BuildContext context,  GlobalKey<FormBuilderState> key ,  InterventionlevelOne levelone,Future<PatientProfilePodo>? futureProfile){
     List<MyChoice> choices = [
       MyChoice(index: 0, choice: "Yes"),
       MyChoice(index: 1, choice: "No"),
@@ -344,7 +352,13 @@ class _Level1of7State extends State<Level1of7> {
                       setState(() {
                         formFieldIsVisible = false;
                       });
-                      createAlertDialog(context);
+                      createAlertDialog(
+                          context: context,
+                          title: "Remember!",
+                          message: "Having someone to support you can make changing your thoughts and behaviours easier.",
+                          key: key,
+                          levelone: levelone,
+                          futureProfile: futureProfile);
                     }
                     print('You clicked me: $value');
                     
@@ -358,7 +372,7 @@ class _Level1of7State extends State<Level1of7> {
     );
   }
 
-  Column radioButtonRoomate(ThemeData themeData){
+  Column radioButtonRoomate(ThemeData themeData,  GlobalKey<FormBuilderState> key ,  InterventionlevelOne levelone,Future<PatientProfilePodo>? futureProfile){
     List<MyChoice> choices = [
       MyChoice(index: 0, choice: "I would like to nominate this person."),
       MyChoice(index: 1, choice: "I would like to nominate someone else."),
@@ -396,7 +410,13 @@ class _Level1of7State extends State<Level1of7> {
                       setState(() {
                         formFieldIsVisible = false;
                       });
-                      createAlertDialog(context);
+                      createAlertDialog(
+                          context: context,
+                          title: "Remember!",
+                          message: "Having someone to support you can make changing your thoughts and behaviours easier.",
+                          key: key,
+                          levelone: levelone,
+                          futureProfile: futureProfile);
                     }
                     print('You clicked me: $value');
                   },
@@ -410,15 +430,16 @@ class _Level1of7State extends State<Level1of7> {
   }
 
 
-  createAlertDialog(BuildContext context){
+  createAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key , required InterventionlevelOne levelone, required Future<PatientProfilePodo>? futureProfile}){
      final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,
       builder: (context){
         return AlertDialog(
-          title: Text("Remember!", style: themeData.textTheme.headline5,),
-          content: Text("Having someone to support you can make changing your thoughts and behaviours easier.", 
+          title: Text(title,
+            style: themeData.textTheme.headline5,),
+          content: Text(message,
           style: themeData.textTheme.bodyText2,),
           actions: [
             MaterialButton(
@@ -429,13 +450,16 @@ class _Level1of7State extends State<Level1of7> {
             ),
             MaterialButton(
               child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
-              onPressed: (){}
+              onPressed: (){
+                levelone.setsleepalone(sleepalone);
+                ApiAccess().submitLevelone(levelone: levelone);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HomeScreen(futureProfile: futureProfile)));
+              }
             ),
           ],
         );
       });
   }
-
-
 }
 

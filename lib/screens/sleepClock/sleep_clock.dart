@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/mysleepclock.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
+import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
@@ -14,8 +19,10 @@ class SleepClock extends StatefulWidget {
   static final String title = 'Sleep Clock';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
+  bool timedout;
 
-  const SleepClock({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+  SleepClock({Key? key, this.onMenuTap, required this.patientProfile, this.timedout: false}) : super(key: key);
+ // const SleepClock({Key? key, this.onMenuTap, required this.patientProfile, this.timedout: false}) : super(key: key);
 
   @override
   _SleepClockState createState() => _SleepClockState();
@@ -48,10 +55,35 @@ class _SleepClockState extends State<SleepClock> {
       body:  FutureBuilder<SleepClockDTO>(
         future: futureMysleepClock,
         builder: (BuildContext context, AsyncSnapshot<SleepClockDTO> snapshot){
+          // Timer(Duration(seconds: timeout_duration), (){
+          //   showAlertDialog(
+          //       context: context, title: "oops !",
+          //       message: "Could not load data, this could be due to network connectivity or you don't have records in the past 7 days",
+          //       patientprofile: profile
+          //        );
+          // });
           if(snapshot.hasData){
             SleepClockDTO sleepclock = snapshot.data!;
             return getContent(themeData: themeData, size: size, pad: pad, sleepclock: sleepclock);
           }else{
+            if(widget.timedout){
+              Timer.periodic(Duration(seconds: timeout_duration), (timer){
+                print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
+                if(timer.tick >= 2){
+                  setState(() {
+                    widget.timedout = false;
+                  });
+                  timer.cancel();
+                }else {
+                  print("Timer ran . . . . . . ${timer.tick}");
+                  showAlertDialog(
+                      context: context, title: "oops !",
+                      message: "Could not load data, this could be due to network connectivity or you don't have records in the past 7 days",
+                      patientprofile: profile
+                  );
+                }
+              });
+            }
             return Container(
               child: Center(child: CircularProgressIndicator(),),
             );
@@ -186,4 +218,34 @@ class _SleepClockState extends State<SleepClock> {
       ),
     );
   }
+
+  showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientprofile, timedout: false)));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      // title: Text("My title"),
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }

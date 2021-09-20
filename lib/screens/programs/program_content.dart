@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
@@ -17,9 +19,11 @@ class ProgramContent extends StatefulWidget{
    static final String title = 'Program Content';
    static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
+  int levelVal = 1;
 
 
-  const ProgramContent({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+ // const ProgramContent({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+  ProgramContent({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
 
   @override
   _ProgramContentState createState() => _ProgramContentState();
@@ -27,7 +31,6 @@ class ProgramContent extends StatefulWidget{
 
 class _ProgramContentState extends State<ProgramContent> {
   double progress = .15;
-  int levelVal = 1;
 
    @override
   Widget build(BuildContext context) {
@@ -49,7 +52,7 @@ class _ProgramContentState extends State<ProgramContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: pad,),
-            sectionOneCard(pad, themeData, size),
+            sectionOneCard(pad, themeData, size, widget.levelVal),
             //  sectionTwoCard(themeData, pad, context, profile),
             Center(
              // child: sectionTwoCard(themeData, pad, context, profile, 1)
@@ -61,7 +64,6 @@ class _ProgramContentState extends State<ProgramContent> {
                       int interventionLevel = profileData.statusEntity!.getInterventionLevel() ?? - 1;
                       setProgressBar(interventionLevel);
                       return  getInterventionLevel(themeData, pad, context, profile, interventionLevel);
-
                     }else{
                       return Container(
                         child: Center(child: CircularProgressIndicator(),),
@@ -77,39 +79,9 @@ class _ProgramContentState extends State<ProgramContent> {
   }
 
   void setProgressBar(int interventionLevel){
-    switch(interventionLevel){
-      case 1: {
-        progress = .15;
-        levelVal = 1;
-      }
-      break;
-      case 2: {
-          this.progress = .35;
-          this.levelVal = 2;
-      }
-      break;
-      case 3: {
-        progress = .50;
-        levelVal = 3;
-      }
-      break;
-      case 4: {
-        progress = .65;
-        levelVal = 4;
-      }
-      break;
-      case 5: {
-        progress = .85;
-        levelVal = 5;
-      }
-      break;
-      case 6: {
-        progress = .80;
-        levelVal = 6;
-      }
-      break;
-
-    }
+   setState(() {
+     widget.levelVal = interventionLevel;
+   });
   }
 
   Widget getInterventionLevel(ThemeData themeData, double pad, BuildContext context, Future<PatientProfilePodo>? patientProfile, int interventionLevel){
@@ -295,7 +267,7 @@ class _ProgramContentState extends State<ProgramContent> {
                 );
    }
 
-   Card sectionOneCard(double pad, ThemeData themeData, Size size) {
+   Card sectionOneCard(double pad, ThemeData themeData, Size size, int interventionlevel) {
      return Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,14 +287,14 @@ class _ProgramContentState extends State<ProgramContent> {
                           valueColor: AlwaysStoppedAnimation(appBackgroundColor),
                           backgroundColor: appItemColorLightGrey,
                         ),
-                        Center(child: buildProgress(themeData, size.height/30)),
+                        Center(child: buildProgress(themeData, size.height/30, interventionlevel)),
                       ],
                     ),
                   ),
                 ),
                 Padding(
                   padding: ProgramContent.sidePad,
-                  child: Text("Status: Level $levelVal of 6",
+                  child: Text("Status: Level ${widget.levelVal} of 6",
                     style: themeData.textTheme.headline6,
                   ),
                 ),
@@ -341,7 +313,8 @@ class _ProgramContentState extends State<ProgramContent> {
                 );
    }
 
-  Widget buildProgress(ThemeData themeData, double barSize) {
+  Widget buildProgress(ThemeData themeData, double barSize, int interventionlevel) {
+     progress = getProgval(interventionlevel);
     if (progress == 1) {
       print("Height: $barSize");
       return Icon(
@@ -361,6 +334,27 @@ class _ProgramContentState extends State<ProgramContent> {
     int perc = (progress * 100).toInt();
     String val = perc.toString() + '%';
     return val;
+  }
+
+  double getProgval(int x){
+     switch(x){
+       case 0:
+         return 0.05;
+       case 1:
+         return 0.20;
+       case 2:
+         return 0.35;
+       case 3:
+         return 0.55;
+       case 4:
+         return 0.70;
+       case 5:
+         return 0.85;
+       case 6:
+         return 1;
+       default:
+         return 0.0;
+     }
   }
 
 }

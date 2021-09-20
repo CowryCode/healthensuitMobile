@@ -38,16 +38,21 @@ class Localstorage  {
   // Get meta data
   Future<String?> getString(String key) async{
     final pref = await SharedPreferences.getInstance();
+     this.stringval  = pref.getString(key);
+
+    print("The localValue its 01 ${this.stringval}");
     return pref.getString(key)?? null;
   }
 
   String? getStringvalue(String key){
     Future<String?> future = getString(key);
-    future.then((value) => {
-      }).whenComplete(() => {
+    future.whenComplete(() => {
+      //ljfkvj vjdlfj
     });
+    print("The localValue its 02 ${this.stringval}");
     return this.stringval;
   }
+
   void setString(String val){
     this.stringval = val;
   }

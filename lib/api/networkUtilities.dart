@@ -1,6 +1,9 @@
  final baseURL = "http://10.0.2.2:8083";
 // final baseURL = "https://api.healthensuite.com";
 final loginURL = "${baseURL}/insomnia/v1/authentication/login";
+final confirmUsername_URL = "${baseURL}/insomnia/v1/authentication/confirmusernamemobile";
+final loginwithCode_URL = "${baseURL}/insomnia/v1/authentication/loginwithcode";
+final changepassword_URL = "${baseURL}/insomnia/v1/authentication/mobilechangepassword";
 final patientprofile_url = "${baseURL}/insomnia/v1/patient/accessid";
 final save_sleepdiary_url = "${baseURL}/insomnia/v1/patient/submit-sleepdiary";
 final my_sleepclock_url = "${baseURL}/insomnia/v1/dashboard/mysleepclock";
@@ -19,5 +22,9 @@ final sleepwindow_url = "${baseURL}/insomnia/v1/dashboard/saveleepwindow";
 final sharesleep_report_url = "${baseURL}/insomnia/v1/dashboard/sharereport";
 //Meta data keys
 final key_login_token = "logintoken";
+final key_temp_int = "tempint";
 final keyUsername = "Name";
 final keyUseremail = "Email";
+
+// GLOBAL VIARIABLES
+ final int timeout_duration = 10;
