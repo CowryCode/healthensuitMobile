@@ -106,4 +106,8 @@ class LevelthreeVariables {
       this.createUnwindrouting = false;
     }
   }
+
+  void setNote({ String? note}){
+    this.additionalNote = note;
+  }
 }

@@ -115,9 +115,14 @@ class _Level4of4State extends State<Level4of4> {
               }),
 
               navIconButton(context, buttonText: "Conclude Level 4", buttonActon: (){
-                ApiAccess().submitLevelfour(levelfour: true);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                submitAlertDialog(
+                    context: context,
+                    title: "Warning!",
+                    message: "Are you sure you want to save at this moment ?",
+                    futureProfile: futureProfile);
+                // ApiAccess().submitLevelfour(levelfour: true);
+                // Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
               }
               ),
             ],
@@ -161,5 +166,36 @@ class _Level4of4State extends State<Level4of4> {
                 );
    }
 
+  submitAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? futureProfile}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(title,
+              style: themeData.textTheme.headline5,),
+            content: Text(message,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("Go Back", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+              MaterialButton(
+                  child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    ApiAccess().submitLevelfour(levelfour: true);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => HomeScreen(futureProfile: futureProfile)));
+
+                  }
+              ),
+            ],
+          );
+        });
+  }
 
 }

@@ -19,11 +19,11 @@ class ProgramContent extends StatefulWidget{
    static final String title = 'Program Content';
    static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
-  int levelVal = 1;
+  int levelVal;
 
 
  // const ProgramContent({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
-  ProgramContent({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+  ProgramContent({Key? key, this.onMenuTap, required this.patientProfile, this.levelVal: 0}) : super(key: key);
 
   @override
   _ProgramContentState createState() => _ProgramContentState();
@@ -52,7 +52,7 @@ class _ProgramContentState extends State<ProgramContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: pad,),
-            sectionOneCard(pad, themeData, size, widget.levelVal),
+           // sectionOneCard(pad, themeData, size, widget.levelVal),
             //  sectionTwoCard(themeData, pad, context, profile),
             Center(
              // child: sectionTwoCard(themeData, pad, context, profile, 1)
@@ -62,8 +62,7 @@ class _ProgramContentState extends State<ProgramContent> {
                     if(snapshot.hasData){
                       PatientProfilePodo profileData = snapshot.data!;
                       int interventionLevel = profileData.statusEntity!.getInterventionLevel() ?? - 1;
-                      setProgressBar(interventionLevel);
-                      return  getInterventionLevel(themeData, pad, context, profile, interventionLevel);
+                      return  getInterventionLevel(themeData, size, pad, context, profile, interventionLevel);
                     }else{
                       return Container(
                         child: Center(child: CircularProgressIndicator(),),
@@ -78,14 +77,17 @@ class _ProgramContentState extends State<ProgramContent> {
     );
   }
 
-  void setProgressBar(int interventionLevel){
-   setState(() {
-     widget.levelVal = interventionLevel;
-   });
-  }
-
-  Widget getInterventionLevel(ThemeData themeData, double pad, BuildContext context, Future<PatientProfilePodo>? patientProfile, int interventionLevel){
-    return  sectionTwoCard(themeData, pad, context, patientProfile, interventionLevel);
+  Widget getInterventionLevel(ThemeData themeData, Size size, double pad, BuildContext context, Future<PatientProfilePodo>? patientProfile, int interventionLevel){
+   return   Container(
+       child: Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+            SizedBox(height: pad,),
+            sectionOneCard(pad, themeData, size, interventionLevel),
+         sectionTwoCard(themeData, pad, context, patientProfile, interventionLevel)
+         ]
+     ));
+  //  return  sectionTwoCard(themeData, pad, context, patientProfile, interventionLevel);
   }
 
 
@@ -108,12 +110,6 @@ class _ProgramContentState extends State<ProgramContent> {
                     style: themeData.textTheme.headline5,
                   ),
                 ),
-                // levelButtonWidget(topic: "Level 1: Introduction to Health enSuite Insomnia",
-                // action: (){
-                //   Navigator.push(
-                //   context, new MaterialPageRoute(builder: (context) => Level1(patientProfile))
-                //   );
-                // }),
                 Container(
                   child:((){
                     if(interventionLevel >= 0 ){
@@ -123,12 +119,7 @@ class _ProgramContentState extends State<ProgramContent> {
                     }
                   }()) ,
                 ),
-                // levelButtonWidget(topic: "Level 2: Introduction to Sleep Restriction",
-                // action: (){
-                //   Navigator.push(
-                //   context, new MaterialPageRoute(builder: (context) => Level2(patientProfile))
-                //   );
-                // }),
+
                 Container(
                   child:((){
                     if(interventionLevel >= 1){
@@ -138,12 +129,6 @@ class _ProgramContentState extends State<ProgramContent> {
                     }
                   }()) ,
                 ),
-                // levelButtonWidget(topic: "Level 3: Sleep Hygiene",
-                // action: (){
-                //   Navigator.push(
-                //   context, new MaterialPageRoute(builder: (context) => Level3(patientProfile))
-                //   );
-                // }),
                 Container(
                   child:((){
                     if(interventionLevel >= 2){
@@ -153,12 +138,6 @@ class _ProgramContentState extends State<ProgramContent> {
                     }
                   }()) ,
                 ),
-                // levelButtonWidget(topic: "Level 4: Relaxation techniques",
-                // action: (){
-                //   Navigator.push(
-                //   context, new MaterialPageRoute(builder: (context) => Level4(patientProfile))
-                //   );
-                // }),
                 Container(
                   child:((){
                     if(interventionLevel >= 3){
@@ -168,12 +147,6 @@ class _ProgramContentState extends State<ProgramContent> {
                     }
                   }()) ,
                 ),
-                // levelButtonWidget(topic: "Level 5: Changing Thoughts",
-                // action: (){
-                //   Navigator.push(
-                //   context, new MaterialPageRoute(builder: (context) => Level5(patientProfile))
-                //   );
-                // }),
                 Container(
                   child:((){
                     if(interventionLevel >= 4){
@@ -183,12 +156,7 @@ class _ProgramContentState extends State<ProgramContent> {
                     }
                   }()) ,
                 ),
-                // levelButtonWidget(topic: "Level 6: Maintaining Your Progress",
-                // action: (){
-                //   Navigator.push(
-                //   context, new MaterialPageRoute(builder: (context) => Level6(patientProfile))
-                //   );
-                // }),
+
                 Container(
                   child:((){
                     if(interventionLevel >= 5){
@@ -283,7 +251,8 @@ class _ProgramContentState extends State<ProgramContent> {
                       fit: StackFit.expand,
                       children: [
                         LinearProgressIndicator(
-                          value: progress,
+                         // value: progress,
+                          value: getProgval(interventionlevel),
                           valueColor: AlwaysStoppedAnimation(appBackgroundColor),
                           backgroundColor: appItemColorLightGrey,
                         ),
@@ -294,7 +263,7 @@ class _ProgramContentState extends State<ProgramContent> {
                 ),
                 Padding(
                   padding: ProgramContent.sidePad,
-                  child: Text("Status: Level ${widget.levelVal} of 6",
+                  child: Text("Status: Level ${interventionlevel} of 6",
                     style: themeData.textTheme.headline6,
                   ),
                 ),

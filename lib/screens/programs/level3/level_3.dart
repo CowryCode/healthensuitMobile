@@ -25,6 +25,8 @@ class Level3 extends StatefulWidget {
 
 class _Level3State extends State<Level3> {
   String patientName = "Henry";
+  TextEditingController notecontroller = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +77,6 @@ class _Level3State extends State<Level3> {
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead9"]!, textStyle: themeData.textTheme.headline5),
                      checkBoxBuilderWidget(_formKey, themeData),
 
-
                      SizedBox(height: pad,),
                      buildFeedbackForm(Level3.sidePad, themeData),
 
@@ -103,9 +104,15 @@ class _Level3State extends State<Level3> {
               MaterialButton(
                 child: Text("Conclude Level 3", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                 onPressed: (){
-                  getSubmitvalues(key);
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                  //getSubmitvalues(key);
+                  submitAlertDialog(
+                      context: context,
+                      title: "Warning!",
+                      message: "Are you sure you want to save at this moment ?",
+                      key: key,
+                      futureProfile: futureProfile);
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
                 }
               ),
             ],
@@ -118,9 +125,15 @@ class _Level3State extends State<Level3> {
 
   void getSubmitvalues(GlobalKey<FormBuilderState> key){
     var result = key.currentState!.fields["toDoList"]!.value;
+    String? note;
+    if(notecontroller.value.text.isNotEmpty){
+      note = notecontroller.value.text.toString().trim();
+    }
+
     LevelthreeVariables level3 = LevelthreeVariables();
     String choices = result.toString();
     level3.updateFields(choices);
+    level3.setNote(note: note);
     ApiAccess().submitLevethree(level3: level3);
   }
 
@@ -261,6 +274,7 @@ class _Level3State extends State<Level3> {
                     borderSide: BorderSide(color: appItemColorBlue)
                     ),
                 ),
+                controller: notecontroller,
               ),
             ),
           ],
@@ -268,4 +282,34 @@ class _Level3State extends State<Level3> {
       );
   }
 
+  submitAlertDialog({required BuildContext context, required String title, required String message,required GlobalKey<FormBuilderState> key, required Future<PatientProfilePodo>? futureProfile}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(title,
+              style: themeData.textTheme.headline5,),
+            content: Text(message,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("Go Back", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+              MaterialButton(
+                  child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    getSubmitvalues(key);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                  }
+              ),
+            ],
+          );
+        });
+  }
 }

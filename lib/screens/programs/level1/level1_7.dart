@@ -153,17 +153,17 @@ class _Level1of7State extends State<Level1of7> {
                         ),
                         Center(
                           child: IconUserButton(buttonText: "Submit", buttonEvent: () {
+                            InterventionlevelOne level1 = getLevelone(key, levelone);
                             createAlertDialog(
                                 context: context,
                                 title: "Save",
                                 message: "Do you want to save the changes ?",
                                 key: key,
-                                levelone: levelone,
+                                levelone: level1,
                                 futureProfile: futureProfile);
-                            InterventionlevelOne level1 = getLevelone(key, levelone);
-                            ApiAccess().submitLevelone(levelone: level1);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                            // ApiAccess().submitLevelone(levelone: level1);
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
                           },
                             buttonIcon: Icons.send,),
                         ),

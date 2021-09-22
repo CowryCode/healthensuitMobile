@@ -137,10 +137,16 @@ class _Level2of4State extends State<Level2of4> {
                 Navigator.of(context).pop();
               }),
               navIconButton(context, buttonText: "Conclude Level 2", buttonActon: (){
-                print("Level 4 of 4 ${variables.averagenumberofbedhours}");
-                ApiAccess().submitLeveTwo(levelTwo: variables);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                createAlertDialog(
+                    context: context,
+                    title: "Warning!",
+                    message: "Are you sure you want to save at this moment ?",
+                    variables: variables,
+                    futureProfile: futureProfile);
+
+                // ApiAccess().submitLeveTwo(levelTwo: variables);
+                // Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
               }
               ),
             ],
@@ -190,4 +196,35 @@ class _Level2of4State extends State<Level2of4> {
     );
    }
 
+
+  createAlertDialog({required BuildContext context, required String title, required String message,required LeveltwoVariables variables, required Future<PatientProfilePodo>? futureProfile}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(title,
+              style: themeData.textTheme.headline5,),
+            content: Text(message,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("Go Back", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+              MaterialButton(
+                  child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    ApiAccess().submitLeveTwo(levelTwo: variables);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                  }
+              ),
+            ],
+          );
+        });
+  }
 }

@@ -384,6 +384,7 @@ class ApiAccess {
       );
 
       if (response.statusCode == 201) {
+        print("The psycho-education is submitted suffessfully");
         return PsychoeducationDTO.fromJson(jsonDecode(response.body));
       } else {
         throw Exception(
@@ -483,6 +484,7 @@ class ApiAccess {
         }),
       );
       if (response.statusCode == 201) {
+        print("Saveed Level two object . . . ");
         LeveltwoVariables variables = LeveltwoVariables.fromJson(jsonDecode(response.body));
 
         return variables;
@@ -527,6 +529,8 @@ class ApiAccess {
     String? token;
     Future<String?> tk = Localstorage().getString(key_login_token);
     await tk.then((value) => {token = value!});
+
+    print(" The other note is ::::: ${level3.additionalNote}");
 
     final response = await http.post(
       Uri.parse(levelthree_url),

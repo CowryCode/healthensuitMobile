@@ -102,12 +102,19 @@ class _Psycho4 extends State<Psycho4> {
               navIconButton(context, buttonText: "Back", buttonActon: (){
                 Navigator.of(context).pop();
               }),
-              navIconButton(context, buttonText: "Submit Level 2", buttonActon: (){
-                PsychoeducationDTO completedPsychoeducationObject = getSelectedValue(psychEdu);
-                ApiAccess().submitPsychoEducation(psychoeducationDTO: completedPsychoeducationObject);
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => HomeScreen(futureProfile: futureProfile,),
-                ));
+              navIconButton(context, buttonText: "Submit", buttonActon: (){
+                submitAlertDialog(
+                    context: context,
+                    title: "Warning!",
+                    message: "Are you sure you want to save at this moment ?",
+                    psychEdu: psychEdu,
+                    futureProfile: futureProfile);
+
+                // PsychoeducationDTO completedPsychoeducationObject = getSelectedValue(psychEdu);
+                // ApiAccess().submitPsychoEducation(psychoeducationDTO: completedPsychoeducationObject);
+                // Navigator.of(context).push(MaterialPageRoute(
+                //   builder: (context) => HomeScreen(futureProfile: futureProfile,),
+                // ));
               }),
             ],
           ),
@@ -187,6 +194,40 @@ class _Psycho4 extends State<Psycho4> {
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );
+  }
+
+  submitAlertDialog({required BuildContext context, required String title, required String message, required PsychoeducationDTO psychEdu, required Future<PatientProfilePodo>? futureProfile}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(title,
+              style: themeData.textTheme.headline5,),
+            content: Text(message,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("Go Back", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+              MaterialButton(
+                  child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: () {
+                    PsychoeducationDTO completedPsychoeducationObject = getSelectedValue(psychEdu);
+                    ApiAccess().submitPsychoEducation(psychoeducationDTO: completedPsychoeducationObject);
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          HomeScreen(futureProfile: futureProfile,),
+                    ));
+                  }
+              ),
+            ],
+          );
+        });
   }
 
 }
@@ -271,5 +312,4 @@ class _RadioGroupState extends State<RadioGroup> {
         );
       });
   }
-
 }
