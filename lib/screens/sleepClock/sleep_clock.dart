@@ -55,35 +55,35 @@ class _SleepClockState extends State<SleepClock> {
       body:  FutureBuilder<SleepClockDTO>(
         future: futureMysleepClock,
         builder: (BuildContext context, AsyncSnapshot<SleepClockDTO> snapshot){
-          // Timer(Duration(seconds: timeout_duration), (){
-          //   showAlertDialog(
-          //       context: context, title: "oops !",
-          //       message: "Could not load data, this could be due to network connectivity or you don't have records in the past 7 days",
-          //       patientprofile: profile
-          //        );
-          // });
           if(snapshot.hasData){
+            widget.timedout = false;
             SleepClockDTO sleepclock = snapshot.data!;
             return getContent(themeData: themeData, size: size, pad: pad, sleepclock: sleepclock);
           }else{
-            if(widget.timedout){
+            if(widget.timedout == true){
               Timer.periodic(Duration(seconds: timeout_duration), (timer){
                 print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
-                if(timer.tick >= 2){
-                  setState(() {
+                if(widget.timedout == true){
+                  if(timer.tick == 1){
+                    // setState(() {
                     widget.timedout = false;
-                  });
+                    print("The state chnaged to  ${widget.timedout}");
+                    // });
+                    timer.cancel();
+                    print("Timer cancled ");
+                    showAlertDialog(
+                        context: context, title: "oops !",
+                        message: "Could not load data, this could be due to network connectivity or you don't have records in the past 7 days",
+                        patientprofile: profile
+                    );
+                  }
+                }else{
                   timer.cancel();
-                }else {
-                  print("Timer ran . . . . . . ${timer.tick}");
-                  showAlertDialog(
-                      context: context, title: "oops !",
-                      message: "Could not load data, this could be due to network connectivity or you don't have records in the past 7 days",
-                      patientprofile: profile
-                  );
                 }
               });
             }
+
+
             return Container(
               child: Center(child: CircularProgressIndicator(),),
             );

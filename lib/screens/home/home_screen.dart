@@ -56,25 +56,33 @@ class _HomeScreenState extends State<HomeScreen> {
           child: FutureBuilder<PatientProfilePodo>(
             future: patientprofile,
             builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
+              print("The initial state is ${widget.timedout}");
               if(snapshot.hasData){
+                widget.timedout = false;
+                print("The state has data  ${widget.timedout}");
                 PatientProfilePodo profile = snapshot.data!;
                 return homescreenContent(profile);
-              }else{
-                if(widget.timedout){
+               }else{
+                   print("The state is ${widget.timedout}");
+                if(widget.timedout == true){
                   Timer.periodic(Duration(seconds: timeout_duration), (timer){
                     print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
-                    if(timer.tick >= 1){
-                      setState(() {
+                    if(widget.timedout == true){
+                      if(timer.tick == 1){
+                        // setState(() {
                         widget.timedout = false;
-                      });
+                        print("The state chnaged to  ${widget.timedout}");
+                        // });
+                        timer.cancel();
+                        print("Timer cancled ");
+                        showAlertDialog(
+                            context: context, title: "oops !",
+                            message: "Kindly Check your network connection",
+                            patientprofile: patientprofile
+                        );
+                      }
+                    }else{
                       timer.cancel();
-                    }else {
-                      print("Timer ran . . . . . . ${timer.tick}");
-                      showAlertDialog(
-                          context: context, title: "oops !",
-                          message: "Kindly Check your network connection",
-                          patientprofile: patientprofile
-                      );
                     }
                   });
                  }

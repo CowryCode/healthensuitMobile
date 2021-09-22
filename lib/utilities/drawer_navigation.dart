@@ -62,17 +62,18 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       //color: Color.fromRGBO(50, 75, 205, 1),
       child: ListView(
         children: <Widget>[
-          buildHeader(
-            assetImage: assetImage,
-            name: profile.firstName.toString(),
-            email: profile.email.toString(),
-            onClicked: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PatientScreen(
-                // name: "Full Name",
-                // email: "patientemail@gmail.com",
-                patientProfile: futureProfile,
-              ),
-            )),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child:  buildHeader(
+              assetImage: assetImage,
+              name: profile.firstName.toString(),
+              email: profile.email.toString(),
+              onClicked: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => PatientScreen(
+                  patientProfile: futureProfile,
+                ),
+              )),
+            ),
           ),
           Divider(color: Defaults.drawerItemColor),
           Container(
@@ -224,13 +225,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
           ),
         ));
         break;
-
-      // case 2:
-      //   Navigator.of(context).push(MaterialPageRoute(
-      //     builder: (context) => SleepDiary(),
-      //   ));
-      //   break;
-
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => SleepClock(patientProfile: profile, timedout: true,),
