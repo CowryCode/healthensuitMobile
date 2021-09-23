@@ -28,6 +28,7 @@ class SleepDiary extends StatefulWidget {
 
 class _SleepDiaryState extends State<SleepDiary> {
   final _formKey = GlobalKey<FormBuilderState>();
+  bool moreDrugIsVisible = false;
 
   TimeOfDay? time;
 
@@ -183,18 +184,23 @@ class _SleepDiaryState extends State<SleepDiary> {
 
                       switchToMoreDrug(sidePad, themeData),
 
-                      SizedBox(height: pad,),
+                      Visibility(child: SizedBox(height: pad,), visible: moreDrugIsVisible,),
+                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the medication name", valName: "medName1"), visible: moreDrugIsVisible,),
+                      Visibility(child: SizedBox(height: pad,), visible: moreDrugIsVisible,),
+                      Visibility(child: drugNumberInput(sidePad, themeData,question: "Enter the amount taken", valName: "amTaken1", valAmount: '0'), visible: moreDrugIsVisible,),
 
-                      normalTextInput(sidePad, themeData,
-                          question: "Enter the medication name",
-                          valName: "medName1"),
-
-                      SizedBox(height: pad,),
-
-                      drugNumberInput(sidePad, themeData,
-                          question: "Enter the amount taken",
-                          valName: "amTaken1",
-                          valAmount: "0"),
+                      // SizedBox(height: pad,),
+                      //
+                      // normalTextInput(sidePad, themeData,
+                      //     question: "Enter the medication name",
+                      //     valName: "medName1"),
+                      //
+                      // SizedBox(height: pad,),
+                      //
+                      // drugNumberInput(sidePad, themeData,
+                      //     question: "Enter the amount taken",
+                      //     valName: "amTaken1",
+                      //     valAmount: "0"),
 
                       SizedBox(height: pad,),
 
@@ -239,11 +245,32 @@ class _SleepDiaryState extends State<SleepDiary> {
       padding: sidePad,
       child: FormBuilderSwitch(
         name: "moreDrug",
-        initialValue: false,
+        initialValue: moreDrugIsVisible,
         title: Text("Did you take any other medications before going to sleep?",
           style: themeData.textTheme.headline5,),
+        onChanged: (val){
+          if(val == true){
+            setState(() {
+              moreDrugIsVisible = true;
+            });
+          }
+          else if(val == false){
+            setState(() {
+              moreDrugIsVisible = false;
+            });
+          }
+        },
       ),
     );
+    // return Padding(
+    //   padding: sidePad,
+    //   child: FormBuilderSwitch(
+    //     name: "moreDrug",
+    //     initialValue: false,
+    //     title: Text("Did you take any other medications before going to sleep?",
+    //       style: themeData.textTheme.headline5,),
+    //   ),
+    // );
   }
 
   Padding buildFeedbackForm(EdgeInsets sidePad, ThemeData themeData) {
@@ -558,16 +585,18 @@ class _SleepDiaryState extends State<SleepDiary> {
         timeLeftbed = widget.sleepDiariesPODO.timeLeftbed;
       }
 
-      var newMedname = key.currentState!.fields["medName1"]!.value;
-      var newMedamount = key.currentState!.fields["amTaken1"]!.value;
-
       var otherThings = key.currentState!.fields["otherNote"]!.value;
 
       OtherMedicationsEntity? othermed;
-      if(newMedname != null && newMedamount != null){
-        othermed = OtherMedicationsEntity();
-        othermed.setOthermedicationFields(newMedname, newMedamount);
 
+      if(moreDrugIsVisible == true){
+        var newMedname = key.currentState!.fields["medName1"]!.value;
+        var newMedamount = key.currentState!.fields["amTaken1"]!.value;
+        if(newMedname != null && newMedamount != null){
+          othermed = OtherMedicationsEntity();
+          othermed.setOthermedicationFields(newMedname, newMedamount);
+
+        }
       }
 
       Medications? med1 = Workflow().getMedications(
@@ -625,8 +654,8 @@ class _SleepDiaryState extends State<SleepDiary> {
       //   "Current Med 1 Amount : $drugAmount1 , "
       // "Current Med 2 amount : $drugAmount2 , "
           "Duration before sleep $durationB4sleep "
-          "New Med Name : $newMedname ,"
-          " New Med Amount : $newMedamount ,"
+          // "New Med Name : $newMedname ,"
+          // " New Med Amount : $newMedamount ,"
           " Other things : $otherThings");
 
       print(
