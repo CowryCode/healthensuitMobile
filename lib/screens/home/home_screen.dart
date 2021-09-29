@@ -76,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         timer.cancel();
                         print("Timer cancled ");
                         showAlertDialog(
-                            context: context, title: "oops !",
-                            message: "Kindly Check your network connection",
+                            context: context, title: "",
+                            message: "Invalid user name or password or you may have lost your network connection. Please check and login again.",
                             patientprofile: patientprofile
                         );
                       }

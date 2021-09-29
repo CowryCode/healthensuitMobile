@@ -97,19 +97,58 @@ class _ProgramContentState extends State<ProgramContent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 sectionTitleWidget(themeData, text: "Intervention Group Content"),
-                Padding(
-                  padding: ProgramContent.sidePad,
-                  child: Text("Only current or previous levels are available to access",
-                    style: themeData.textTheme.bodyText2,
-                  ),
+
+                Container(
+                  child:((){
+                    if(interventionLevel < 0 ){
+                      return  Padding(
+                        padding: ProgramContent.sidePad,
+                        child: Text("You will have to complete 5 sleep diaries during the last 7 days to be able to see the Intervention content.",
+                          style: themeData.textTheme.bodyText2,
+                        )
+                      );
+                    }else{
+                      return  Padding(
+                        padding: ProgramContent.sidePad,
+                        child: Text("Only current or previous levels are available to access",
+                          style: themeData.textTheme.bodyText2,
+                        ),
+                      );
+                    }
+                  }()) ,
                 ),
+                // Padding(
+                //   padding: ProgramContent.sidePad,
+                //   child: Text("Only current or previous levels are available to access",
+                //     style: themeData.textTheme.bodyText2,
+                //   ),
+                // ),
                 SizedBox(height: pad,),
-                Padding(
-                  padding: ProgramContent.sidePad,
-                  child: Text("Table of Content",
-                    style: themeData.textTheme.headline5,
-                  ),
+                Container(
+                  child:((){
+                    if(interventionLevel >= 0 ){
+                      return Padding(
+                        padding: ProgramContent.sidePad,
+                        child: Text("Table of Content",
+                          style: themeData.textTheme.headline5,
+                        ),
+                      );
+                    }else{
+                      return  Padding(
+                        padding: ProgramContent.sidePad,
+                        child: Text("",
+                          style: themeData.textTheme.bodyText2,
+                        ),
+                      );
+                    }
+                  }()) ,
                 ),
+                // Padding(
+                //   padding: ProgramContent.sidePad,
+                //   child: Text("Table of Content",
+                //     style: themeData.textTheme.headline5,
+                //   ),
+                // ),
                 Container(
                   child:((){
                     if(interventionLevel >= 0 ){
@@ -236,6 +275,7 @@ class _ProgramContentState extends State<ProgramContent> {
    }
 
    Card sectionOneCard(double pad, ThemeData themeData, Size size, int interventionlevel) {
+     int lev = interventionlevel >= 0 ? interventionlevel : 0;
      return Card(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,7 +303,7 @@ class _ProgramContentState extends State<ProgramContent> {
                 ),
                 Padding(
                   padding: ProgramContent.sidePad,
-                  child: Text("Status: Level ${interventionlevel} of 6",
+                  child: Text("Status: Level ${lev} of 6",
                     style: themeData.textTheme.headline6,
                   ),
                 ),

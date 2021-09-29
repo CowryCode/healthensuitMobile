@@ -154,7 +154,7 @@ class _AuthScreenEmailState extends State<AuthScreenEmail> {
                       ),
                       SizedBox(height: 30.0),
                       Text(
-                        'To reset your password, enter your email address, you will receive an email if the email address is the one used for signup. You may need to check your spam folder.',
+                        'To reset your password, please find your authentication code in your registered email address. You may need to check your spam folder.',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'Montserrat',

@@ -109,7 +109,6 @@ class SleepDiariesPODO {
       String? timeLeftbed,
       String? sleepQuality,
       String? otherThings,
-      List<Medications> currentMeds,
       OtherMedicationsEntity? otherMeds
       ) {
     this.bedTime = bedTime;
@@ -121,10 +120,6 @@ class SleepDiariesPODO {
     this.timeLeftbed = timeLeftbed;
     this.sleepQuality = sleepQuality;
     this.otherThings = otherThings;
-
-    if(currentMeds.length > 0 ){
-      this.medications = currentMeds;
-    }
 
     if(otherMeds != null){
       if(othermedications != null){
@@ -139,5 +134,12 @@ class SleepDiariesPODO {
   }
   List<OtherMedicationsEntity>? getOthermeds(){
     return this.othermedications;
+  }
+  List<Medications>? getmedications(){
+    return this.medications;
+  }
+
+  void updateCurrentmeds(List<Medications> currentMeds){
+      this.medications = currentMeds;
   }
 }

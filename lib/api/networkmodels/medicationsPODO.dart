@@ -11,9 +11,6 @@ class Medications {
     medicationName = json['medicationName'];
     amount = json['amount'];
     dateCreated = json['date_Created'];
-    // dateCreated = json['date_Created'] != null
-    //     ? new DateCreated.fromJson(json['date_Created'])
-    //     : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -26,6 +23,10 @@ class Medications {
     //   data['date_Created'] = this.dateCreated!.toJson();
     // }
     return data;
+  }
+
+  void setID(int ID){
+    this.id = ID;
   }
 
   void setDrugAmount(String drugAmount){

@@ -72,8 +72,8 @@ class _SleepClockState extends State<SleepClock> {
                     timer.cancel();
                     print("Timer cancled ");
                     showAlertDialog(
-                        context: context, title: "oops !",
-                        message: "Could not load data, this could be due to network connectivity or you don't have records in the past 7 days",
+                        context: context, title: "",
+                        message: "To see the Sleep clock and change its settings, you will have to complete at least 5 sleep diaries within the last week.",
                         patientprofile: profile
                     );
                   }

@@ -11,6 +11,7 @@ import 'package:healthensuite/api/networkmodels/interventionlevels/levelsixPODO.
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelthreePODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
+import 'package:healthensuite/api/networkmodels/medicationsPODO.dart';
 import 'package:healthensuite/api/networkmodels/mysleepclock.dart';
 import 'package:healthensuite/api/networkmodels/otherMedicationsPODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
@@ -164,24 +165,6 @@ class ApiAccess {
 
   Future<SleepDiariesPODO> saveSleepDiaries(
       {required SleepDiariesPODO sleepDiary}) async {
-      // A TEST GROUND
-      List<OtherMedicationsEntity>? testMeds = sleepDiary.getOthermeds();
-      if (testMeds != null) {
-        print("Network_test med is not null");
-        if (testMeds.isNotEmpty) {
-          print("Network_test med is not Empty");
-          testMeds.forEach((element) {
-            print("Network_Test Med Name : ${element.medicationName} ");
-            print("Network_Test Med Amount : ${element.amount} ");
-          });
-        } else {
-          print("Network_test med is Empty");
-        }
-      } else {
-        print("Network_test med is null");
-      }
-      // END OF TEST GROUND
-
       String? token;
       Future<String?> tk = Localstorage().getString(key_login_token);
       await tk.then((value) => {token = value!});
@@ -202,12 +185,8 @@ class ApiAccess {
           "timeLeftbed": sleepDiary.timeLeftbed,
           "sleepQuality": sleepDiary.sleepQuality,
           "otherThings": sleepDiary.otherThings,
-          // "medications": [],
+           "medications": sleepDiary.getmedications(),
           "othermedications": sleepDiary.getOthermeds(),
-          // "othermedications": [{
-          //   "medicationName": sleepDiary.getOthermeds()!.elementAt(0).medicationName,
-          //   "amount": sleepDiary.getOthermeds()!.elementAt(0).amount
-          // }],
           "date_Created": sleepDiary.dateCreated
         }),
       );
@@ -218,10 +197,8 @@ class ApiAccess {
         print("${sleepDiary.toString()}");
         return sleepDiary;
       } else {
-        throw Exception("Couldn't pull patient profile , status code ${result
-            .statusCode} ");
+        throw Exception("Couldn't pull patient profile , status code ${result.statusCode} ");
       }
-
   }
 
 

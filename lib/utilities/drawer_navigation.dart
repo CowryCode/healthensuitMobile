@@ -94,7 +94,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                 // ),
                 Center(
                   child: ((){
-                    if(enableSleepClock){
+                    // if(enableSleepClock){
+                    if(true){
                      return  getSleepClock(futureProfile);
                     }else{
                       SizedBox(height: 10.0,);
