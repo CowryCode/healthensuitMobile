@@ -130,7 +130,7 @@ class _Level6State extends State<Level6> {
                   submitAlertDialog(
                       context: context,
                       title: "Warning!",
-                      message: "Are you sure you want to save at this moment ?",
+                      message: "Congratulations! You have finished level 6!",
                       key: key,
                       futureProfile: futureProfile);
                 }

@@ -139,8 +139,8 @@ class _Level2of4State extends State<Level2of4> {
               navIconButton(context, buttonText: "Conclude Level 2", buttonActon: (){
                 createAlertDialog(
                     context: context,
-                    title: "Warning!",
-                    message: "Are you sure you want to save at this moment ?",
+                    title: "",
+                    message: "Congratulations! You have finished level 2!",
                     variables: variables,
                     futureProfile: futureProfile);
 

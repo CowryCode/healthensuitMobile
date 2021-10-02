@@ -156,8 +156,8 @@ class _Level1of7State extends State<Level1of7> {
                             InterventionlevelOne level1 = getLevelone(key, levelone);
                             createAlertDialog(
                                 context: context,
-                                title: "Save",
-                                message: "Do you want to save the changes ?",
+                                title: "",
+                                message: "Congratulations! You have finished level 1!",
                                 key: key,
                                 levelone: level1,
                                 futureProfile: futureProfile);

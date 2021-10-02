@@ -117,8 +117,8 @@ class _Level4of4State extends State<Level4of4> {
               navIconButton(context, buttonText: "Conclude Level 4", buttonActon: (){
                 submitAlertDialog(
                     context: context,
-                    title: "Warning!",
-                    message: "Are you sure you want to save at this moment ?",
+                    title: "",
+                    message: "Congratulations! You have finished level 4!",
                     futureProfile: futureProfile);
                 // ApiAccess().submitLevelfour(levelfour: true);
                 // Navigator.of(context).push(MaterialPageRoute(

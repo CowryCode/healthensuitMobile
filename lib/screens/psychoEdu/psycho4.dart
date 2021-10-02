@@ -105,8 +105,8 @@ class _Psycho4 extends State<Psycho4> {
               navIconButton(context, buttonText: "Submit", buttonActon: (){
                 submitAlertDialog(
                     context: context,
-                    title: "Warning!",
-                    message: "Are you sure you want to save at this moment ?",
+                    title: "",
+                    message: "Congratulations! You have finished the psychoeducation!",
                     psychEdu: psychEdu,
                     futureProfile: futureProfile);
 

@@ -57,6 +57,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
   Material drawerContent(PatientProfilePodo profile, Future<PatientProfilePodo>?  futureProfile ){
      bool enableSleepClock = profile.statusEntity!.enableSleepclock()?? false;
+     int groupID = profile.groupID ?? 2;
     return Material(
       color:  appBackgroundColor,
       //color: Color.fromRGBO(50, 75, 205, 1),
@@ -88,14 +89,9 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     index: 1,
                     onClicked: () => selectedItem(context, 1,futureProfile)
                 ),
-                // MenuItem(
-                //     index: 2,
-                //     onClicked: () => selectedItem(context, 2,futureProfile)
-                // ),
                 Center(
                   child: ((){
-                    // if(enableSleepClock){
-                    if(true){
+                    if(enableSleepClock){
                      return  getSleepClock(futureProfile);
                     }else{
                       SizedBox(height: 10.0,);
@@ -106,14 +102,29 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     index: 3,
                     onClicked: () => selectedItem(context, 3,futureProfile)
                 ),
-                MenuItem(
-                    index: 4,
-                    onClicked: () => selectedItem(context, 4,futureProfile)
+                Center(
+                    child: ((){
+                      if(groupID == 0){
+                        return  MenuItem(
+                            index: 4,
+                            onClicked: () => selectedItem(context, 4,futureProfile));
+                      }else{
+                        SizedBox(height: 10.0,);
+                      }
+                    }())
                 ),
-                MenuItem(
-                    index: 5,
-                    onClicked: () => selectedItem(context, 5,futureProfile)
+                Center(
+                    child: ((){
+                      if(groupID == 1){
+                        return   MenuItem(
+                            index: 5,
+                            onClicked: () => selectedItem(context, 5,futureProfile));
+                      }else{
+                        SizedBox(height: 10.0,);
+                      }
+                    }())
                 ),
+
                 MenuItem(
                     index: 6,
                     onClicked: () => selectedItem(context, 6,futureProfile)
