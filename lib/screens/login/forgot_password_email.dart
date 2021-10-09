@@ -85,8 +85,17 @@ class _AuthScreenEmailState extends State<AuthScreenEmail> {
         onPressed: () {
           if(usernamecontroller.value.text.isNotEmpty){
             String un = usernamecontroller.value.text.trim();
-            ApiAccess().confirmUser(username: un);
-            Navigator.push(context, new MaterialPageRoute(builder: (context) => AuthScreen()));
+            Future<bool> checkemail = ApiAccess().confirmUser(username: un);
+            checkemail.then((value) => {
+              if(value){
+                Navigator.push(context, new MaterialPageRoute(builder: (context) => AuthScreen()))
+              }else{
+                submitAlertDialog(context: context, title: "Alert", message: "The email address you supplied is not in our record")
+               // print("This is email you put here no work ni ooooo")
+              }
+            });
+
+            //  Navigator.push(context, new MaterialPageRoute(builder: (context) => AuthScreen()));
             }else{
             print("Do nothing");
              }
@@ -177,4 +186,36 @@ class _AuthScreenEmailState extends State<AuthScreenEmail> {
       ),
     );
   }
+
+  submitAlertDialog({required BuildContext context, required String title, required String message}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(title,
+              style: themeData.textTheme.headline5,),
+            content: Text(message,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+              // MaterialButton(
+              //     child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+              //     onPressed: (){
+              //       submitVariables(key);
+              //       Navigator.of(context).push(MaterialPageRoute(
+              //           builder: (context) => HomeScreen(futureProfile: futureProfile)));
+              //     }
+              // ),
+            ],
+          );
+        });
+  }
+
 }
