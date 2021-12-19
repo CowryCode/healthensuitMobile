@@ -1,5 +1,5 @@
-// final baseURL = "http://10.0.2.2:8083";
-final baseURL = "https://api.healthensuite.com"; //just updated 0001
+final baseURL = "http://10.0.2.2:8083";
+// final baseURL = "https://api.healthensuite.com"; //just updated 0001
 final loginURL = "${baseURL}/insomnia/v1/authentication/login";
 final confirmUsername_URL = "${baseURL}/insomnia/v1/authentication/confirmusernamemobile";
 final loginwithCode_URL = "${baseURL}/insomnia/v1/authentication/loginwithcode";
@@ -18,13 +18,23 @@ final levelthree_url = "${baseURL}/insomnia/v1/intervention/savelevelthree";
 final levelfour_url = "${baseURL}/insomnia/v1/intervention/savelevelfour";
 final levelfive_url = "${baseURL}/insomnia/v1/intervention/savelevelfive";
 final levelSix_url = "${baseURL}/insomnia/v1/intervention/savelevelsix";
+final Save_Page_url = "${baseURL}/insomnia/v1/intervention/savepage";
 final sleepwindow_url = "${baseURL}/insomnia/v1/dashboard/saveleepwindow";
 final sharesleep_report_url = "${baseURL}/insomnia/v1/dashboard/sharereport";
-//Meta data keys
+// Meta data keys
 final key_login_token = "logintoken";
 final key_temp_int = "tempint";
 final keyUsername = "Name";
 final keyUseremail = "Email";
+// STATUS ENTITIES
+final key_Intervention_Level = "interventionLevel";
+final key_Next_Page = "nextPage";
+final key_Level_One = "levelOne";
+final key_Level_Two = "levelTwo";
+final key_Level_Three = "levelThree";
+final key_Level_Four = "levelFour";
+final key_Level_Five = "levelFive";
+final key_Level_Six = "levelSix";
 
 // GLOBAL VIARIABLES
  final int timeout_duration = 10;

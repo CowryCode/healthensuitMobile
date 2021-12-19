@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -23,7 +24,10 @@ class Level1of5 extends StatefulWidget {
 
   final Future<PatientProfilePodo>? patientProfile;
 
-  Level1of5(this.levelone, this.patientProfile);
+  final int currentPage = 5;
+  final int previousPage;
+
+  Level1of5(this.levelone, this.patientProfile, this.previousPage);
 
   @override
   _Level1of5State createState() => _Level1of5State();
@@ -34,6 +38,7 @@ class _Level1of5State extends State<Level1of5> {
 
   @override
   Widget build(BuildContext context) {
+    int currentPage = widget.currentPage;
     Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
     InterventionlevelOne level1 = widget.levelone;
     final Size size = MediaQuery.of(context).size;
@@ -45,7 +50,7 @@ class _Level1of5State extends State<Level1of5> {
         title: Text(Level1of5.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, level1, futureprofile),
+      bottomNavigationBar: buttomBarWidget(context, level1, futureprofile, currentPage),
       body: Container(
         width: size.width,
         height: size.height,
@@ -85,7 +90,7 @@ class _Level1of5State extends State<Level1of5> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context, InterventionlevelOne levelone, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, InterventionlevelOne levelone, Future<PatientProfilePodo>? futureProfile, int currentPage) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -101,13 +106,10 @@ class _Level1of5State extends State<Level1of5> {
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 print("This thing got here :::::::::::::::::::::::::");
-
-
                 InterventionlevelOne updatedLevelone = getSelectedValue(levelone);
-
-
-                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of6(updatedLevelone, futureProfile))
+                ApiAccess().submitLevelone(levelone: updatedLevelone);
+                Navigator.push(
+                    context, new MaterialPageRoute(builder: (context) => Level1of6(updatedLevelone, futureProfile, currentPage))
                     );
               }),
             ],
@@ -122,12 +124,15 @@ class _Level1of5State extends State<Level1of5> {
 
     if(choiceglobal == 0){
       levelone.sethowIsitgoingSofar("I feel confident I will be able to stick to this plan.");
+      levelone.nullifyWhichBestdescribesYoursituation();
     }
     if(choiceglobal == 1){
       levelone.sethowIsitgoingSofar("I think it will be very difficult for me to stick to this plan.");
+      levelone.nullifyWhichBestdescribesYoursituation();
     }
     if(choiceglobal == 2){
       levelone.sethowIsitgoingSofar("I don’t know what the plan is. What can I do to find out?");
+      levelone.nullifyWhichBestdescribesYoursituation();
     }
     return levelone;
   }

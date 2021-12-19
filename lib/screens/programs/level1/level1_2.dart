@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -13,9 +14,12 @@ class Level1of2 extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   static final optionPad = EdgeInsets.only(bottom: 10.0);
   final Future<PatientProfilePodo>? patientProfile;
+  final InterventionlevelOne? levelOneEntity;
 
+  final int currentPage = 2;
+  final int previousPage;
 
-  Level1of2(this.patientProfile);
+  Level1of2(this.patientProfile, this.levelOneEntity,  this.previousPage);
 
   @override
   _Level1of2State createState() => _Level1of2State();
@@ -26,7 +30,9 @@ class _Level1of2State extends State<Level1of2> {
 
   @override
   Widget build(BuildContext context) {
+    int currentPage = widget.currentPage;
     Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+    InterventionlevelOne? levelOneEntity;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     final _formKey = GlobalKey<FormBuilderState>();
@@ -37,7 +43,7 @@ class _Level1of2State extends State<Level1of2> {
         title: Text(Level1of2.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, _formKey, futureprofile),
+      bottomNavigationBar: buttomBarWidget(context, _formKey, futureprofile, currentPage, levelOneEntity),
       body: Container(
         width: size.width,
         height: size.height,
@@ -140,15 +146,20 @@ class _Level1of2State extends State<Level1of2> {
                    );
   }
 
-  InterventionlevelOne getSelectedValue(GlobalKey<FormBuilderState> key){
+  InterventionlevelOne getSelectedValue(GlobalKey<FormBuilderState> key, InterventionlevelOne? levelOne){
     var result = key.currentState!.fields["situationList"]!.value;
-    InterventionlevelOne levelOne = InterventionlevelOne();
-    String choice = result[0]; // You have to loop through this result when it starts populating
-    levelOne.setwhichBestdescribesYoursituation(choice);
+  //  InterventionlevelOne levelOne = InterventionlevelOne();
+  //  String choice = result[0]; // You have to loop through this result when it starts populating
+    String choices = " ";
+    for(int x = 0 ; x < result.length ; x++){ // The loop implemented
+      choices = choices + result[x];
+    }
+   // levelOne.setwhichBestdescribesYoursituation(choice);
+    levelOne!.setwhichBestdescribesYoursituation(choices);
     return levelOne;
   }
 
-  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne? levelOne) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -163,9 +174,10 @@ class _Level1of2State extends State<Level1of2> {
               }),
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
-                InterventionlevelOne levelone = getSelectedValue(key);
+                InterventionlevelOne levelone = getSelectedValue(key, levelOne);
+                ApiAccess().submitLevelone(levelone: levelone);
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of3(levelone, futureProfile))
+                    context, new MaterialPageRoute(builder: (context) => Level1of3(levelone, futureProfile,currentPage))
                     );
                 }
               ),

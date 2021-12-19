@@ -1,21 +1,29 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkUtilities.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/screens/programs/level2/level2_3.dart';
+import 'package:healthensuite/screens/programs/level2/level2_4.dart';
+import 'package:healthensuite/screens/programs/program_content.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level2/level2_2.dart';
 
 
 class Level2 extends StatefulWidget {
-
+   bool timedout;
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
   final Future<PatientProfilePodo>? patientProfile;
 
-  Level2(this.patientProfile);
+  Level2({ required this.patientProfile, this.timedout: false});
 
   @override
   _Level2State createState() => _Level2State();
@@ -33,6 +41,40 @@ class _Level2State extends State<Level2> {
   void initState() {
     super.initState();
     l2Vairiables = ApiAccess().getLeveltwoVariables();
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      StatusEntity? status;
+      InterventionlevelTwo? levelTwo;
+      await profile!.then((value) => {
+        status = value.statusEntity,
+        levelTwo = value.interventionLevelsEntity!.levelTwoEntity
+      });
+
+      LeveltwoVariables? l2VExracted;
+      await l2Vairiables!.then((value) => {
+        l2VExracted = value
+      });
+
+      int? nextLevel = status!.nextPage;
+      bool? isCompleted = status!.readInterventionGroupleveltwoArticle;
+      if(isCompleted!){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level2_4of4(profile, l2VExracted))
+        );
+      }else if(nextLevel == 2){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level2_2of4(profile, l2VExracted))
+        );
+      }else if(nextLevel == 3){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level2_3of4(profile,l2VExracted))
+        );
+      }else if(nextLevel == 4){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level2_4of4(profile, l2VExracted))
+        );
+      }
+    });
   }
 
 
@@ -68,7 +110,7 @@ class _Level2State extends State<Level2> {
                 style: themeData.textTheme.bodyText2,),
               ),
             ),
-            Expanded(
+         Expanded(
               flex: 1,
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -77,43 +119,38 @@ class _Level2State extends State<Level2> {
                   future: l2Vairiables,
                   builder: (BuildContext context, AsyncSnapshot<LeveltwoVariables> snapshot){
                     if(snapshot.hasData){
+                      widget.timedout = true;
                       LeveltwoVariables l2V = snapshot.data!;
                       return getcontent(themeData, size, pad, l2V);
                     }else{
+                      if(widget.timedout == false){
+                        Timer.periodic(Duration(seconds: timeout_duration), (timer){
+                          print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
+                          if(widget.timedout == false){
+                            if(timer.tick == 1){
+                              // setState(() {
+                              widget.timedout = true;
+                              print("The state chnaged to  ${widget.timedout}");
+                              // });
+                              timer.cancel();
+                              print("Timer cancled ");
+                              showAlertDialog(
+                                  context: context, title: "",
+                                  message: "It' seems you have network issues or have not filled any sleep Diary for the past 4 days please do so",
+                                  patientprofile: profile
+                              );
+                            }
+                          }else{
+                            timer.cancel();
+                          }
+                        });
+                      }
                       return Container(
                         child: Center(child: CircularProgressIndicator(),),
                       );
                     }
                   },
                 )
-
-                // child: Column(
-                //    crossAxisAlignment: CrossAxisAlignment.start,
-                //    children: [
-                //      SizedBox(height: pad,),
-                //      sectionTitleWidget(themeData, text: "Introduction to Sleep Restriction", textStyle: themeData.textTheme.headline4),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet23"]!),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet24"]!),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet25"]!),
-                //      SizedBox(height: pad,),
-                //      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead5"]!, textStyle: themeData.textTheme.headline5),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet26"]!),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet27"]!),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet28"]!),
-                //
-                //      SizedBox(height: pad,),
-                //      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead6"]!, textStyle: themeData.textTheme.headline5),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet29"]!),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet30"]!),
-                //
-                //      SizedBox(height: pad,),
-                //      bodyTextWidget(themeData, text: "This means that your average sleep efficiency was $sleepEfficiency."),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet31"]!),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet32"]!),
-                //      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet33"]!),
-                //
-                //    ],
-                // ),
               ),
             ),
           ],
@@ -172,7 +209,7 @@ class _Level2State extends State<Level2> {
                         onPressed: (){
                           print("Level 1 of 4 ${l2V.averagesleepefficiency}");
                           Navigator.push(
-                              context, new MaterialPageRoute(builder: (context) => Level2of2(patientProfile, l2V))
+                              context, new MaterialPageRoute(builder: (context) => Level2_2of4(patientProfile, l2V))
                           );
                         }
                     );
@@ -247,5 +284,38 @@ class _Level2State extends State<Level2> {
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );
+  }
+
+
+
+  showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => ProgramContent(patientProfile: patientprofile,),
+        ));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      // title: Text("My title"),
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

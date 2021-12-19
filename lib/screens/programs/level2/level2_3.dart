@@ -6,21 +6,21 @@ import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level2/level2_4.dart';
 
 
-class Level2of3 extends StatefulWidget {
+class Level2_3of4 extends StatefulWidget {
 
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
-  final LeveltwoVariables variables;
+  final LeveltwoVariables? variables;
 
 
-  Level2of3(this.patientProfile, this.variables);
+  Level2_3of4(this.patientProfile, this.variables);
 
   @override
-  _Level2of3State createState() => _Level2of3State();
+  _Level2_3of4State createState() => _Level2_3of4State();
 }
 
-class _Level2of3State extends State<Level2of3> {
+class _Level2_3of4State extends State<Level2_3of4> {
   String patientName = "Henry";
  // String sleepEfficiency = "86.9%";
   String yourBTime = "10:30";
@@ -30,18 +30,18 @@ class _Level2of3State extends State<Level2of3> {
   @override
   Widget build(BuildContext context) {
     Future<PatientProfilePodo>? profile = widget.patientProfile;
-    LeveltwoVariables l2variables = widget.variables;
+    LeveltwoVariables? l2variables = widget.variables;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     
     double pad = 18;
 
-    l2variables.setNewbedTime(yourBTime);
+    l2variables!.setNewbedTime(yourBTime);
     l2variables.setNewriseTime(yourRTime);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Level2of3.title),
+        title: Text(Level2_3of4.title),
         centerTitle: true,
       ),
       bottomNavigationBar: buttomBarWidget(context, profile, l2variables),
@@ -92,13 +92,13 @@ class _Level2of3State extends State<Level2of3> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                padding: Level2of3.sidePad,
+                padding: Level2_3of4.sidePad,
                 child: Text('Page 3/4',
                 textAlign: TextAlign.left,
                 style: themeData.textTheme.bodyText2,),
               ),
               Padding(
-                padding: Level2of3.sidePad,
+                padding: Level2_3of4.sidePad,
                 child: Text('Introduction to Sleep Restriction',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
@@ -127,7 +127,7 @@ class _Level2of3State extends State<Level2of3> {
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 print("Level 3 of 4 ${l2vals.averagenumberofbedhours}");
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level2of4(patientProfile, l2vals))
+                    context, new MaterialPageRoute(builder: (context) => Level2_4of4(patientProfile, l2vals))
                     );
                 }
               ),
@@ -148,7 +148,7 @@ class _Level2of3State extends State<Level2of3> {
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
      return Padding(
-                padding: Level2of3.sidePad,
+                padding: Level2_3of4.sidePad,
                 child: Text(text,
                   style: textStyle,
                 ),
@@ -157,7 +157,7 @@ class _Level2of3State extends State<Level2of3> {
 
   Padding bodyTextWidget(ThemeData themeData, {required String text}) {
     return Padding(
-              padding: Level2of3.sidePad,
+              padding: Level2_3of4.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );
@@ -165,7 +165,7 @@ class _Level2of3State extends State<Level2of3> {
 
   Padding chosenTimeTable(ThemeData themeData) {
     return Padding(
-            padding: Level2of3.sidePad,
+            padding: Level2_3of4.sidePad,
             child: DataTable(
               columns: tableHeaderWidget(themeData),
               rows: [

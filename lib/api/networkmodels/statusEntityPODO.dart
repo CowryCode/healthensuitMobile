@@ -12,10 +12,10 @@ class StatusEntity {
   bool? readInterventionGrouplevelfiveArticle;
   bool? readInterventionGrouplevelsixArticle;
   int? interventionLevel;
+  int? nextPage;
   bool? enableSleepClockbutton;
   bool? levelonesubmiteligible;
   String? lastPsychoeducation;
-  // DateCreated? dateCreated;
   String? dateCreated;
 
   StatusEntity(
@@ -32,6 +32,7 @@ class StatusEntity {
         this.readInterventionGrouplevelfiveArticle,
         this.readInterventionGrouplevelsixArticle,
         this.interventionLevel,
+        this.nextPage,
         this.enableSleepClockbutton,
         this.levelonesubmiteligible,
         this.lastPsychoeducation,
@@ -57,6 +58,7 @@ class StatusEntity {
     readInterventionGrouplevelsixArticle =
     json['readInterventionGrouplevelsixArticle'];
     interventionLevel = json['interventionLevel'];
+    nextPage = json['nextPage'];
     enableSleepClockbutton = json['enableSleepClockbutton'];
     levelonesubmiteligible = json['levelonesubmiteligible'];
     lastPsychoeducation = json['lastPsychoeducation'];
@@ -90,6 +92,7 @@ class StatusEntity {
     data['readInterventionGrouplevelsixArticle'] =
         this.readInterventionGrouplevelsixArticle;
     data['interventionLevel'] = this.interventionLevel;
+    data['nextPage'] = this.nextPage;
     data['enableSleepClockbutton'] = this.enableSleepClockbutton;
     data['levelonesubmiteligible'] = this.levelonesubmiteligible;
     data['lastPsychoeducation'] = this.lastPsychoeducation;

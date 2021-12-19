@@ -8,21 +8,21 @@ import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/sleepClock/sleep_clock.dart';
 
 
-class Level2of4 extends StatefulWidget {
+class Level2_4of4 extends StatefulWidget {
 
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
-  final LeveltwoVariables l2variables;
+  final LeveltwoVariables? l2variables;
 
 
-  Level2of4(this.patientProfile, this.l2variables);
+  Level2_4of4(this.patientProfile, this.l2variables);
 
   @override
-  _Level2of4State createState() => _Level2of4State();
+  _Level2_4of4State createState() => _Level2_4of4State();
 }
 
-class _Level2of4State extends State<Level2of4> {
+class _Level2_4of4State extends State<Level2_4of4> {
   String patientName = "Henry";
 //  String sleepEfficiency = "86.9%";
  // String yourBTime = "10:30";
@@ -34,17 +34,17 @@ class _Level2of4State extends State<Level2of4> {
     final ThemeData themeData = Theme.of(context);
 
     Future<PatientProfilePodo>? profile = widget.patientProfile;
-    LeveltwoVariables l2variable = widget.l2variables;
+    LeveltwoVariables? l2variable = widget.l2variables;
 
 
     double pad = 18;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Level2of4.title),
+        title: Text(Level2_4of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, l2variable, profile),
+      bottomNavigationBar: buttomBarWidget(context, l2variable!, profile),
       body: Container(
         width: size.width,
         height: size.height,
@@ -105,13 +105,13 @@ class _Level2of4State extends State<Level2of4> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                padding: Level2of4.sidePad,
+                padding: Level2_4of4.sidePad,
                 child: Text('Page 4/4',
                 textAlign: TextAlign.left,
                 style: themeData.textTheme.bodyText2,),
               ),
               Padding(
-                padding: Level2of4.sidePad,
+                padding: Level2_4of4.sidePad,
                 child: Text('Introduction to Sleep Restriction',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
@@ -166,7 +166,7 @@ class _Level2of4State extends State<Level2of4> {
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
      return Padding(
-                padding: Level2of4.sidePad,
+                padding: Level2_4of4.sidePad,
                 child: Text(text,
                   style: textStyle,
                 ),
@@ -175,7 +175,7 @@ class _Level2of4State extends State<Level2of4> {
 
   Padding bodyTextWidget(ThemeData themeData, {required String text}) {
     return Padding(
-              padding: Level2of4.sidePad,
+              padding: Level2_4of4.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );

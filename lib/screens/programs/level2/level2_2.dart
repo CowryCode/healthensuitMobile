@@ -7,23 +7,23 @@ import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level2/level2_3.dart';
 
 
-class Level2of2 extends StatefulWidget {
+class Level2_2of4 extends StatefulWidget {
 
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
   final Future<PatientProfilePodo>? patientProfile;
 
-  final LeveltwoVariables l2variables;
+  final LeveltwoVariables? l2variables;
 
 
-  Level2of2(this.patientProfile, this.l2variables);
+  Level2_2of4(this.patientProfile, this.l2variables);
 
   @override
-  _Level2of2State createState() => _Level2of2State();
+  _Level2_2of4State createState() => _Level2_2of4State();
 }
 
-class _Level2of2State extends State<Level2of2> {
+class _Level2_2of4State extends State<Level2_2of4> {
   String patientName = "Henry";
   TimeOfDay? time;
   final _formKey = GlobalKey<FormBuilderState>();
@@ -31,7 +31,7 @@ class _Level2of2State extends State<Level2of2> {
   @override
   Widget build(BuildContext context) {
     Future<PatientProfilePodo>? profile = widget.patientProfile;
-    LeveltwoVariables variables = widget.l2variables;
+    LeveltwoVariables? variables = widget.l2variables;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
@@ -40,10 +40,10 @@ class _Level2of2State extends State<Level2of2> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Level2of2.title),
+        title: Text(Level2_2of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, profile, variables),
+      bottomNavigationBar: buttomBarWidget(context, profile, variables!),
       body: Container(
         width: size.width,
         height: size.height,
@@ -70,7 +70,7 @@ class _Level2of2State extends State<Level2of2> {
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet35"]!),
 
                      SizedBox(height: pad,),
-                     timeQuestion(Level2of2.sidePad, themeData, context, question: "Choose Your Rise Time:", valName: "riseTime"),
+                     timeQuestion(Level2_2of4.sidePad, themeData, context, question: "Choose Your Rise Time:", valName: "riseTime"),
 
                    ],
                 ),
@@ -91,13 +91,13 @@ class _Level2of2State extends State<Level2of2> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                padding: Level2of2.sidePad,
+                padding: Level2_2of4.sidePad,
                 child: Text('Page 2/4',
                 textAlign: TextAlign.left,
                 style: themeData.textTheme.bodyText2,),
               ),
               Padding(
-                padding: Level2of2.sidePad,
+                padding: Level2_2of4.sidePad,
                 child: Text('Introduction to Sleep Restriction',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
@@ -184,7 +184,7 @@ class _Level2of2State extends State<Level2of2> {
               navIconButton(context, buttonText: "Submit Rise Time", buttonActon: (){
                 print("Level 2 of 4 ${l2variables.averagenumberofbedhours}");
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level2of3(patientProfile,l2variables))
+                    context, new MaterialPageRoute(builder: (context) => Level2_3of4(patientProfile,l2variables))
                     );
                 }
               ),
@@ -213,7 +213,7 @@ class _Level2of2State extends State<Level2of2> {
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
      return Padding(
-                padding: Level2of2.sidePad,
+                padding: Level2_2of4.sidePad,
                 child: Text(text,
                   style: textStyle,
                 ),
@@ -222,7 +222,7 @@ class _Level2of2State extends State<Level2of2> {
 
   Padding bodyTextWidget(ThemeData themeData, {required String text}) {
     return Padding(
-              padding: Level2of2.sidePad,
+              padding: Level2_2of4.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );

@@ -2,6 +2,7 @@ class InterventionlevelOne {
   String? whichBestdescribesYoursituation;
   String? howIsitgoingSofar;
   String? sleepalone;
+  String? nominateRoommate;
   String? supportPersonname;
   String? supportPersonemail;
   String? supportPersonrelationshipt;
@@ -10,6 +11,7 @@ class InterventionlevelOne {
       {this.whichBestdescribesYoursituation,
         this.howIsitgoingSofar,
         this.sleepalone,
+        this.nominateRoommate,
         this.supportPersonname,
         this.supportPersonemail,
         this.supportPersonrelationshipt});
@@ -18,6 +20,7 @@ class InterventionlevelOne {
     whichBestdescribesYoursituation = json['whichBestdescribesYoursituation'];
     howIsitgoingSofar = json['howIsitgoingSofar'];
     sleepalone = json['sleepalone'];
+    nominateRoommate = json['nominateRoommate'];
     supportPersonname = json['supportPersonname'];
     supportPersonemail = json['supportPersonemail'];
     supportPersonrelationshipt = json['supportPersonrelationshipt'];
@@ -29,6 +32,7 @@ class InterventionlevelOne {
         this.whichBestdescribesYoursituation;
     data['howIsitgoingSofar'] = this.howIsitgoingSofar;
     data['sleepalone'] = this.sleepalone;
+    data['nominateRoommate'] = this.nominateRoommate;
     data['supportPersonname'] = this.supportPersonname;
     data['supportPersonemail'] = this.supportPersonemail;
     data['supportPersonrelationshipt'] = this.supportPersonrelationshipt;
@@ -45,6 +49,9 @@ class InterventionlevelOne {
   void setsleepalone(String value){
     this.sleepalone = value;
   }
+  void setnominateRoommate(String value){
+    this.nominateRoommate = value;
+  }
   void setsupportPersonname(String value){
     this.supportPersonname = value;
   }
@@ -53,5 +60,13 @@ class InterventionlevelOne {
   }
   void setsupportPersonrelationshipt(String value){
     this.supportPersonrelationshipt = value;
+  }
+
+  void nullifyWhichBestdescribesYoursituation(){
+    this.whichBestdescribesYoursituation = null;
+  }
+
+  void nullifyHowIsitgoingSofar(){
+    this.howIsitgoingSofar = null;
   }
 }

@@ -24,7 +24,9 @@ class Level1of7 extends StatefulWidget {
 
   final Future<PatientProfilePodo>? patientProfile;
 
-  Level1of7(this.levelone, this.patientProfile);
+  final int currentPage = 7;
+  final int previousPage;
+  Level1of7(this.levelone, this.patientProfile, this.previousPage);
 
   @override
   _Level1of7State createState() => _Level1of7State();
@@ -40,7 +42,8 @@ class _Level1of7State extends State<Level1of7> {
   int? defaultIndexRoomate = -1;
 
   String sleepalone = "";
-  
+  String nominaterooMate = "";
+
   static final _formKey = GlobalKey<FormBuilderState>();
 
   @override
@@ -181,6 +184,9 @@ class _Level1of7State extends State<Level1of7> {
     levelone.setsupportPersonrelationshipt(relationship);
     levelone.setsupportPersonemail(supemail);
     levelone.setsleepalone(stayalone);
+    levelone.setnominateRoommate(nominaterooMate);
+    levelone.nullifyWhichBestdescribesYoursituation();
+    levelone.nullifyHowIsitgoingSofar();
     return levelone;
   }
 
@@ -398,17 +404,20 @@ class _Level1of7State extends State<Level1of7> {
                       setState(() {
                         formFieldIsVisible = true;
                         radioAloneIsVisible = false;
-                      });  
+                        nominaterooMate = "I will like to nominate this person.";
+                      });
                     }
                     else if(value == 1){
                       setState(() {
                         formFieldIsVisible = true;
                         radioAloneIsVisible = false;
-                      });  
+                        nominaterooMate = "I will like to nominate someone else.";
+                      });
                     }
                     else if(value == 2){
                       setState(() {
                         formFieldIsVisible = false;
+                        nominaterooMate = "I do not want to nominate a support person.";
                       });
                       createAlertDialog(
                           context: context,
@@ -452,6 +461,9 @@ class _Level1of7State extends State<Level1of7> {
               child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
               onPressed: (){
                 levelone.setsleepalone(sleepalone);
+                levelone.setnominateRoommate(nominaterooMate);
+                levelone.nullifyHowIsitgoingSofar();
+                levelone.nullifyWhichBestdescribesYoursituation();
                 ApiAccess().submitLevelone(levelone: levelone);
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => HomeScreen(futureProfile: futureProfile)));

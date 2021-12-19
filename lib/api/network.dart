@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelfivePODO.dart';
@@ -18,6 +17,7 @@ import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/psychoeducationPODO.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/sleepwindowsPODO.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/textexchangePODO.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
@@ -45,12 +45,21 @@ class ApiAccess {
         String? token = cc.token??"";
         print("Token 2 :  $token");
         Localstorage().saveString(key_login_token, token);
-
+        Status? status = cc.status;
+        if(status != null){
+          Localstorage().saveInteger(key_Next_Page, status.nextPage!);
+          Localstorage().saveBoolean(key_Level_One, status.readInterventionGroupleveloneArticle!);
+          Localstorage().saveBoolean(key_Level_Two, status.readInterventionGroupleveltwoArticle!);
+          Localstorage().saveBoolean(key_Level_Three, status.readInterventionGrouplevelthreeArticle!);
+          Localstorage().saveBoolean(key_Level_Four, status.readInterventionGrouplevelfourArticle!);
+          Localstorage().saveBoolean(key_Level_Five, status.readInterventionGrouplevelfiveArticle!);
+          Localstorage().saveBoolean(key_Level_Six, status.readInterventionGrouplevelsixArticle!);
+        }
         PatientProfilePodo profile = await getPatientProfile(cc.token)?? PatientProfilePodo();
         if(profile.firstName != null){
           return profile;
         }else{
-          throw Exception("Could not pull Profile");
+          throw Exception("Could not pull Profile ${response.statusCode}");
         }
       } else {
         throw Exception("Couldn't login, possible wrong passoword");
@@ -138,7 +147,8 @@ class ApiAccess {
 
 
   Future<PatientProfilePodo>? getPatientProfile(String? code) async {
-      String? token;
+    print("Got to this point to pull Profile");
+    String? token;
       if(code == null){
         Future<String?> tk = Localstorage().getString(key_login_token);
         await tk.then((value) => {token = value!});
@@ -626,6 +636,65 @@ class ApiAccess {
     } else {
       throw Exception("Couldn't submit level Six ${response.statusCode}");
     }
+  }
+
+  void savePage({required int currentPage, required int interventionLevel}) async {
+    bool? isSavable;
+    Future<bool> checkEligibility = isEligibletoSave(interventionLevel: interventionLevel, currentPage: currentPage);
+    checkEligibility.then((value) => {isSavable = value});
+    if(isSavable!) {
+      String? token;
+      Future<String?> tk = Localstorage().getString(key_login_token);
+      await tk.then((value) => {token = value!});
+      final response = await http.get(
+          Uri.parse("$Save_Page_url/$currentPage"),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          }
+      );
+
+      if (response.statusCode == 201) {
+        print("Page Session saved ${response.body.toString()}");
+      } else {
+        throw Exception("Page session couldn't saved ${response.statusCode}");
+      }
+    }
+  }
+
+  Future<bool> isEligibletoSave({required int interventionLevel, required int currentPage}) async{
+    bool? isLevelCompleted;
+    switch(interventionLevel){
+      case 1:
+        isLevelCompleted = await Localstorage().getBoolean(key_Level_One);
+        break;
+      case 2:
+        isLevelCompleted = await Localstorage().getBoolean(key_Level_Two);
+        break;
+      case 3:
+        isLevelCompleted = await Localstorage().getBoolean(key_Level_Three);
+        break;
+      case 4:
+        isLevelCompleted = await Localstorage().getBoolean(key_Level_Four);
+        break;
+      case 5:
+        isLevelCompleted = await Localstorage().getBoolean(key_Level_Five);
+        break;
+      case 6:
+        isLevelCompleted = await Localstorage().getBoolean(key_Level_Six);
+        break;
+    }
+
+    if(isLevelCompleted!){
+      return false;
+    } else{
+      int? lastPage = await Localstorage().getInteger(key_Next_Page);
+      if(currentPage < lastPage!){
+        return false;
+      }return true;
+    }
+
   }
 
 

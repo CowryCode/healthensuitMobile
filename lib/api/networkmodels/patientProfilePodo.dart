@@ -73,6 +73,7 @@ class PatientProfilePodo {
         });
     }
     statusEntity = json['statusEntity'] != null ? new StatusEntity.fromJson(json['statusEntity']) : null;
+
     if (json['sleepDiaries'] != null ) {
        sleepDiaries = <SleepDiariesPODO>[];
      //  sleepDiaries;
@@ -165,30 +166,3 @@ class PatientProfilePodo {
   }
 
 }
-
-
-
-// class BedTime1 {
-//   int? hour
-//   int? minute;
-//   int? second;
-//   int? nano;
-//
-//   BedTime({this.hour, this.minute, this.second, this.nano});
-//
-//   BedTime.fromJson(Map<String, dynamic> json) {
-//     hour = json['hour'];
-//     minute = json['minute'];
-//     second = json['second'];
-//     nano = json['nano'];
-//   }
-//
-//   Map<String, dynamic> toJson() {
-//     final Map<String, dynamic> data = new Map<String, dynamic>();
-//     data['hour'] = this.hour;
-//     data['minute'] = this.minute;
-//     data['second'] = this.second;
-//     data['nano'] = this.nano;
-//     return data;
-//   }
-// }

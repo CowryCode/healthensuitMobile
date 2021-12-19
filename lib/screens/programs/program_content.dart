@@ -143,12 +143,7 @@ class _ProgramContentState extends State<ProgramContent> {
                     }
                   }()) ,
                 ),
-                // Padding(
-                //   padding: ProgramContent.sidePad,
-                //   child: Text("Table of Content",
-                //     style: themeData.textTheme.headline5,
-                //   ),
-                // ),
+
                 Container(
                   child:((){
                     if(interventionLevel >= 0 ){
@@ -215,7 +210,7 @@ class _ProgramContentState extends State<ProgramContent> {
    return  levelButtonWidget(topic: "Level 1: Introduction to Health enSuite Insomnia",
         action: (){
           Navigator.push(
-              context, new MaterialPageRoute(builder: (context) => Level1(patientProfile))
+              context, new MaterialPageRoute(builder: (context) => Level1(patientProfile, 1))
           );
         });
   }
@@ -224,7 +219,7 @@ class _ProgramContentState extends State<ProgramContent> {
     return  levelButtonWidget(topic: "Level 2: Introduction to Sleep Restriction",
         action: (){
           Navigator.push(
-              context, new MaterialPageRoute(builder: (context) => Level2(patientProfile))
+              context, new MaterialPageRoute(builder: (context) => Level2(patientProfile:patientProfile))
           );
         });
   }

@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/screens/programs/level1/level1_3.dart';
+import 'package:healthensuite/screens/programs/level1/level1_4.dart';
+import 'package:healthensuite/screens/programs/level1/level1_5.dart';
+import 'package:healthensuite/screens/programs/level1/level1_6.dart';
+import 'package:healthensuite/screens/programs/level1/level1_7.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level1/level1_2.dart';
@@ -10,30 +19,86 @@ class Level1 extends StatefulWidget {
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
+  final int currentPage = 1;
+  final int previousPage;
+
+   // Level1(this.patientProfile);
+  Level1(this.patientProfile,this.previousPage);
 
 
-  Level1(this.patientProfile);
 
   @override
   _Level1State createState() => _Level1State();
 }
 
 class _Level1State extends State<Level1> {
-  String patientName = "Henry";
+  @override
+  void initState() {
+    super.initState();
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      StatusEntity? status;
+      InterventionlevelOne? levelOne;
+      await profile!.then((value) => {
+         status = value.statusEntity,
+         levelOne = value.interventionLevelsEntity!.levelOneEntity
+      });
+      int? nextLevel = status!.nextPage;
+      bool? isCompleted = status!.readInterventionGroupleveloneArticle;
+      if(isCompleted!){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of7(levelOne!, profile, 6))
+        );
+      }else if(nextLevel == 2){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of2(profile, levelOne, 1))
+        );
+      }else if(nextLevel == 3){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of3(levelOne!, profile,2))
+        );
+      }else if(nextLevel == 4){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of4(levelOne!, profile, 3))
+        );
+      }else if(nextLevel == 5){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of5(levelOne!, profile, 4))
+        );
+      }else if(nextLevel == 6){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of6(levelOne!, profile, 5))
+        );
+      }else if(nextLevel == 7){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of7(levelOne!, profile, 6))
+        );
+      }
+    });
+  }
 
+   String patientName = "Henry";
   @override
   Widget build(BuildContext context) {
+    int currentPage = widget.currentPage;
     Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
     //Future.delayed(Duration.zero, () => createAlertDialog(context, themeData));
+    InterventionlevelOne? levelOne;
+     futureprofile!.then((value) => {
+    levelOne = value.interventionLevelsEntity!.levelOneEntity
+    });
+
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text(Level1.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, futureprofile),
+      bottomNavigationBar: buttomBarWidget(context, futureprofile,currentPage, levelOne),
       body: Container(
         width: size.width,
         height: size.height,
@@ -73,10 +138,9 @@ class _Level1State extends State<Level1> {
         ),
       ),
     );
-
   }
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne? levelOne) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -89,12 +153,12 @@ class _Level1State extends State<Level1> {
               MaterialButton(
                 child: Text("Next", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                 onPressed: (){
+                  ApiAccess().savePage(currentPage: currentPage, interventionLevel: 1);
                   Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level1of2(futureProfile))
+                  context, new MaterialPageRoute(builder: (context) => Level1of2(futureProfile,levelOne, currentPage))
                   );
                 }
               ),
-              
             ],
           ),
         ),
