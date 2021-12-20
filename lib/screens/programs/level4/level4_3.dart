@@ -5,20 +5,20 @@ import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level4/level4_4.dart';
 
 
-class Level4of3 extends StatefulWidget {
+class Level4_3of4 extends StatefulWidget {
 
   static final String title = 'Level 4';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
 
 
-  Level4of3(this.patientProfile);
+  Level4_3of4(this.patientProfile);
 
   @override
   _Level40f3State createState() => _Level40f3State();
 }
 
-class _Level40f3State extends State<Level4of3> {
+class _Level40f3State extends State<Level4_3of4> {
   String patientName = "Henry";
 
   @override
@@ -31,7 +31,7 @@ class _Level40f3State extends State<Level4of3> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Level4of3.title),
+        title: Text(Level4_3of4.title),
         centerTitle: true,
       ),
       bottomNavigationBar: buttomBarWidget(context, profile),
@@ -87,13 +87,13 @@ class _Level40f3State extends State<Level4of3> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                padding: Level4of3.sidePad,
+                padding: Level4_3of4.sidePad,
                 child: Text('Page 3/4',
                 textAlign: TextAlign.left,
                 style: themeData.textTheme.bodyText2,),
               ),
               Padding(
-                padding: Level4of3.sidePad,
+                padding: Level4_3of4.sidePad,
                 child: Text('Relaxation Techniques',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
@@ -121,7 +121,7 @@ class _Level40f3State extends State<Level4of3> {
 
               navIconButton(context, buttonText: "Next", buttonActon: (){ 
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level4of4(futureProfile))
+                    context, new MaterialPageRoute(builder: (context) => Level4_4of4(futureProfile))
                     ); 
               }
               ),
@@ -142,7 +142,7 @@ class _Level40f3State extends State<Level4of3> {
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
      return Padding(
-                padding: Level4of3.sidePad,
+                padding: Level4_3of4.sidePad,
                 child: Text(text,
                   style: textStyle,
                 ),
@@ -151,7 +151,7 @@ class _Level40f3State extends State<Level4of3> {
 
   Padding bodyTextWidget(ThemeData themeData, {required String text}) {
     return Padding(
-              padding: Level4of3.sidePad,
+              padding: Level4_3of4.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );

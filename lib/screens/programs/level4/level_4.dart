@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/screens/programs/level2/level2_4.dart';
+import 'package:healthensuite/screens/programs/level4/level4_3.dart';
+import 'package:healthensuite/screens/programs/level4/level4_4.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level4/level4_2.dart';
@@ -20,6 +24,38 @@ class Level4 extends StatefulWidget {
 class _Level4State extends State<Level4> {
   String patientName = "Henry";
   String sleepEfficiency = "86.9%";
+
+  @override
+  void initState() {
+    super.initState();
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      StatusEntity? status;
+      await profile!.then((value) => {
+        status = value.statusEntity,
+      });
+
+      int? nextLevel = status!.nextPage;
+      bool? isCompleted = status!.readInterventionGrouplevelfourArticle;
+      if(isCompleted!){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level4_4of4(profile))
+        );
+      }else if(nextLevel == 2){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level4_2of4(profile))
+        );
+      }else if(nextLevel == 3){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level4_3of4(profile))
+        );
+      }else if(nextLevel == 4){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level4_4of4(profile))
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +150,7 @@ class _Level4State extends State<Level4> {
                 child: Text("Next", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                 onPressed: (){
                   Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level4of2(futureProfile))
+                  context, new MaterialPageRoute(builder: (context) => Level4_2of4(futureProfile))
                   );
                 }
               ),

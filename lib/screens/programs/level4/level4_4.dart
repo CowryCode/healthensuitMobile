@@ -6,20 +6,20 @@ import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 
 
-class Level4of4 extends StatefulWidget {
+class Level4_4of4 extends StatefulWidget {
 
   static final String title = 'Level 4';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
 
 
-  Level4of4(this.patientProfile);
+  Level4_4of4(this.patientProfile);
 
   @override
-  _Level4of4State createState() => _Level4of4State();
+  _Level4_4of4State createState() => _Level4_4of4State();
 }
 
-class _Level4of4State extends State<Level4of4> {
+class _Level4_4of4State extends State<Level4_4of4> {
   String patientName = "Henry";
 
   @override
@@ -32,7 +32,7 @@ class _Level4of4State extends State<Level4of4> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Level4of4.title),
+        title: Text(Level4_4of4.title),
         centerTitle: true,
       ),
       bottomNavigationBar: buttomBarWidget(context, profile),
@@ -82,13 +82,13 @@ class _Level4of4State extends State<Level4of4> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                padding: Level4of4.sidePad,
+                padding: Level4_4of4.sidePad,
                 child: Text('Page 4/4',
                 textAlign: TextAlign.left,
                 style: themeData.textTheme.bodyText2,),
               ),
               Padding(
-                padding: Level4of4.sidePad,
+                padding: Level4_4of4.sidePad,
                 child: Text('Relaxation Techniques',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
@@ -142,7 +142,7 @@ class _Level4of4State extends State<Level4of4> {
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
      return Padding(
-                padding: Level4of4.sidePad,
+                padding: Level4_4of4.sidePad,
                 child: Text(text,
                   style: textStyle,
                 ),
@@ -151,7 +151,7 @@ class _Level4of4State extends State<Level4of4> {
 
   Padding bodyTextWidget(ThemeData themeData, {required String text}) {
     return Padding(
-              padding: Level4of4.sidePad,
+              padding: Level4_4of4.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );
