@@ -1,24 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/levelfivePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/screens/programs/level5/level5_3.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level5/level5_2.dart';
 
 
-class Level5 extends StatefulWidget {
+class Level5_1of3 extends StatefulWidget {
 
   static final String title = 'Level 5';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
 
-  Level5(this.patientProfile);
+  Level5_1of3(this.patientProfile);
 
   @override
-  _Level5State createState() => _Level5State();
+  _Level5_1of3State createState() => _Level5_1of3State();
 }
 
-class _Level5State extends State<Level5> {
+class _Level5_1of3State extends State<Level5_1of3> {
   String patientName = "Henry";
+
+
+  @override
+  void initState() {
+    super.initState();
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      StatusEntity? status;
+      await profile!.then((value) => {
+        status = value.statusEntity,
+      });
+
+      int? nextLevel = status!.nextPage;
+      bool? isCompleted = status!.readInterventionGrouplevelfiveArticle;
+      if(isCompleted!){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level5_3of3(profile))
+        );
+      }else if(nextLevel == 2){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level5_2of3(profile))
+        );
+      }else if(nextLevel == 3){
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level5_3of3(profile))
+        );
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +64,7 @@ class _Level5State extends State<Level5> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Level5.title),
+        title: Text(Level5_1of3.title),
         centerTitle: true,
       ),
       bottomNavigationBar: buttomBarWidget(context, profile),
@@ -45,7 +78,7 @@ class _Level5State extends State<Level5> {
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: Level5.sidePad,
+                padding: Level5_1of3.sidePad,
                 child: Text('Page 1/3',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
@@ -67,7 +100,7 @@ class _Level5State extends State<Level5> {
                      SizedBox(height: pad,),
 
                      Padding(
-                       padding: Level5.sidePad,
+                       padding: Level5_1of3.sidePad,
                        child: Image.asset('assets/images/thoughts-img.jpg'),
                      ),
                      SizedBox(height: pad,),
@@ -109,7 +142,7 @@ class _Level5State extends State<Level5> {
                 child: Text("Next", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                 onPressed: (){
                   Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level5of2(futureProfile))
+                  context, new MaterialPageRoute(builder: (context) => Level5_2of3(futureProfile))
                   );
                 }
               ),
@@ -124,7 +157,7 @@ class _Level5State extends State<Level5> {
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
      return Padding(
-                padding: Level5.sidePad,
+                padding: Level5_1of3.sidePad,
                 child: Text(text,
                   style: textStyle,
                 ),
@@ -172,7 +205,7 @@ class _Level5State extends State<Level5> {
 
   Padding bodyTextWidget(ThemeData themeData, {required String text}) {
     return Padding(
-              padding: Level5.sidePad,
+              padding: Level5_1of3.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );
@@ -181,7 +214,7 @@ class _Level5State extends State<Level5> {
   Card thoughtCard(ThemeData themeData, double pad, BuildContext context, {required String text}) {
      return Card(
             child: Padding(
-                  padding: Level5.sidePad,
+                  padding: Level5_1of3.sidePad,
                   child: Text(text,
                     style: themeData.textTheme.bodyText2,
                   ),

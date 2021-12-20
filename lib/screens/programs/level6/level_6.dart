@@ -211,7 +211,7 @@ class _Level6State extends State<Level6> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: Level5of2.sidePad,
+                          padding: Level5_2of3.sidePad,
                           child: FormBuilderTextField(
                             name: valName,
                             style: themeData.textTheme.headline5,

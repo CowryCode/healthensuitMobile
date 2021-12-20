@@ -246,7 +246,7 @@ class _ProgramContentState extends State<ProgramContent> {
     return levelButtonWidget(topic: "Level 5: Changing Thoughts",
         action: (){
           Navigator.push(
-              context, new MaterialPageRoute(builder: (context) => Level5(patientProfile))
+              context, new MaterialPageRoute(builder: (context) => Level5_1of3(patientProfile))
           );
         });
   }

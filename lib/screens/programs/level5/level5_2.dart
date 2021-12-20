@@ -7,7 +7,7 @@ import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level5/level5_3.dart';
 
-class Level5of2 extends StatefulWidget {
+class Level5_2of3 extends StatefulWidget {
 
   static final String title = 'Level 5';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
@@ -15,13 +15,13 @@ class Level5of2 extends StatefulWidget {
   final Future<PatientProfilePodo>? patientProfile;
 
 
-  Level5of2(this.patientProfile);
+  Level5_2of3(this.patientProfile);
 
   @override
   _Level50f2State createState() => _Level50f2State();
 }
 
-class _Level50f2State extends State<Level5of2> {
+class _Level50f2State extends State<Level5_2of3> {
   String patientName = "Henry";
   static final _formKey = GlobalKey<FormBuilderState>();
 
@@ -35,7 +35,7 @@ class _Level50f2State extends State<Level5of2> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Level5of2.title),
+        title: Text(Level5_2of3.title),
         centerTitle: true,
       ),
       bottomNavigationBar: buttomBarWidget(context, _formKey, futureprofile),
@@ -127,13 +127,13 @@ class _Level50f2State extends State<Level5of2> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                padding: Level5of2.sidePad,
+                padding: Level5_2of3.sidePad,
                 child: Text('Page 2/3',
                 textAlign: TextAlign.left,
                 style: themeData.textTheme.bodyText2,),
               ),
               Padding(
-                padding: Level5of2.sidePad,
+                padding: Level5_2of3.sidePad,
                 child: Text('Changing Thoughts',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
@@ -189,7 +189,7 @@ class _Level50f2State extends State<Level5of2> {
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
      return Padding(
-                padding: Level5of2.sidePad,
+                padding: Level5_2of3.sidePad,
                 child: Text(text,
                   style: textStyle,
                 ),
@@ -198,7 +198,7 @@ class _Level50f2State extends State<Level5of2> {
 
   Padding bodyTextWidget(ThemeData themeData, {required String text}) {
     return Padding(
-              padding: Level5of2.sidePad,
+              padding: Level5_2of3.sidePad,
               child: Text(text, 
                 style: themeData.textTheme.bodyText1,),
             );
@@ -216,7 +216,7 @@ class _Level50f2State extends State<Level5of2> {
   Card thoughtCard(ThemeData themeData, double pad, BuildContext context, {required String text}) {
      return Card(
             child: Padding(
-                  padding: Level5of2.sidePad,
+                  padding: Level5_2of3.sidePad,
                   child: Text(text,
                     style: themeData.textTheme.bodyText2,
                   ),
@@ -231,7 +231,7 @@ class _Level50f2State extends State<Level5of2> {
                       children: [
                         sectionTitleWidget(themeData, text: title, textStyle: themeData.textTheme.headline5),
                         Padding(
-                          padding: Level5of2.sidePad,
+                          padding: Level5_2of3.sidePad,
                           child: FormBuilderTextField(
                             name: valName,
                             style: themeData.textTheme.headline5,
@@ -269,7 +269,7 @@ class _Level50f2State extends State<Level5of2> {
                   onPressed: (){
                     submitVariables(key);
                     Navigator.push(
-                        context, new MaterialPageRoute(builder: (context) => Level5of3(futureProfile))
+                        context, new MaterialPageRoute(builder: (context) => Level5_3of3(futureProfile))
                     );
                   }
               ),
