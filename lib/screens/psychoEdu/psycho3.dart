@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/psychoeducationPODO.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -12,6 +13,7 @@ class Psycho3 extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final PsychoeducationDTO psychoeducationDTO;
   Future<PatientProfilePodo>? futureProfile;
+  final int currentPage = 3;
 
   Psycho3(this.psychoeducationDTO, this.futureProfile);
 
@@ -91,7 +93,8 @@ class _Psycho3 extends State<Psycho3> {
               }),
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
-                 Navigator.push(
+                ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 7);
+                Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => Psycho4(psycheducation, futureProfile))
                     );
               }),

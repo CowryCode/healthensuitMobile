@@ -1,4 +1,5 @@
 class PsychoeducationDTO {
+  int? id;
   bool? morethan30MinstoSleep;
   bool? wakeupfrequentlyatnight;
   bool? wakeuptooearly;
@@ -6,17 +7,21 @@ class PsychoeducationDTO {
   bool? ifeelconfident;
   bool? ithinkitsdifficult;
   bool? idontknow;
+  bool? completed;
 
   PsychoeducationDTO(
-      {this.morethan30MinstoSleep,
+      {this.id,
+        this.morethan30MinstoSleep,
         this.wakeupfrequentlyatnight,
         this.wakeuptooearly,
         this.sleepqualitypoor,
         this.ifeelconfident,
         this.ithinkitsdifficult,
-        this.idontknow});
+        this.idontknow,
+      this.completed});
 
   PsychoeducationDTO.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     morethan30MinstoSleep = json['morethan30MinstoSleep'];
     wakeupfrequentlyatnight = json['wakeupfrequentlyatnight'];
     wakeuptooearly = json['wakeuptooearly'];
@@ -24,10 +29,12 @@ class PsychoeducationDTO {
     ifeelconfident = json['ifeelconfident'];
     ithinkitsdifficult = json['ithinkitsdifficult'];
     idontknow = json['idontknow'];
+    completed = json['completed'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['morethan30MinstoSleep'] = this.morethan30MinstoSleep;
     data['wakeupfrequentlyatnight'] = this.wakeupfrequentlyatnight;
     data['wakeuptooearly'] = this.wakeuptooearly;
@@ -35,6 +42,7 @@ class PsychoeducationDTO {
     data['ifeelconfident'] = this.ifeelconfident;
     data['ithinkitsdifficult'] = this.ithinkitsdifficult;
     data['idontknow'] = this.idontknow;
+    data['completed'] = this.completed;
     return data;
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -12,6 +13,7 @@ class Level5_3of3 extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
   final Future<PatientProfilePodo>? patientProfile;
+  final int currentPage = 3;
 
   Level5_3of3(this.patientProfile);
 
@@ -123,6 +125,7 @@ class _Level5_3of3State extends State<Level5_3of3> {
               }),
 
               navIconButton(context, buttonText: "Conclude Level 5", buttonActon: (){
+                ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 5);
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => HomeScreen(futureProfile: futureProfile)));
               }

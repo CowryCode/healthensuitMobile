@@ -22,6 +22,7 @@ class Level2 extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
   final Future<PatientProfilePodo>? patientProfile;
+  final int currentPage = 1;
 
   Level2({ required this.patientProfile, this.timedout: false});
 
@@ -208,6 +209,7 @@ class _Level2State extends State<Level2> {
                         child: Text("Next", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                         onPressed: (){
                           print("Level 1 of 4 ${l2V.averagesleepefficiency}");
+                          ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 2);
                           Navigator.push(
                               context, new MaterialPageRoute(builder: (context) => Level2_2of4(patientProfile, l2V))
                           );

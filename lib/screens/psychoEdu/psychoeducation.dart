@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/psychoeducationPODO.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/screens/psychoEdu/psycho3.dart';
+import 'package:healthensuite/screens/psychoEdu/psycho4.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -14,6 +18,7 @@ class PsychoEducation extends StatefulWidget {
   static final String title = 'Psychoeducation';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
+  final int currentPage = 1;
 
 
   const PsychoEducation({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
@@ -23,6 +28,44 @@ class PsychoEducation extends StatefulWidget {
 }
 
 class _PsychoEducationState extends State<PsychoEducation> {
+
+  @override
+  void initState() {
+    super.initState();
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
+    Future<PsychoeducationDTO> psychoeducation  = ApiAccess().getIncompletePsychoeducation();
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      StatusEntity? status;
+      PsychoeducationDTO? psyEdu;
+      await profile!.then((value) => {
+        status = value.statusEntity,
+      });
+      await psychoeducation.then((value) => {
+        psyEdu = value
+      });
+      int? nextLevel = status!.nextPage;
+      bool? isCompleted = psyEdu!.completed;
+      if(!isCompleted!) {
+        if (nextLevel == 2) {
+          Navigator.push(
+              context, new MaterialPageRoute(
+              builder: (context) => Psycho2(psyEdu!, profile))
+          );
+        } else if (nextLevel == 3) {
+          Navigator.push(
+              context, new MaterialPageRoute(
+              builder: (context) => Psycho3(psyEdu!, profile))
+          );
+        } else if (nextLevel == 4) {
+          Navigator.push(
+              context, new MaterialPageRoute(
+              builder: (context) => Psycho4(psyEdu!, profile))
+          );
+        }
+      }
+    });
+  }
+
    @override
   Widget build(BuildContext context) {
      Future<PatientProfilePodo>? profile = widget.patientProfile;
@@ -148,7 +191,8 @@ class _PsychoEducationState extends State<PsychoEducation> {
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 PsychoeducationDTO psyEdu = getSelectedValue(key)?? PsychoeducationDTO();
-                  Navigator.push(
+                // Intervention Levels ends in 6, we used 7 to represent PsychoEducation
+                Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => Psycho2(psyEdu, futureProfile))
                     );
                 }
@@ -193,7 +237,9 @@ class _PsychoEducationState extends State<PsychoEducation> {
        }
      }
 
-  }
+     ApiAccess().submitPsychoEducation(psychoeducationDTO: psychoeducationDTO);
+
+   }
 
   // IconButton navIconButton(BuildContext context, {IconData buttonIcon, Function buttonActon}) {
   //   return IconButton(

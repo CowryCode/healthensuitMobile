@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -13,6 +14,7 @@ class Level2_3of4 extends StatefulWidget {
   final Future<PatientProfilePodo>? patientProfile;
   final LeveltwoVariables? variables;
 
+  final int currentPage = 3;
 
   Level2_3of4(this.patientProfile, this.variables);
 
@@ -126,6 +128,7 @@ class _Level2_3of4State extends State<Level2_3of4> {
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 print("Level 3 of 4 ${l2vals.averagenumberofbedhours}");
+                ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 2);
                 Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => Level2_4of4(patientProfile, l2vals))
                     );

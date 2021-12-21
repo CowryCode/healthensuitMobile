@@ -347,6 +347,35 @@ class ApiAccess {
     }
   }
 
+  Future<PsychoeducationDTO> getIncompletePsychoeducation() async {
+    String? token;
+    Future<String?> tk = Localstorage().getString(key_login_token);
+    await tk.then((value) => {token = value!});
+
+    try {
+      final response = await http.get(Uri.parse(get_Incomplete_psychoeducation_url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        // body: jsonEncode(<String, dynamic>{
+        //   "startDate": startDate,
+        //   "endDate": endDate
+        // }),
+      );
+      if (response.statusCode == 200) {
+        PsychoeducationDTO psychoEdu = PsychoeducationDTO.fromJson(jsonDecode(response.body));
+
+        return psychoEdu;
+      } else {
+        throw Exception("Could not pull the PsychoEducation, status code ${response.statusCode} ");
+      }
+    } catch (e) {
+      throw Exception("Could not pull the PsychoEducation, status code ${e.toString()}");
+    }
+  }
+
   Future<PsychoeducationDTO> submitPsychoEducation({required PsychoeducationDTO psychoeducationDTO}) async {
       String? token;
       Future<String?> tk = Localstorage().getString(key_login_token);
@@ -361,6 +390,7 @@ class ApiAccess {
         },
         body: jsonEncode(
             <String, dynamic>{
+              "id": psychoeducationDTO.id,
               "morethan30MinstoSleep": psychoeducationDTO.morethan30MinstoSleep,
               "wakeupfrequentlyatnight": psychoeducationDTO
                   .wakeupfrequentlyatnight,
@@ -684,6 +714,8 @@ class ApiAccess {
       case 6:
         isLevelCompleted = await Localstorage().getBoolean(key_Level_Six);
         break;
+      case 7:
+        return true; // The level 7 is used for PsychoEducation (it should always be true)
     }
 
     if(isLevelCompleted!){
