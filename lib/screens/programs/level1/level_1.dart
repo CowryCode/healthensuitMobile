@@ -38,16 +38,20 @@ class _Level1State extends State<Level1> {
     Future<PatientProfilePodo>? profile = widget.patientProfile;
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
       StatusEntity? status;
-      InterventionlevelOne? levelOne;
+      InterventionlevelOne levelOne = new InterventionlevelOne();
       await profile!.then((value) => {
          status = value.statusEntity,
-         levelOne = value.interventionLevelsEntity!.levelOneEntity
+        if(value.interventionLevelsEntity != null){
+          if(value.interventionLevelsEntity!.levelOneEntity != null){
+            levelOne = value.interventionLevelsEntity!.levelOneEntity!
+          }
+        }
       });
       int? nextLevel = status!.nextPage;
       bool? isCompleted = status!.readInterventionGroupleveloneArticle;
       if(isCompleted!){
         Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level1of7(levelOne!, profile, 6))
+            context, new MaterialPageRoute(builder: (context) => Level1of7(levelOne, profile, 6))
         );
       }else if(nextLevel == 2){
         Navigator.push(
@@ -55,23 +59,23 @@ class _Level1State extends State<Level1> {
         );
       }else if(nextLevel == 3){
         Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level1of3(levelOne!, profile,2))
+            context, new MaterialPageRoute(builder: (context) => Level1of3(levelOne, profile,2))
         );
       }else if(nextLevel == 4){
         Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level1of4(levelOne!, profile, 3))
+            context, new MaterialPageRoute(builder: (context) => Level1of4(levelOne, profile, 3))
         );
       }else if(nextLevel == 5){
         Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level1of5(levelOne!, profile, 4))
+            context, new MaterialPageRoute(builder: (context) => Level1of5(levelOne, profile, 4))
         );
       }else if(nextLevel == 6){
         Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level1of6(levelOne!, profile, 5))
+            context, new MaterialPageRoute(builder: (context) => Level1of6(levelOne, profile, 5))
         );
       }else if(nextLevel == 7){
         Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level1of7(levelOne!, profile, 6))
+            context, new MaterialPageRoute(builder: (context) => Level1of7(levelOne, profile, 6))
         );
       }
     });
@@ -86,12 +90,16 @@ class _Level1State extends State<Level1> {
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
     //Future.delayed(Duration.zero, () => createAlertDialog(context, themeData));
-    InterventionlevelOne? levelOne;
-     futureprofile!.then((value) => {
-    levelOne = value.interventionLevelsEntity!.levelOneEntity
+    InterventionlevelOne levelOne = new InterventionlevelOne();
+    futureprofile!.then((value) => {
+      if(value != null){
+        if(value.interventionLevelsEntity != null){
+          if(value.interventionLevelsEntity!.levelOneEntity != null){
+            levelOne = value.interventionLevelsEntity!.levelOneEntity!
+          }
+        }
+      }
     });
-
-
 
     return Scaffold(
       appBar: AppBar(
@@ -140,7 +148,7 @@ class _Level1State extends State<Level1> {
     );
   }
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne? levelOne) {
+  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne levelOne) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,

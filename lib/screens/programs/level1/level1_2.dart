@@ -14,7 +14,7 @@ class Level1of2 extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   static final optionPad = EdgeInsets.only(bottom: 10.0);
   final Future<PatientProfilePodo>? patientProfile;
-  final InterventionlevelOne? levelOneEntity;
+  final InterventionlevelOne levelOneEntity;
 
   final int currentPage = 2;
   final int previousPage;
@@ -32,7 +32,7 @@ class _Level1of2State extends State<Level1of2> {
   Widget build(BuildContext context) {
     int currentPage = widget.currentPage;
     Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
-    InterventionlevelOne? levelOneEntity;
+    InterventionlevelOne levelOneEntity = widget.levelOneEntity;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     final _formKey = GlobalKey<FormBuilderState>();
@@ -146,7 +146,7 @@ class _Level1of2State extends State<Level1of2> {
                    );
   }
 
-  InterventionlevelOne getSelectedValue(GlobalKey<FormBuilderState> key, InterventionlevelOne? levelOne){
+  InterventionlevelOne getSelectedValue(GlobalKey<FormBuilderState> key, InterventionlevelOne levelOne){
     var result = key.currentState!.fields["situationList"]!.value;
   //  InterventionlevelOne levelOne = InterventionlevelOne();
   //  String choice = result[0]; // You have to loop through this result when it starts populating
@@ -155,11 +155,11 @@ class _Level1of2State extends State<Level1of2> {
       choices = choices + result[x];
     }
    // levelOne.setwhichBestdescribesYoursituation(choice);
-    levelOne!.setwhichBestdescribesYoursituation(choices);
+    levelOne.setwhichBestdescribesYoursituation(choices);
     return levelOne;
   }
 
-  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne? levelOne) {
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne levelOne) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,

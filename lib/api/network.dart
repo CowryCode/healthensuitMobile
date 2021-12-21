@@ -155,6 +155,7 @@ class ApiAccess {
       }else{
         token = code;
       }
+      print("The token is $token");
       final response = await http.get(
           Uri.parse(patientprofile_url), headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -669,10 +670,14 @@ class ApiAccess {
   }
 
   void savePage({required int currentPage, required int interventionLevel}) async {
-    bool? isSavable;
+    bool isSavable = false;
     Future<bool> checkEligibility = isEligibletoSave(interventionLevel: interventionLevel, currentPage: currentPage);
-    checkEligibility.then((value) => {isSavable = value});
-    if(isSavable!) {
+    await checkEligibility.then((value) => {
+      isSavable = value,
+      print("the eligibility status is T: $isSavable")
+    });
+    if(isSavable == true) {
+      print("the eligibility status is T1: $isSavable");
       String? token;
       Future<String?> tk = Localstorage().getString(key_login_token);
       await tk.then((value) => {token = value!});

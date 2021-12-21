@@ -126,7 +126,7 @@ class _ProgramContentState extends State<ProgramContent> {
                 SizedBox(height: pad,),
                 Container(
                   child:((){
-                    if(interventionLevel >= 0 ){
+                    if(interventionLevel >= -1 ){
                       return Padding(
                         padding: ProgramContent.sidePad,
                         child: Text("Table of Content",
