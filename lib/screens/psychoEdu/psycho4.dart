@@ -15,12 +15,13 @@ class MyChoice{
   MyChoice({this.choice, this.index, this.choiceValue});
 }
 
+int? patientChoice;
 
 class Psycho4 extends StatefulWidget {
-
   static final String title = 'Psychoeducation';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final PsychoeducationDTO psychoeducationDTO;
+
   Future<PatientProfilePodo>? futureProfile;
 
 
@@ -125,8 +126,9 @@ class _Psycho4 extends State<Psycho4> {
   }
 
   PsychoeducationDTO getSelectedValue(PsychoeducationDTO psychoeducationDTO){
-    int choice = RadioGroup().patientChoice;
-      if(choice == 5){
+   // int choice = RadioGroup().patientChoice;
+    int? choice = patientChoice;
+    if(choice == 5){
         psychoeducationDTO.setifeelconfident(true);
       }
       if(choice == 6){
@@ -135,6 +137,7 @@ class _Psycho4 extends State<Psycho4> {
       if(choice == 7){
         psychoeducationDTO.setidontknow(true);
       }
+      psychoeducationDTO.setCompleteStatus(isCompleted: true);
       return psychoeducationDTO;
   }
 
@@ -268,15 +271,21 @@ class _RadioGroupState extends State<RadioGroup> {
                         defaultChoice = data.choice; 
                         defaultIndex = data.index; 
                         if(value == 0){
-                          widget.patientChoice = 5;
+                         // widget.patientChoice = 5;
+                          RadioGroup().patientChoice = 5;
+                          patientChoice = 5;
                           createAlertDialog(context, head: "Great!", body: "You can track your progress in the Medication Log.");
                         }
                         else if(value == 1){
-                          widget.patientChoice = 6;
+                         // widget.patientChoice = 6;
+                          RadioGroup().patientChoice = 6;
+                          patientChoice = 6;
                           createAlertDialog(context, head: "Change can be difficult!", body: "This app provides tools that should help make it easier for you. If you need to modify the plan please consult your health care provider.");
                         }
                         else if(value == 2){
-                          widget.patientChoice = 7;
+                        //  widget.patientChoice = 7;
+                          RadioGroup().patientChoice = 7;
+                          patientChoice = 7;
                           createAlertDialog(context, head: "Attention!", body: "Use the medications tab on the dashboard to view your tapering schedule.");
                         }
                         print('You clicked me: $value');         

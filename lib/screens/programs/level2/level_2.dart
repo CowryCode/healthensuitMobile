@@ -51,7 +51,7 @@ class _Level2State extends State<Level2> {
         levelTwo = value.interventionLevelsEntity!.levelTwoEntity
       });
 
-      LeveltwoVariables? l2VExracted;
+      LeveltwoVariables l2VExracted = new LeveltwoVariables();
       await l2Vairiables!.then((value) => {
         l2VExracted = value
       });

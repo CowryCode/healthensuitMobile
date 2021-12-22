@@ -24,8 +24,8 @@ class Level4 extends StatefulWidget {
 }
 
 class _Level4State extends State<Level4> {
-  String patientName = "Henry";
-  String sleepEfficiency = "86.9%";
+  String patientName = "";
+ // String sleepEfficiency = "86.9%";
 
   @override
   void initState() {
@@ -35,6 +35,7 @@ class _Level4State extends State<Level4> {
       StatusEntity? status;
       await profile!.then((value) => {
         status = value.statusEntity,
+        patientName = value.firstName!
       });
 
       int? nextLevel = status!.nextPage;

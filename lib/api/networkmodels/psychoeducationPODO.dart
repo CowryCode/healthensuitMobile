@@ -8,6 +8,7 @@ class PsychoeducationDTO {
   bool? ithinkitsdifficult;
   bool? idontknow;
   bool? completed;
+  String? Date_Created;
 
   PsychoeducationDTO(
       {this.id,
@@ -18,7 +19,8 @@ class PsychoeducationDTO {
         this.ifeelconfident,
         this.ithinkitsdifficult,
         this.idontknow,
-      this.completed});
+      this.completed,
+      this.Date_Created});
 
   PsychoeducationDTO.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -30,6 +32,7 @@ class PsychoeducationDTO {
     ithinkitsdifficult = json['ithinkitsdifficult'];
     idontknow = json['idontknow'];
     completed = json['completed'];
+    Date_Created = json['Date_Created'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +46,7 @@ class PsychoeducationDTO {
     data['ithinkitsdifficult'] = this.ithinkitsdifficult;
     data['idontknow'] = this.idontknow;
     data['completed'] = this.completed;
+    data['Date_Created'] = this.Date_Created;
     return data;
   }
 
@@ -66,5 +70,8 @@ class PsychoeducationDTO {
   }
   void setidontknow(bool value){
     this.idontknow = value;
+  }
+  void setCompleteStatus({required bool isCompleted}){
+    this.completed = isCompleted;
   }
 }

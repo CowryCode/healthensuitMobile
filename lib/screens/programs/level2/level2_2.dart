@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -14,7 +15,7 @@ class Level2_2of4 extends StatefulWidget {
 
   final Future<PatientProfilePodo>? patientProfile;
 
-  final LeveltwoVariables? l2variables;
+  final LeveltwoVariables l2variables;
 
 
   Level2_2of4(this.patientProfile, this.l2variables);
@@ -31,7 +32,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
   @override
   Widget build(BuildContext context) {
     Future<PatientProfilePodo>? profile = widget.patientProfile;
-    LeveltwoVariables? variables = widget.l2variables;
+    LeveltwoVariables variables = widget.l2variables;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
@@ -43,7 +44,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
         title: Text(Level2_2of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, profile, variables!),
+      bottomNavigationBar: buttomBarWidget(context, profile, variables),
       body: Container(
         width: size.width,
         height: size.height,
@@ -70,7 +71,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet35"]!),
 
                      SizedBox(height: pad,),
-                     timeQuestion(Level2_2of4.sidePad, themeData, context, question: "Choose Your Rise Time:", valName: "riseTime"),
+                     timeQuestion(Level2_2of4.sidePad, themeData, context, question: "Choose Your Rise Time:", valName: "riseTime", l2variables: variables),
 
                    ],
                 ),
@@ -109,7 +110,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
   }
 
 
-  Padding timeQuestion(EdgeInsets sidePad, ThemeData themeData, BuildContext context, {required String question, required String valName}) {
+  Padding timeQuestion(EdgeInsets sidePad, ThemeData themeData, BuildContext context, {required String question, required String valName, required LeveltwoVariables l2variables}) {
     return Padding(
               padding: sidePad,
               child: Column(
@@ -122,13 +123,13 @@ class _Level2_2of4State extends State<Level2_2of4> {
                       Expanded(
                         child: FormBuilderTextField(
                           name: valName,
-                          initialValue: getText(_formKey, time, valName),
+                          initialValue: getText(_formKey, time, valName, l2variables),
                           readOnly: true,
                           style: themeData.textTheme.bodyText1,
                         ),
                       ),
                       IconButton(
-                        onPressed: () => pickTime(context, _formKey, valName, time),
+                        onPressed: () => pickTime(context, _formKey, valName, time, l2variables),
                         icon: Icon(Icons.lock_clock),
                         color: appItemColorBlue,
                       ),
@@ -140,7 +141,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
             );
   }
 
-  Future pickTime(BuildContext context, GlobalKey<FormBuilderState> key, String valName, TimeOfDay? time) async {
+  Future pickTime(BuildContext context, GlobalKey<FormBuilderState> key, String valName, TimeOfDay? time, LeveltwoVariables l2variables) async {
     final initialTime = TimeOfDay(hour: 5, minute: 0);
     final newTime = await showTimePicker(
       context: context,
@@ -151,10 +152,12 @@ class _Level2_2of4State extends State<Level2_2of4> {
 
     time = newTime;
     print("New Time $time");
-    getText(key, time, valName);
+    String newRiseTime =  getText(key, time, valName, l2variables);
+    l2variables.setNewriseTime(newRiseTime);
+    l2variables.setCompleted(isCompleted: false);
   }
 
-  String getText(GlobalKey<FormBuilderState> key, TimeOfDay? time, String valName) {
+  String getText(GlobalKey<FormBuilderState> key, TimeOfDay? time, String valName, LeveltwoVariables l2variables) {
     String timeVal = "Click the left icon to select time";    
     if (time == null) {
       return timeVal;
@@ -162,6 +165,9 @@ class _Level2_2of4State extends State<Level2_2of4> {
       final hours = time.hour.toString().padLeft(2, '0');
       final minutes = time.minute.toString().padLeft(2, '0');
       timeVal = '$hours:$minutes';
+      print("The real time is $timeVal");
+      l2variables.setNewriseTime(timeVal);
+      l2variables.setCompleted(isCompleted: false);
       key.currentState!.fields[valName]!.didChange(timeVal);
       return timeVal;
     }
@@ -183,6 +189,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
 
               navIconButton(context, buttonText: "Submit Rise Time", buttonActon: (){
                 print("Level 2 of 4 ${l2variables.averagenumberofbedhours}");
+                ApiAccess().submitLeveTwo(levelTwo: l2variables);
                 Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => Level2_3of4(patientProfile,l2variables))
                     );

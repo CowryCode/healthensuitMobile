@@ -12,7 +12,7 @@ class Level2_3of4 extends StatefulWidget {
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
-  final LeveltwoVariables? variables;
+  final LeveltwoVariables variables;
 
   final int currentPage = 3;
 
@@ -25,8 +25,8 @@ class Level2_3of4 extends StatefulWidget {
 class _Level2_3of4State extends State<Level2_3of4> {
   String patientName = "Henry";
  // String sleepEfficiency = "86.9%";
-  String yourBTime = "10:30";
-  String yourRTime = "05:30";
+ // String yourBTime = "10:30";
+ // String yourRTime = "05:30";
 
 
   @override
@@ -38,8 +38,8 @@ class _Level2_3of4State extends State<Level2_3of4> {
     
     double pad = 18;
 
-    l2variables!.setNewbedTime(yourBTime);
-    l2variables.setNewriseTime(yourRTime);
+  //  l2variables.setNewbedTime(yourBTime);
+  //  l2variables.setNewriseTime(yourRTime);
 
     return Scaffold(
       appBar: AppBar(
@@ -70,7 +70,7 @@ class _Level2_3of4State extends State<Level2_3of4> {
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet37"]!),
 
                      SizedBox(height: pad,),
-                     chosenTimeTable(themeData),
+                     chosenTimeTable(themeData, l2variables),
                      SizedBox(height: pad,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet38"]!),
 
@@ -166,14 +166,14 @@ class _Level2_3of4State extends State<Level2_3of4> {
             );
   }
 
-  Padding chosenTimeTable(ThemeData themeData) {
+  Padding chosenTimeTable(ThemeData themeData, LeveltwoVariables l2vals) {
     return Padding(
             padding: Level2_3of4.sidePad,
             child: DataTable(
               columns: tableHeaderWidget(themeData),
               rows: [
-                rowWidget(themeData, desc: "Your Bed Time (In 24 Hours)", value: "$yourBTime"),
-                rowWidget(themeData, desc: "Your Rise Time (In 24 Hours)", value: "$yourRTime"),
+                rowWidget(themeData, desc: "Your Bed Time (In 24 Hours)", value: "${l2vals.averagebedtiime}"),
+                rowWidget(themeData, desc: "Your Rise Time (In 24 Hours)", value: "${l2vals.averagerisetime}"),
                 
               ],
             )

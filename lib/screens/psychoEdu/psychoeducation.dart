@@ -20,15 +20,14 @@ class PsychoEducation extends StatefulWidget {
   final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 1;
 
-
-  const PsychoEducation({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+  PsychoeducationDTO? updatedPED;
+  PsychoEducation({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
 
   @override
   _PsychoEducationState createState() => _PsychoEducationState();
 }
 
 class _PsychoEducationState extends State<PsychoEducation> {
-
   @override
   void initState() {
     super.initState();
@@ -36,11 +35,12 @@ class _PsychoEducationState extends State<PsychoEducation> {
     Future<PsychoeducationDTO> psychoeducation  = ApiAccess().getIncompletePsychoeducation();
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
       StatusEntity? status;
-      PsychoeducationDTO? psyEdu;
+     PsychoeducationDTO? psyEdu;
       await profile!.then((value) => {
         status = value.statusEntity,
       });
       await psychoeducation.then((value) => {
+        widget.updatedPED = value,
         psyEdu = value
       });
       int? nextLevel = status!.nextPage;
@@ -49,17 +49,17 @@ class _PsychoEducationState extends State<PsychoEducation> {
         if (nextLevel == 2) {
           Navigator.push(
               context, new MaterialPageRoute(
-              builder: (context) => Psycho2(psyEdu!, profile))
+              builder: (context) => Psycho2(widget.updatedPED!, profile))
           );
         } else if (nextLevel == 3) {
           Navigator.push(
               context, new MaterialPageRoute(
-              builder: (context) => Psycho3(psyEdu!, profile))
+              builder: (context) => Psycho3(widget.updatedPED!, profile))
           );
         } else if (nextLevel == 4) {
           Navigator.push(
               context, new MaterialPageRoute(
-              builder: (context) => Psycho4(psyEdu!, profile))
+              builder: (context) => Psycho4(widget.updatedPED!, profile))
           );
         }
       }
@@ -175,7 +175,7 @@ class _PsychoEducationState extends State<PsychoEducation> {
                    );
   }
 
-  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key,Future<PatientProfilePodo>? futureProfile ) {
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key,Future<PatientProfilePodo>? futureProfile) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -190,8 +190,9 @@ class _PsychoEducationState extends State<PsychoEducation> {
               }),
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
-                PsychoeducationDTO psyEdu = getSelectedValue(key)?? PsychoeducationDTO();
+                PsychoeducationDTO psyEdu = getSelectedValue(key, widget.updatedPED!);
                 // Intervention Levels ends in 6, we used 7 to represent PsychoEducation
+                 ApiAccess().submitPsychoEducation(psychoeducationDTO: psyEdu);
                 Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => Psycho2(psyEdu, futureProfile))
                     );
@@ -205,16 +206,18 @@ class _PsychoEducationState extends State<PsychoEducation> {
     );
   }
 
-   PsychoeducationDTO? getSelectedValue(GlobalKey<FormBuilderState> key){
+  PsychoeducationDTO getSelectedValue(GlobalKey<FormBuilderState> key, PsychoeducationDTO psychoeducationDTO){
      var result = key.currentState!.fields["situationList"]!.value;
-     PsychoeducationDTO psychoeducationDTO = PsychoeducationDTO();
-     psychoeducationDTO.setmorethan30MinstoSleep(false);
+   //  PsychoeducationDTO psychoeducationDTO = PsychoeducationDTO();
+     print("::::THE ID IS ::::::::::: ${psychoeducationDTO.id}");
+    psychoeducationDTO.setmorethan30MinstoSleep(false);
      psychoeducationDTO.setwakeupfrequentlyatnight(false);
      psychoeducationDTO.setwakeuptooearly(false);
      psychoeducationDTO.setsleepqualitypoor(false);
      psychoeducationDTO.setifeelconfident(false);
      psychoeducationDTO.setithinkitsdifficult(false);
      psychoeducationDTO.setidontknow(false);
+     psychoeducationDTO.setCompleteStatus(isCompleted: false);
 
      if(result.length > 0){
        for(int i = 0; i < result.length ; i++){
@@ -232,13 +235,10 @@ class _PsychoEducationState extends State<PsychoEducation> {
            if(int.parse(choice) == 4){
              psychoeducationDTO.setsleepqualitypoor(true);
            }
-           return psychoeducationDTO;
          }
        }
      }
-
-     ApiAccess().submitPsychoEducation(psychoeducationDTO: psychoeducationDTO);
-
+     return psychoeducationDTO;
    }
 
   // IconButton navIconButton(BuildContext context, {IconData buttonIcon, Function buttonActon}) {

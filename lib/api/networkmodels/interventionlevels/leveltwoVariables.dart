@@ -9,6 +9,7 @@ class LeveltwoVariables {
   String? message;
   String? newBedtime;
   String? newRisetime;
+  bool? completed;
 
   LeveltwoVariables(
       {this.averagebedtiime,
@@ -20,7 +21,8 @@ class LeveltwoVariables {
         this.averagenumberofbedhours,
         this.message,
         this.newBedtime,
-        this.newRisetime
+        this.newRisetime,
+        this.completed
       });
 
   LeveltwoVariables.fromJson(Map<String, dynamic> json) {
@@ -32,8 +34,9 @@ class LeveltwoVariables {
     averagenumberofsleephours = json['averagenumberofsleephours'];
     averagenumberofbedhours = json['averagenumberofbedhours'];
     message = json['message'];
-    message = json['newBedtime'];
-    message = json['newRisetime'];
+    newBedtime = json['newBedtime'];
+    newRisetime = json['newRisetime'];
+    completed = json['completed'];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,6 +51,7 @@ class LeveltwoVariables {
     data['message'] = this.message;
     data['newBedtime'] = this.newBedtime;
     data['newRisetime'] = this.newRisetime;
+    data['completed'] = this.completed;
     return data;
   }
 
@@ -57,5 +61,9 @@ class LeveltwoVariables {
 
   void setNewriseTime(String risetime){
     this.newRisetime = risetime;
+  }
+
+  void setCompleted({required bool isCompleted}){
+    this.completed = isCompleted;
   }
 }

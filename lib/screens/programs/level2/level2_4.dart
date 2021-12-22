@@ -13,8 +13,8 @@ class Level2_4of4 extends StatefulWidget {
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final Future<PatientProfilePodo>? patientProfile;
-  final LeveltwoVariables? l2variables;
-
+  final LeveltwoVariables l2variables;
+  final int currentPage = 4;
 
   Level2_4of4(this.patientProfile, this.l2variables);
 
@@ -44,7 +44,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
         title: Text(Level2_4of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, l2variable!, profile),
+      bottomNavigationBar: buttomBarWidget(context, l2variable, profile),
       body: Container(
         width: size.width,
         height: size.height,
@@ -218,6 +218,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
               MaterialButton(
                   child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                   onPressed: (){
+                    variables.setCompleted(isCompleted: true);
                     ApiAccess().submitLeveTwo(levelTwo: variables);
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => HomeScreen(futureProfile: futureProfile)));

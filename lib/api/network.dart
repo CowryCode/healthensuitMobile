@@ -367,13 +367,12 @@ class ApiAccess {
       );
       if (response.statusCode == 200) {
         PsychoeducationDTO psychoEdu = PsychoeducationDTO.fromJson(jsonDecode(response.body));
-
         return psychoEdu;
       } else {
         throw Exception("Could not pull the PsychoEducation, status code ${response.statusCode} ");
       }
     } catch (e) {
-      throw Exception("Could not pull the PsychoEducation, status code ${e.toString()}");
+      throw Exception("PsychoEducation error, status code ${e.toString()}");
     }
   }
 
@@ -381,6 +380,16 @@ class ApiAccess {
       String? token;
       Future<String?> tk = Localstorage().getString(key_login_token);
       await tk.then((value) => {token = value!});
+
+      print("PsycoEducation outPut");
+      print("${psychoeducationDTO.id}");
+      print("${psychoeducationDTO.ithinkitsdifficult}");
+      print("${psychoeducationDTO.idontknow}");
+      print("${psychoeducationDTO.ifeelconfident}");
+      print("${psychoeducationDTO.wakeupfrequentlyatnight}");
+      print("${psychoeducationDTO.wakeuptooearly}");
+      print("${psychoeducationDTO.sleepqualitypoor}");
+      print("${psychoeducationDTO.morethan30MinstoSleep}");
 
       final response = await http.post(
         Uri.parse(psychoeducation_url),
@@ -399,13 +408,14 @@ class ApiAccess {
               "sleepqualitypoor": psychoeducationDTO.sleepqualitypoor,
               "ifeelconfident": psychoeducationDTO.ifeelconfident,
               "ithinkitsdifficult": psychoeducationDTO.ithinkitsdifficult,
-              "idontknow": psychoeducationDTO.idontknow
+              "idontknow": psychoeducationDTO.idontknow,
+              "completed": psychoeducationDTO.completed
             }),
       );
 
       if (response.statusCode == 201) {
         print("The psycho-education is submitted suffessfully");
-        return PsychoeducationDTO.fromJson(jsonDecode(response.body));
+         return PsychoeducationDTO.fromJson(jsonDecode(response.body));
       } else {
         throw Exception(
             "Couldn't submit psycho education ${response.statusCode}");
@@ -504,9 +514,15 @@ class ApiAccess {
         }),
       );
       if (response.statusCode == 201) {
-        print("Saveed Level two object . . . ");
+        print("Saveed Level two Variables  . . . ");
         LeveltwoVariables variables = LeveltwoVariables.fromJson(jsonDecode(response.body));
-
+        print("${variables.averagenumberofbedhours}");
+        print("${variables.averagebedtiime}");
+        print("${variables.averagerisetime}");
+        print("${variables.averagesleepefficiency}");
+        print("${variables.averagenumberofsleephours}");
+        print("${variables.averagetimeinbed}");
+        print("${variables.averagetotalsleeptime}");
         return variables;
       } else {
         throw Exception("Couldn't pull my level 2 variables , status code ${response.statusCode} ");
@@ -533,7 +549,8 @@ class ApiAccess {
       body: jsonEncode(
           <String, dynamic>{
             "revisedbedtime": levelTwo.newBedtime,
-            "revisedrisetime": levelTwo.newRisetime
+            "revisedrisetime": levelTwo.newRisetime,
+            "completed" : levelTwo.completed
           }),
     );
 
