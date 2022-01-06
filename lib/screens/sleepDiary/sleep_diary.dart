@@ -600,8 +600,8 @@ class _SleepDiaryState extends State<SleepDiary> {
           widget.sleepDiariesPODO.medications, isfirstmedication: false,
           isSecondmedication: true);
 
-      print("Medication 1 ID is : ${med1!.id}");
-      print("Medication 2 ID is : ${med2!.id}");
+      // print("Medication 1 ID is : ${med1!.id}");
+      // print("Medication 2 ID is : ${med2!.id}");
 
        List<Medications> currentMeds = List.filled(
            2, new Medications(), growable: true);
