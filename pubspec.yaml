@@ -41,6 +41,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   # flutter_local_notifications: ^8.1.1
   cron: ^0.3.2
+  #To get cloud messages
+  #firebase_messaging: ^11.2.5
+  #To push notification when app is in foreground
+  flutter_local_notifications: ^9.2.0
 
 dev_dependencies:
   flutter_test:

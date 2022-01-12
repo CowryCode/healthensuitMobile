@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1082940030771",
-    "project_id": "healthensuite",
-    "storage_bucket": "healthensuite.appspot.com"
+    "project_number": "798800223931",
+    "project_id": "healthensuite-f3fbd",
+    "storage_bucket": "healthensuite-f3fbd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1082940030771:android:1b020d9488274329da0846",
+        "mobilesdk_app_id": "1:798800223931:android:0c3b80b81d8661ac62939e",
         "android_client_info": {
-          "package_name": "com.cowrycode.healthensuite"
+          "package_name": "com.example.healthensuite"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1082940030771-epgfa5b21jkd6rvubgronatqe487n2v8.apps.googleusercontent.com",
+          "client_id": "798800223931-6nkr10ggo9j7955ppc6e7h0h7i6udjrr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC1yQAxqFpl9TtBiwPmZlEuE53nEDCBvys"
+          "current_key": "AIzaSyCbRLJlw6GEE0SuRFk7C2qJ8xOvXxtSI-k"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1082940030771-epgfa5b21jkd6rvubgronatqe487n2v8.apps.googleusercontent.com",
+              "client_id": "798800223931-6nkr10ggo9j7955ppc6e7h0h7i6udjrr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
