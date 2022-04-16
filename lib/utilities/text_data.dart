@@ -12,7 +12,7 @@ const HOME_DATA  =
     "bullet7":"•	Record the time you got out of bed to start your day. This should be after your final awakening.",
     "bullet8":"•	Rate the overall quality of your sleep.",
     "bullet9":"•	Note any medications or other sleep aids taken before going to bed.",
-    "description":"Please fill out a sleep diary each day. It is best to do this as soon as you get out of bed so that you don’t forget. You can also use the Medication log at any time to record any medications you are taking."
+    "description":"Please fill out a sleep diary each day. It is best to do this as soon as you get out of bed so that you don’t forget."
   };
 
   const LEVEL1_DATA = 

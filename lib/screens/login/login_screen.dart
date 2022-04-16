@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
-import 'package:healthensuite/api/services/push_notification_service.dart';
+import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/screens/login/forgot_password_email.dart';
-import 'package:http/http.dart';
-import 'dart:convert';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/background.dart';
-import 'forgot_password.dart';
 //import 'package:healthensuite/models/name_logo.dart';
 
 class LoginScreen extends StatefulWidget {
+  bool loginStatus;
+  LoginScreen({required this.loginStatus});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -26,35 +27,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<LoginPodo>? _logindetailFuture;
   LoginPodo? loginDetail;
+  bool? loginStatus;
 
   bool isLoading = false;
-  getData() async{
 
-    Uri url = Uri.parse("https://jsonplaceholder.typicode.com/todos/1");
-    Response response = await get(url);
-    Map data = jsonDecode(response.body);
-    print(data);
-    print(data["title"]);
-
-  }
-
-  // initializeLogin() async{
-  //   var url = Uri.parse("http://health001-env.eba-v5mudubf.us-east-2.elasticbeanstalk.com/insomnia/v1/authentication/login");
-  //   var username = "ifeanyiodenigbo10@gmail.com";
-  //   var password = "Pass@123";
-  //   var response = await post(url, body: {"password": password, "username": username});
-  //   //print('Response status: ${response.statusCode}');
-  //   print('Login Token: ${response.body}');
-  //
-  //   //print(await read(Uri.parse('https://example.com/foobar.txt')));
+  // @override
+  // void initState(){
+  //   super.initState();
+  //  // getData();
   // }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    //getData();
-    //initializeLogin();
+    loginStatus = widget.loginStatus;
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      if(loginStatus != null){
+        if(loginStatus == true){
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null, timedout: true )));
+        }
+      }
+    });
   }
+
 
   Widget _buildEmailTF() {
     return Column(

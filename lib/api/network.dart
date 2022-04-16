@@ -28,43 +28,51 @@ class ApiAccess {
 
  // Future<LoginPodo> login({String? username, String? password}) async {
   Future<PatientProfilePodo>? login({String? username, String? password}) async {
-      final response = await http.post(
-        Uri.parse(loginURL),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(
-            <String, String?>{"username": username, "password": password}),
-      );
+    final response = await http.post(
+      Uri.parse(loginURL),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+          <String, String?>{"username": username, "password": password}),
+    );
 
-      if (response.statusCode == 200) {
-        LoginPodo cc = LoginPodo.fromJson(jsonDecode(response.body));
-        print("Person ID : ${cc.personID}");
-        print("Token : ${cc.token} ");
-        String? token = cc.token??"";
-        print("Token 2 :  $token");
-        Localstorage().saveString(key_login_token, token);
-        Status? status = cc.status;
-        if(status != null){
-          Localstorage().saveInteger(key_Next_Page, status.nextPage!);
-          Localstorage().saveBoolean(key_Level_One, status.readInterventionGroupleveloneArticle!);
-          Localstorage().saveBoolean(key_Level_Two, status.readInterventionGroupleveltwoArticle!);
-          Localstorage().saveBoolean(key_Level_Three, status.readInterventionGrouplevelthreeArticle!);
-          Localstorage().saveBoolean(key_Level_Four, status.readInterventionGrouplevelfourArticle!);
-          Localstorage().saveBoolean(key_Level_Five, status.readInterventionGrouplevelfiveArticle!);
-          Localstorage().saveBoolean(key_Level_Six, status.readInterventionGrouplevelsixArticle!);
-        }
-        PatientProfilePodo profile = await getPatientProfile(cc.token)?? PatientProfilePodo();
-        if(profile.firstName != null){
-          return profile;
-        }else{
-          throw Exception("Could not pull Profile ${response.statusCode}");
-        }
-      } else {
-        throw Exception("Couldn't login, possible wrong passoword");
+    if (response.statusCode == 200) {
+      LoginPodo cc = LoginPodo.fromJson(jsonDecode(response.body));
+      print("Person ID : ${cc.personID}");
+      print("Token : ${cc.token} ");
+      String? token = cc.token ?? "";
+      print("Token 2 :  $token");
+      Localstorage().saveString(key_login_token, token);
+      Localstorage().saveBoolean(key_Login_Status, true);
+      Status? status = cc.status;
+      if (status != null) {
+        Localstorage().saveInteger(key_Next_Page, status.nextPage!);
+        Localstorage().saveBoolean(
+            key_Level_One, status.readInterventionGroupleveloneArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Two, status.readInterventionGroupleveltwoArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Three, status.readInterventionGrouplevelthreeArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Four, status.readInterventionGrouplevelfourArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Five, status.readInterventionGrouplevelfiveArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Six, status.readInterventionGrouplevelsixArticle!);
       }
+      PatientProfilePodo profile = await getPatientProfile(cc.token) ??
+          PatientProfilePodo();
+      if (profile.firstName != null) {
+        uploadDeviceIdentifier(token);
+        return profile;
+      } else {
+        throw Exception("Could not pull Profile ${response.statusCode}");
+      }
+    } else {
+      throw Exception("Couldn't login, possible wrong passoword");
+    }
   }
-
 
   Future<bool> confirmUser({String? username}) async {
     final response = await http.post(
@@ -144,6 +152,39 @@ class ApiAccess {
     }
   }
 
+  Future<PatientProfilePodo>? refreshData() async {
+    bool? loginStatus = await Localstorage().getBoolean(key_Login_Status);
+    print('Login Status ${loginStatus}');
+    if (loginStatus == null) {
+      PatientProfilePodo emptyProfiel = PatientProfilePodo();
+      return emptyProfiel;
+    } else {
+      PatientProfilePodo profile =
+          await getPatientProfile(null) ?? PatientProfilePodo();
+      StatusEntity? status = profile.statusEntity;
+      if (status != null) {
+        Localstorage().saveInteger(key_Next_Page, status.nextPage!);
+        Localstorage().saveBoolean(
+            key_Level_One, status.readInterventionGroupleveloneArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Two, status.readInterventionGroupleveltwoArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Three, status.readInterventionGrouplevelthreeArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Four, status.readInterventionGrouplevelfourArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Five, status.readInterventionGrouplevelfiveArticle!);
+        Localstorage().saveBoolean(
+            key_Level_Six, status.readInterventionGrouplevelsixArticle!);
+      }
+
+      if (profile.firstName != null) {
+        return profile;
+      } else {
+        throw Exception("Profile not available at the moment");
+      }
+    }
+  }
 
   Future<PatientProfilePodo>? getPatientProfile(String? code) async {
     print("Got to this point to pull Profile");
@@ -752,7 +793,6 @@ class ApiAccess {
 
   }
 
-
   void sharesleepReport({required SleepReportDTO sleeport}) async {
     String? token;
     Future<String?> tk = Localstorage().getString(key_login_token);
@@ -791,21 +831,25 @@ class ApiAccess {
     }
   }
 
-  Future<bool> saveDeviceIdentifier({String? code}) async {
-    // final baseURL = "http://10.0.2.2:8083";
-    final baseURL = "https://api.healthensuite.com";
-    final submitDeviceIdentifier = "${baseURL}/insomnia/v1/patient/deviceidentifier";
-    String token = "RcY3IVtjDQisVEF4/Vs/pbjnH9tlggb2CtVjjrOhSyU=";
+
+  void saveDeviceIdentifier({String? code}) async {
+    Localstorage().saveString(key_Device_Identifier, code!);
+  }
+
+  Future<bool> uploadDeviceIdentifier(String token) async {
+    String? identifier;
+    Future<String?> tk = Localstorage().getString(key_Device_Identifier);
+    await tk.then((value) => {identifier = value});
 
     final response = await http.post(
-      Uri.parse(submitDeviceIdentifier),
+      Uri.parse(submitDeviceIdentifier_URL),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token'
       },
       body: jsonEncode(
-          <String, String?>{"code": code}),
+          <String, String?>{"code": identifier}),
     );
 
     if (response.statusCode == 201) {
@@ -815,6 +859,5 @@ class ApiAccess {
       return false;
     }
   }
-
 }
 

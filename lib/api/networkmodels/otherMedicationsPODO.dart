@@ -1,7 +1,7 @@
 class OtherMedicationsEntity {
   int? id;
   String? medicationName;
-  double? amount;
+  String? amount;
   String? dateCreated;
 
   OtherMedicationsEntity({this.id, this.medicationName, this.amount, this.dateCreated});
@@ -29,8 +29,8 @@ class OtherMedicationsEntity {
   }
 
   void setDrugAmount(String drugAmount){
-    double amnt = double.parse(drugAmount);
-    this.amount = amnt;
+   // double amnt = double.parse(drugAmount);
+    this.amount = drugAmount;
   }
 
   void setOthermedicationFields(String medicationName, String amount){

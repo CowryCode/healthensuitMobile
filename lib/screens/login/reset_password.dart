@@ -90,7 +90,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       alignment: Alignment.centerRight,
       child: FlatButton(
         onPressed: ()  {Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => LoginScreen())
+          context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))
           );},
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
@@ -122,7 +122,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             Future<bool> changepword =  ApiAccess().changePassword(newPassword: pwd);
             changepword.then((value) => {
               if(value){
-                Navigator.push(context, new MaterialPageRoute(builder: (context) => LoginScreen()))
+                Navigator.push(context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)))
                }else{
                 print(" the Password was not changed")
               }

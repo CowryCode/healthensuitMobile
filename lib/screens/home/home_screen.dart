@@ -1,12 +1,15 @@
 
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
+import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:healthensuite/screens/login/login_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -28,13 +31,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<PatientProfilePodo>? patientprofile;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   patientprofile = widget.futureProfile;
+  //   if(patientprofile == null ){
+  //     patientprofile = ApiAccess().getPatientProfile(null);
+  //   }
+  // }
   @override
   void initState() {
     super.initState();
     patientprofile = widget.futureProfile;
+    bool loginTimer = widget.timedout;
     if(patientprofile == null ){
-      patientprofile = ApiAccess().getPatientProfile(null);
-    }
+        patientprofile = ApiAccess().getPatientProfile(null);
+      }
   }
 
   @override
@@ -247,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
       },
     );
 
@@ -269,7 +281,5 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
-
 }
 
