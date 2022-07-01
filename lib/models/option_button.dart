@@ -7,11 +7,9 @@ class OptionButton extends StatelessWidget {
   final double width;
   final Function? buttonEvent;
   const OptionButton({Key? key, required this.text, required this.icon, required this.width, this.buttonEvent}) : super(key: key);
-// My Change
   @override
   Widget build(BuildContext context) {
 
-    //TextButton Style defined below
     final ButtonStyle textButtonStyle = TextButton.styleFrom(
       backgroundColor: appBackgroundColor,
       primary: Colors.white.withAlpha(55),
