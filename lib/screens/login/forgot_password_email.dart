@@ -55,11 +55,11 @@ class _AuthScreenEmailState extends State<AuthScreenEmail> {
   Widget _buildSignInInsteadBtn() {
     return Container(
       alignment: Alignment.centerRight,
-      child: FlatButton(
+      child: TextButton(
         onPressed: ()  {Navigator.push(
             context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))
         );},
-        padding: EdgeInsets.only(right: 0.0),
+        // padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Sign in instead',
           style: kLabelStyle,

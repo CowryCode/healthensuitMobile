@@ -11,13 +11,20 @@ class OptionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle textButtonStyle = TextButton.styleFrom(
+      backgroundColor: appBackgroundColor,
+      primary: Colors.white.withAlpha(55),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+    );
     return Container(
       width: width,
-      child: FlatButton(
-          color: appBackgroundColor,
-          splashColor: Colors.white.withAlpha(55),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      child: TextButton(
+          style: textButtonStyle,
+          // color: appBackgroundColor,
+          // splashColor: Colors.white.withAlpha(55),
+          // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           onPressed: buttonEvent as void Function()?,
           child: Row(
             mainAxisSize: MainAxisSize.min,
