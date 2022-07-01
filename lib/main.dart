@@ -37,6 +37,8 @@ Future init() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  //This is a sample comment
+
   FirebaseMessaging.instance   // This is to enable the notification run while app is in terminated mode
       .getInitialMessage()
       .then((RemoteMessage? message) {
