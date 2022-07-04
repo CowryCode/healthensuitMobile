@@ -1,19 +1,22 @@
-import 'dart:async';
 
 import 'package:cron/cron.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
+import 'package:healthensuite/api/statemanagement/reducer.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/screens/login/login_screen.dart';
 import 'dart:ui';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/screens/programs/program_content.dart';
-
+import 'package:redux/redux.dart';
 // void main() => runApp(new MyApp());
 bool? loginStatus;
 Future<void> main() async {
@@ -60,15 +63,25 @@ Future init() async {
 
 class MyAppLoginScreen extends StatelessWidget {
 
+  final Store<AppState> _store = Store<AppState>(
+    appStateReducer,
+    initialState: AppState(
+      sleepDiariesPODO: SleepDiariesPODO().getCurrentSleepDiary(),
+    )
+  );
+
   @override
   Widget build(BuildContext context) {
 
     double screenWidth = window.physicalSize.width;
 
-    return new MaterialApp(
-      theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
-       home: LoginScreen(loginStatus: false,),
-      //home: HomeScreen(futureProfile: null, timedout: true,),
+    return StoreProvider<AppState>(
+      store: _store,
+      child: new MaterialApp(
+        theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
+         home: LoginScreen(loginStatus: false,),
+        //home: HomeScreen(futureProfile: null, timedout: true,),
+      ),
     );
   }
 }

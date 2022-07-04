@@ -20,6 +20,7 @@ class SleepDiariesPODO {
   List<OtherMedicationsEntity>? othermedications;
   String? dateCreated;
 
+  SleepDiariesPODO.ini();
   SleepDiariesPODO(
       {
         this.id,
@@ -35,6 +36,20 @@ class SleepDiariesPODO {
         this.medications,
         this.othermedications,
         this.dateCreated});
+
+  SleepDiariesPODO getCurrentSleepDiary(){
+    return SleepDiariesPODO(
+      bedTime: "10:23",
+      tryTosleepTime: "8:30",
+      durationBeforesleepoff: 4.0,
+      wakeUptimeCount: 5,
+      totalWakeUpduration: 6,
+      finalWakeupTime: "11:00",
+      timeLeftbed: "11:10",
+      sleepQuality: "Greet",
+      otherThings: "Nothing"
+    );
+  }
 
   SleepDiariesPODO.fromJson(Map<String, dynamic> json) {
     id = json['id'];

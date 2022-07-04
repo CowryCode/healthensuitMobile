@@ -187,16 +187,6 @@ class _LoginScreenState extends State<LoginScreen> {
          // _logindetailFuture =  ApiAccess().login(username: un, password: pass);
           Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
           Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: profile, timedout: true )));
-          // _logindetailFuture!.then((value) => {
-          //   // loginDetail = value
-          //   if(value == null){
-          //     showAlertDialog(context)
-          // }else{
-          //     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
-          //   }
-          // } );
-
-
         },
         child: Text(
           'LOGIN',
