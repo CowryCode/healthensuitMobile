@@ -9,12 +9,11 @@ import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
-import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/screens/login/forgot_password_email.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/background.dart';
-//import 'package:healthensuite/models/name_logo.dart';
+import 'package:redux/redux.dart';
 
 class LoginScreen extends StatefulWidget {
  bool loginStatus;
@@ -46,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     loginStatus = widget.loginStatus;
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if(loginStatus != null){
         if(loginStatus == true){
           Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
@@ -270,44 +269,46 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
 
               new Background("assets/images/girl.jpg"),
-              StoreConnector<AppState, LoginPodo>(
-                converter: (store) => store.state.loginPodo!,
-                builder: (context, LoginPodo loginpodo) =>
-                loginpodo.showLoginloading ? Container(
-                  child: Center(child: CircularProgressIndicator(),) ,
-                ) : Container(
-                  height: double.infinity,
-                  child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 40.0,
-                      vertical: 120.0,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Patient Sign In',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Montserrat',
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
+              Container(
+                child: StoreConnector<AppState, LoginPodo>(
+                  converter: (store) => store.state.loginPodo,
+                  builder: (context, LoginPodo loginpodo) =>
+                  loginpodo.showLoginloading ? Container(
+                    child: Center(child: CircularProgressIndicator(),) ,
+                  ) : Container(
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40.0,
+                        vertical: 120.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Patient Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Montserrat',
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 30.0),
-                        _buildEmailTF(),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                        _buildPasswordTF(),
-                        _buildForgotPasswordBtn(),
-                        _buildRememberMeCheckbox(),
-                        _buildLoginBtn(),
-                        //_buildSignInWithText(),
-                        //_buildSocialBtnRow(),
-                        //_buildSignupBtn(),
-                      ],
+                          SizedBox(height: 30.0),
+                          _buildEmailTF(),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          _buildPasswordTF(),
+                          _buildForgotPasswordBtn(),
+                          _buildRememberMeCheckbox(),
+                          _buildLoginBtn(),
+                          //_buildSignInWithText(),
+                          //_buildSocialBtnRow(),
+                          //_buildSignupBtn(),
+                        ],
+                      ),
                     ),
                   ),
                 ),

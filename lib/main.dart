@@ -4,6 +4,7 @@ import 'package:cron/cron.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
@@ -80,10 +81,13 @@ class MyAppLoginScreen extends StatelessWidget {
 
     double screenWidth = window.physicalSize.width;
 
-    return new MaterialApp(
-      theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
-       home: LoginScreen(loginStatus: false,),
-      //home: HomeScreen(futureProfile: null, timedout: true,),
+    return StoreProvider<AppState>(
+      store: _store,
+      child: MaterialApp(
+        theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
+         home: LoginScreen(loginStatus: false,),
+        //home: HomeScreen(futureProfile: null, timedout: true,),
+      ),
     );
   }
 }
