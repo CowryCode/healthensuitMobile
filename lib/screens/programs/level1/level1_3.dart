@@ -11,12 +11,13 @@ class Level1of3 extends StatefulWidget {
 
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final InterventionlevelOne levelone;
+ // final InterventionlevelOne levelone;
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 3;
   final int previousPage;
-  Level1of3(this.levelone, this.patientProfile, this.previousPage);
+ // Level1of3(this.levelone, this.previousPage);
+  Level1of3(this.previousPage);
 
   @override
   _Level1of3State createState() => _Level1of3State();
@@ -28,8 +29,8 @@ class _Level1of3State extends State<Level1of3> {
   @override
   Widget build(BuildContext context) {
     int currentPage = widget.currentPage;
-    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
-    InterventionlevelOne level1 = widget.levelone;
+  //  Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+  //  InterventionlevelOne level1 = widget.levelone;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
@@ -39,7 +40,7 @@ class _Level1of3State extends State<Level1of3> {
         title: Text(Level1of3.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, level1, futureprofile,currentPage),
+      bottomNavigationBar: buttomBarWidget(context, currentPage),
       body: Container(
         width: size.width,
         height: size.height,
@@ -74,7 +75,7 @@ class _Level1of3State extends State<Level1of3> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context, InterventionlevelOne levelone, Future<PatientProfilePodo>? futureProfile, int currentPage) {
+  SafeArea buttomBarWidget(BuildContext context, int currentPage) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -91,7 +92,7 @@ class _Level1of3State extends State<Level1of3> {
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 ApiAccess().savePage(currentPage: currentPage, interventionLevel: 1);
                  Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of4(levelone, futureProfile, currentPage))
+                    context, new MaterialPageRoute(builder: (context) => Level1of4(currentPage))
                     );
               }),
             ],

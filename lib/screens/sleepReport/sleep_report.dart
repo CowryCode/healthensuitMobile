@@ -15,14 +15,14 @@ class SleepReport extends StatefulWidget {
   final Function? onMenuTap;
   static final String title = 'Sleep Report';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
 
   Future<SleepReportDTO>? sleepreport;
 
   bool showreport = false;
 
-//  const SleepReport({Key? key, this.onMenuTap, required this.patientProfile,  this.sleepreport}) : super(key: key);
-  SleepReport({Key? key, this.onMenuTap, required this.patientProfile,  this.sleepreport}) : super(key: key);
+   // SleepReport({Key? key, this.onMenuTap, required this.patientProfile,  this.sleepreport}) : super(key: key);
+  SleepReport({Key? key, this.onMenuTap, this.sleepreport}) : super(key: key);
 
   @override
   _SleepReportState createState() => _SleepReportState();
@@ -48,7 +48,7 @@ class _SleepReportState extends State<SleepReport> {
 
     @override
   Widget build(BuildContext context) {
-      Future<PatientProfilePodo>? profile = widget.patientProfile;
+     // Future<PatientProfilePodo>? profile = widget.patientProfile;
       final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     final _formKey = GlobalKey<FormBuilderState>();
@@ -58,7 +58,7 @@ class _SleepReportState extends State<SleepReport> {
     bool reportStatus  = widget.showreport;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 3,patientprofile: profile),
+      drawer: NavigationDrawerWidget(indexNum: 3,),
       appBar: AppBar(
         title: Text(SleepReport.title),
         centerTitle: true,

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -20,13 +24,13 @@ class MyChoice{
 class Level1of7 extends StatefulWidget {
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final InterventionlevelOne levelone;
+//  final InterventionlevelOne levelone;
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
 
   final int currentPage = 7;
   final int previousPage;
-  Level1of7(this.levelone, this.patientProfile, this.previousPage);
+  Level1of7(this.previousPage);
 
   @override
   _Level1of7State createState() => _Level1of7State();
@@ -48,9 +52,9 @@ class _Level1of7State extends State<Level1of7> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+   // Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
 
-    InterventionlevelOne levelone = widget.levelone;
+  //  InterventionlevelOne levelone = widget.levelone;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
@@ -89,10 +93,10 @@ class _Level1of7State extends State<Level1of7> {
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["radioQ1"]!, textStyle: themeData.textTheme.headline5),
                      radioButtonBase(themeData),
 
-                    Visibility(child: radioButtonAlone(themeData, context, _formKey, levelone, futureprofile), visible: radioAloneIsVisible,),
-                    Visibility(child: radioButtonRoomate(themeData,  _formKey, levelone, futureprofile), visible: radioRoomateIsVisible,),
+                    Visibility(child: radioButtonAlone(themeData, context, _formKey,), visible: radioAloneIsVisible,),
+                    Visibility(child: radioButtonRoomate(themeData,  _formKey, ), visible: radioRoomateIsVisible,),
                     SizedBox(height: pad,),
-                    Visibility(child: formFieldWidget(themeData, _formKey, levelone, futureprofile), visible: formFieldIsVisible,),
+                    Visibility(child: formFieldWidget(themeData, _formKey,), visible: formFieldIsVisible,),
 
                    ],
                 ),
@@ -105,7 +109,7 @@ class _Level1of7State extends State<Level1of7> {
 
   }
 
-  FormBuilder formFieldWidget(ThemeData themeData, GlobalKey<FormBuilderState> key ,  InterventionlevelOne levelone, Future<PatientProfilePodo>? futureProfile) {
+  FormBuilder formFieldWidget(ThemeData themeData, GlobalKey<FormBuilderState> key ,) {
     return FormBuilder(
                     key: _formKey,
                     child: Column(
@@ -155,27 +159,32 @@ class _Level1of7State extends State<Level1of7> {
                           ),
                         ),
                         Center(
-                          child: IconUserButton(buttonText: "Submit", buttonEvent: () {
-                            InterventionlevelOne level1 = getLevelone(key, levelone);
-                            createAlertDialog(
-                                context: context,
-                                title: "",
-                                message: "Congratulations! You have finished level 1!",
-                                key: key,
-                                levelone: level1,
-                                futureProfile: futureProfile);
-                            // ApiAccess().submitLevelone(levelone: level1);
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
-                          },
-                            buttonIcon: Icons.send,),
+                          child: StoreConnector<AppState, PatientProfilePodo>(
+                            converter: (store) => store.state.patientProfilePodo,
+                            builder: (context, PatientProfilePodo profile) => IconUserButton(buttonText: "Submit", buttonEvent: () {
+                              InterventionlevelOne l1 = profile.interventionLevelsEntity!.levelOneEntity ?? InterventionlevelOne();
+                           //   InterventionlevelOne level1 = getLevelone(key, l1);
+                              updateLevelOnestate(key,profile, l1);
+                              createAlertDialog(
+                                  context: context,
+                                  title: "",
+                                  message: "Congratulations! You have finished level 1!",
+                                  key: key,
+                                 );
+                              // ApiAccess().submitLevelone(levelone: level1);
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                            },
+                              buttonIcon: Icons.send,),
+                          ),
                         ),
                       ],
                     ),
                   );
   }
 
-  InterventionlevelOne getLevelone(GlobalKey<FormBuilderState> key, InterventionlevelOne levelone){
+//  InterventionlevelOne getLevelone(GlobalKey<FormBuilderState> key, InterventionlevelOne levelone){
+  updateLevelOnestate(GlobalKey<FormBuilderState> key, PatientProfilePodo patientprofile ,InterventionlevelOne levelone){
     String suportname = key.currentState!.fields["supName"]!.value ;
     String relationship = key.currentState!.fields["dropdown"]!.value;
     String supemail = key.currentState!.fields["supEmail"]!.value;
@@ -187,7 +196,15 @@ class _Level1of7State extends State<Level1of7> {
     levelone.setnominateRoommate(nominaterooMate);
     levelone.nullifyWhichBestdescribesYoursituation();
     levelone.nullifyHowIsitgoingSofar();
-    return levelone;
+
+    InterventionLevelsEntity levelsEntity = patientprofile.interventionLevelsEntity ?? InterventionLevelsEntity();
+    levelsEntity.setLevelOne(levelone);
+    patientprofile.setInterventionLevelsEntity(levelsEntity);
+    StoreProvider.of<AppState>(context).dispatch(
+      UpdatePatientProfileAction(patientprofile)
+    );
+
+ //   return levelone;
   }
 
   SafeArea buttomBarWidget(BuildContext context) {
@@ -327,7 +344,7 @@ class _Level1of7State extends State<Level1of7> {
     );
   }
 
-  Column radioButtonAlone(ThemeData themeData, BuildContext context,  GlobalKey<FormBuilderState> key ,  InterventionlevelOne levelone,Future<PatientProfilePodo>? futureProfile){
+  Column radioButtonAlone(ThemeData themeData, BuildContext context,  GlobalKey<FormBuilderState> key ,){
     List<MyChoice> choices = [
       MyChoice(index: 0, choice: "Yes"),
       MyChoice(index: 1, choice: "No"),
@@ -363,8 +380,7 @@ class _Level1of7State extends State<Level1of7> {
                           title: "Remember!",
                           message: "Having someone to support you can make changing your thoughts and behaviours easier.",
                           key: key,
-                          levelone: levelone,
-                          futureProfile: futureProfile);
+                          );
                     }
                     print('You clicked me: $value');
                     
@@ -378,7 +394,7 @@ class _Level1of7State extends State<Level1of7> {
     );
   }
 
-  Column radioButtonRoomate(ThemeData themeData,  GlobalKey<FormBuilderState> key ,  InterventionlevelOne levelone,Future<PatientProfilePodo>? futureProfile){
+  Column radioButtonRoomate(ThemeData themeData,  GlobalKey<FormBuilderState> key ,){
     List<MyChoice> choices = [
       MyChoice(index: 0, choice: "I would like to nominate this person."),
       MyChoice(index: 1, choice: "I would like to nominate someone else."),
@@ -424,8 +440,7 @@ class _Level1of7State extends State<Level1of7> {
                           title: "Remember!",
                           message: "Having someone to support you can make changing your thoughts and behaviours easier.",
                           key: key,
-                          levelone: levelone,
-                          futureProfile: futureProfile);
+                      );
                     }
                     print('You clicked me: $value');
                   },
@@ -439,7 +454,7 @@ class _Level1of7State extends State<Level1of7> {
   }
 
 
-  createAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key , required InterventionlevelOne levelone, required Future<PatientProfilePodo>? futureProfile}){
+  createAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key,}){
      final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
@@ -457,17 +472,21 @@ class _Level1of7State extends State<Level1of7> {
                 Navigator.of(context).pop();
               }
             ),
-            MaterialButton(
-              child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
-              onPressed: (){
-                levelone.setsleepalone(sleepalone);
-                levelone.setnominateRoommate(nominaterooMate);
-                levelone.nullifyHowIsitgoingSofar();
-                levelone.nullifyWhichBestdescribesYoursituation();
-                ApiAccess().submitLevelone(levelone: levelone);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => HomeScreen(futureProfile: futureProfile)));
-              }
+            StoreConnector<AppState, PatientProfilePodo>(
+              converter: (store) => store.state.patientProfilePodo,
+              builder: (context, PatientProfilePodo profile) => MaterialButton(
+                child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                onPressed: (){
+                  InterventionlevelOne levelone = profile.interventionLevelsEntity!.levelOneEntity ?? InterventionlevelOne();
+                  levelone.setsleepalone(sleepalone);
+                  levelone.setnominateRoommate(nominaterooMate);
+                  levelone.nullifyHowIsitgoingSofar();
+                  levelone.nullifyWhichBestdescribesYoursituation();
+                  ApiAccess().submitLevelone(levelone: levelone);
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => HomeScreen()));
+                }
+              ),
             ),
           ],
         );

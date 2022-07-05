@@ -22,10 +22,11 @@ class Psycho4 extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final PsychoeducationDTO psychoeducationDTO;
 
-  Future<PatientProfilePodo>? futureProfile;
+ // Future<PatientProfilePodo>? futureProfile;
 
 
-  Psycho4(this.psychoeducationDTO,this.futureProfile);
+ // Psycho4(this.psychoeducationDTO,this.futureProfile);
+  Psycho4(this.psychoeducationDTO);
 
   @override
   _Psycho4 createState() => _Psycho4();
@@ -37,7 +38,7 @@ class _Psycho4 extends State<Psycho4> {
   @override
   Widget build(BuildContext context) {
     PsychoeducationDTO psychEdu = widget.psychoeducationDTO;
-    Future<PatientProfilePodo>? futureprofile = widget.futureProfile;
+  //  Future<PatientProfilePodo>? futureprofile = widget.futureProfile;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
@@ -48,7 +49,7 @@ class _Psycho4 extends State<Psycho4> {
         title: Text(Psycho4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, psychEdu, futureprofile),
+      bottomNavigationBar: buttomBarWidget(context, psychEdu,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -90,7 +91,7 @@ class _Psycho4 extends State<Psycho4> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context, PsychoeducationDTO psychEdu,  Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, PsychoeducationDTO psychEdu,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -109,7 +110,7 @@ class _Psycho4 extends State<Psycho4> {
                     title: "",
                     message: "Congratulations! You have finished the psychoeducation!",
                     psychEdu: psychEdu,
-                    futureProfile: futureProfile);
+                );
 
                 // PsychoeducationDTO completedPsychoeducationObject = getSelectedValue(psychEdu);
                 // ApiAccess().submitPsychoEducation(psychoeducationDTO: completedPsychoeducationObject);
@@ -199,7 +200,7 @@ class _Psycho4 extends State<Psycho4> {
             );
   }
 
-  submitAlertDialog({required BuildContext context, required String title, required String message, required PsychoeducationDTO psychEdu, required Future<PatientProfilePodo>? futureProfile}){
+  submitAlertDialog({required BuildContext context, required String title, required String message, required PsychoeducationDTO psychEdu,}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -224,7 +225,7 @@ class _Psycho4 extends State<Psycho4> {
                     ApiAccess().submitPsychoEducation(psychoeducationDTO: completedPsychoeducationObject);
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
-                          HomeScreen(futureProfile: futureProfile,),
+                          HomeScreen(),
                     ));
                   }
               ),

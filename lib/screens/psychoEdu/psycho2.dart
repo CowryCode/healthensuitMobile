@@ -8,13 +8,13 @@ import 'package:healthensuite/screens/psychoEdu/psycho3.dart';
 
 
 class Psycho2 extends StatefulWidget {
-  Future<PatientProfilePodo>? futureProfile;
+ // Future<PatientProfilePodo>? futureProfile;
   static final String title = 'Psychoeducation';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final PsychoeducationDTO psychoeducationDTO;
   final int currentPage = 2;
 
-  Psycho2(this.psychoeducationDTO, this.futureProfile);
+  Psycho2(this.psychoeducationDTO,);
 
   @override
   _Psycho2 createState() => _Psycho2();
@@ -26,7 +26,7 @@ class _Psycho2 extends State<Psycho2> {
   @override
   Widget build(BuildContext context) {
     PsychoeducationDTO psychEdu = widget.psychoeducationDTO;
-    Future<PatientProfilePodo>? profile = widget.futureProfile;
+   // Future<PatientProfilePodo>? profile = widget.futureProfile;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
@@ -37,7 +37,7 @@ class _Psycho2 extends State<Psycho2> {
         title: Text(Psycho2.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, psychEdu, profile),
+      bottomNavigationBar: buttomBarWidget(context, psychEdu,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -73,7 +73,7 @@ class _Psycho2 extends State<Psycho2> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context, PsychoeducationDTO psychoeducationDTO, Future<PatientProfilePodo>? futureprofile) {
+  SafeArea buttomBarWidget(BuildContext context, PsychoeducationDTO psychoeducationDTO) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -90,7 +90,7 @@ class _Psycho2 extends State<Psycho2> {
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 7);
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Psycho3(psychoeducationDTO, futureprofile))
+                    context, new MaterialPageRoute(builder: (context) => Psycho3(psychoeducationDTO))
                     );
               }),
             ],

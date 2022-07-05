@@ -12,11 +12,11 @@ class Level2_4of4 extends StatefulWidget {
 
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final Future<PatientProfilePodo>? patientProfile;
+// final Future<PatientProfilePodo>? patientProfile;
   final LeveltwoVariables l2variables;
   final int currentPage = 4;
 
-  Level2_4of4(this.patientProfile, this.l2variables);
+  Level2_4of4(this.l2variables);
 
   @override
   _Level2_4of4State createState() => _Level2_4of4State();
@@ -33,7 +33,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
 
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+  //  Future<PatientProfilePodo>? profile = widget.patientProfile;
     LeveltwoVariables? l2variable = widget.l2variables;
 
 
@@ -44,7 +44,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
         title: Text(Level2_4of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, l2variable, profile),
+      bottomNavigationBar: buttomBarWidget(context, l2variable,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -71,7 +71,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
                      bodyTextWidget(themeData, text: "Based on the sleep diaries you completed over the past week, your average sleep efficiency is ${l2variable.averagesleepefficiency}. Ideally, sleep efficiency should be around 85-90%."),
                      SizedBox(height: pad,),
 
-                             sleepReportButtonWidget(topic: "Sleep efficiency report for the last week", action: (){gotoSleepReport(context, profile);}),
+                             sleepReportButtonWidget(topic: "Sleep efficiency report for the last week", action: (){gotoSleepReport(context);}),
                              bodyTextWidget(themeData,
                                  text: "${l2variable.message ?? " No Sleep Report for Last Week, this may be because you didn't fill all required sleep diary"}"),
                     // bodyTextWidget(themeData, text: LEVEL1_DATA["bullet43"]!),
@@ -123,7 +123,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
   }
 
 
-  SafeArea buttomBarWidget(BuildContext context, LeveltwoVariables variables, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, LeveltwoVariables variables,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -142,7 +142,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
                     title: "",
                     message: "Congratulations! You have finished level 2!",
                     variables: variables,
-                    futureProfile: futureProfile);
+                    );
 
                 // ApiAccess().submitLeveTwo(levelTwo: variables);
                 // Navigator.of(context).push(MaterialPageRoute(
@@ -190,14 +190,14 @@ class _Level2_4of4State extends State<Level2_4of4> {
                 );
    }
 
-   void gotoSleepReport(BuildContext context, Future<PatientProfilePodo>? patientProfile){
+   void gotoSleepReport(BuildContext context){
      Navigator.push(
-      context, new MaterialPageRoute(builder: (context) => SleepClock(patientProfile: patientProfile,))
+      context, new MaterialPageRoute(builder: (context) => SleepClock())
     );
    }
 
 
-  createAlertDialog({required BuildContext context, required String title, required String message,required LeveltwoVariables variables, required Future<PatientProfilePodo>? futureProfile}){
+  createAlertDialog({required BuildContext context, required String title, required String message,required LeveltwoVariables variables,}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -221,7 +221,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
                     variables.setCompleted(isCompleted: true);
                     ApiAccess().submitLeveTwo(levelTwo: variables);
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                        builder: (context) => HomeScreen()));
                   }
               ),
             ],

@@ -10,10 +10,10 @@ class Level4_4of4 extends StatefulWidget {
 
   static final String title = 'Level 4';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final Future<PatientProfilePodo>? patientProfile;
+//  final Future<PatientProfilePodo>? patientProfile;
 
 
-  Level4_4of4(this.patientProfile);
+  Level4_4of4();
 
   @override
   _Level4_4of4State createState() => _Level4_4of4State();
@@ -24,7 +24,7 @@ class _Level4_4of4State extends State<Level4_4of4> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+  // Future<PatientProfilePodo>? profile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     
@@ -35,7 +35,7 @@ class _Level4_4of4State extends State<Level4_4of4> {
         title: Text(Level4_4of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, profile),
+      bottomNavigationBar: buttomBarWidget(context,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -100,7 +100,7 @@ class _Level4_4of4State extends State<Level4_4of4> {
   }
 
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, ) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -119,7 +119,7 @@ class _Level4_4of4State extends State<Level4_4of4> {
                     context: context,
                     title: "",
                     message: "Congratulations! You have finished level 4!",
-                    futureProfile: futureProfile);
+                    );
                 // ApiAccess().submitLevelfour(levelfour: true);
                 // Navigator.of(context).push(MaterialPageRoute(
                 //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
@@ -166,7 +166,7 @@ class _Level4_4of4State extends State<Level4_4of4> {
                 );
    }
 
-  submitAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? futureProfile}){
+  submitAlertDialog({required BuildContext context, required String title, required String message,}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -189,7 +189,7 @@ class _Level4_4of4State extends State<Level4_4of4> {
                   onPressed: (){
                     ApiAccess().submitLevelfour(levelfour: true);
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                        builder: (context) => HomeScreen()));
 
                   }
               ),

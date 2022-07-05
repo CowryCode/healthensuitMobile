@@ -12,10 +12,11 @@ class Psycho3 extends StatefulWidget {
   static final String title = 'Pychoeducation';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   final PsychoeducationDTO psychoeducationDTO;
-  Future<PatientProfilePodo>? futureProfile;
+ // Future<PatientProfilePodo>? futureProfile;
   final int currentPage = 3;
 
-  Psycho3(this.psychoeducationDTO, this.futureProfile);
+ // Psycho3(this.psychoeducationDTO, this.futureProfile);
+  Psycho3(this.psychoeducationDTO,);
 
   @override
   _Psycho3 createState() => _Psycho3();
@@ -27,7 +28,7 @@ class _Psycho3 extends State<Psycho3> {
   @override
   Widget build(BuildContext context) {
     PsychoeducationDTO psychEdu = widget.psychoeducationDTO;
-    Future<PatientProfilePodo>? profile = widget.futureProfile;
+  //  Future<PatientProfilePodo>? profile = widget.futureProfile;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
@@ -38,7 +39,7 @@ class _Psycho3 extends State<Psycho3> {
         title: Text(Psycho3.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, psychEdu, profile),
+      bottomNavigationBar: buttomBarWidget(context, psychEdu,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -78,7 +79,7 @@ class _Psycho3 extends State<Psycho3> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context, PsychoeducationDTO psycheducation, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, PsychoeducationDTO psycheducation,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -95,7 +96,7 @@ class _Psycho3 extends State<Psycho3> {
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 7);
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Psycho4(psycheducation, futureProfile))
+                    context, new MaterialPageRoute(builder: (context) => Psycho4(psycheducation,))
                     );
               }),
             ],

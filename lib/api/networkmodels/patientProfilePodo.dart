@@ -50,6 +50,10 @@ class PatientProfilePodo {
         this.verify,
         this.dateCreated});
 
+  PatientProfilePodo getEmptyProfile(){
+    return PatientProfilePodo();
+  }
+
   PatientProfilePodo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['firstName'];
@@ -165,4 +169,7 @@ class PatientProfilePodo {
     return this.trialType;
   }
 
+  void setInterventionLevelsEntity(InterventionLevelsEntity value){
+    this.interventionLevelsEntity = value;
+  }
 }

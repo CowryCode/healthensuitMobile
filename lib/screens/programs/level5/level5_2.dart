@@ -12,10 +12,10 @@ class Level5_2of3 extends StatefulWidget {
   static final String title = 'Level 5';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
 
 
-  Level5_2of3(this.patientProfile);
+  Level5_2of3();
 
   @override
   _Level50f2State createState() => _Level50f2State();
@@ -27,7 +27,7 @@ class _Level50f2State extends State<Level5_2of3> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+  //  Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     
@@ -38,7 +38,7 @@ class _Level50f2State extends State<Level5_2of3> {
         title: Text(Level5_2of3.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, _formKey, futureprofile),
+      bottomNavigationBar: buttomBarWidget(context, _formKey,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -145,7 +145,7 @@ class _Level50f2State extends State<Level5_2of3> {
   }
 
 
-  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -164,8 +164,7 @@ class _Level50f2State extends State<Level5_2of3> {
                     context: context,
                     title: "Warning!",
                     message: "Are you sure you want to save at this moment ?",
-                    key: key,
-                    futureProfile: futureProfile);
+                    key: key,);
                //  submitVariables(key);
                // Navigator.push(
                //      context, new MaterialPageRoute(builder: (context) => Level5of3(futureProfile))
@@ -246,7 +245,7 @@ class _Level50f2State extends State<Level5_2of3> {
   }
 
 
-  submitAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key, required Future<PatientProfilePodo>? futureProfile}){
+  submitAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key,}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -269,7 +268,7 @@ class _Level50f2State extends State<Level5_2of3> {
                   onPressed: (){
                     submitVariables(key);
                     Navigator.push(
-                        context, new MaterialPageRoute(builder: (context) => Level5_3of3(futureProfile))
+                        context, new MaterialPageRoute(builder: (context) => Level5_3of3())
                     );
                   }
               ),

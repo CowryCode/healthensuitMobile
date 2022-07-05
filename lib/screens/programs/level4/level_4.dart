@@ -14,10 +14,10 @@ class Level4 extends StatefulWidget {
 
   static final String title = 'Level 4';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final Future<PatientProfilePodo>? patientProfile;
+//  final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 1;
 
-  Level4(this.patientProfile);
+  Level4();
 
   @override
   _Level4State createState() => _Level4State();
@@ -30,39 +30,39 @@ class _Level4State extends State<Level4> {
   @override
   void initState() {
     super.initState();
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      StatusEntity? status;
-      await profile!.then((value) => {
-        status = value.statusEntity,
-        patientName = value.firstName!
-      });
-
-      int? nextLevel = status!.nextPage;
-      bool? isCompleted = status!.readInterventionGrouplevelfourArticle;
-      if(isCompleted!){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level4_4of4(profile))
-        );
-      }else if(nextLevel == 2){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level4_2of4(profile))
-        );
-      }else if(nextLevel == 3){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level4_3of4(profile))
-        );
-      }else if(nextLevel == 4){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level4_4of4(profile))
-        );
-      }
-    });
+  //  Future<PatientProfilePodo>? profile = widget.patientProfile;
+  //   WidgetsBinding.instance!.addPostFrameCallback((_) async {
+  //     StatusEntity? status;
+  //     await profile!.then((value) => {
+  //       status = value.statusEntity,
+  //       patientName = value.firstName!
+  //     });
+  //
+  //     int? nextLevel = status!.nextPage;
+  //     bool? isCompleted = status!.readInterventionGrouplevelfourArticle;
+  //     if(isCompleted!){
+  //       Navigator.push(
+  //           context, new MaterialPageRoute(builder: (context) => Level4_4of4(profile))
+  //       );
+  //     }else if(nextLevel == 2){
+  //       Navigator.push(
+  //           context, new MaterialPageRoute(builder: (context) => Level4_2of4(profile))
+  //       );
+  //     }else if(nextLevel == 3){
+  //       Navigator.push(
+  //           context, new MaterialPageRoute(builder: (context) => Level4_3of4(profile))
+  //       );
+  //     }else if(nextLevel == 4){
+  //       Navigator.push(
+  //           context, new MaterialPageRoute(builder: (context) => Level4_4of4(profile))
+  //       );
+  //     }
+  //   });
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+  //  Future<PatientProfilePodo>? profile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
@@ -74,7 +74,7 @@ class _Level4State extends State<Level4> {
         title: Text(Level4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, profile),
+      bottomNavigationBar: buttomBarWidget(context),
       body: Container(
         width: size.width,
         height: size.height,
@@ -139,7 +139,7 @@ class _Level4State extends State<Level4> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -154,7 +154,7 @@ class _Level4State extends State<Level4> {
                 onPressed: (){
                   ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 4);
                   Navigator.push(
-                  context, new MaterialPageRoute(builder: (context) => Level4_2of4(futureProfile))
+                  context, new MaterialPageRoute(builder: (context) => Level4_2of4())
                   );
                 }
               ),

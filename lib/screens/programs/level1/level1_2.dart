@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level1/level1_3.dart';
@@ -13,13 +15,14 @@ class Level1of2 extends StatefulWidget {
   static final String title = 'Level 1';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   static final optionPad = EdgeInsets.only(bottom: 10.0);
-  final Future<PatientProfilePodo>? patientProfile;
-  final InterventionlevelOne levelOneEntity;
+ // final Future<PatientProfilePodo>? patientProfile;
+ //  final InterventionlevelOne levelOneEntity;
 
   final int currentPage = 2;
   final int previousPage;
 
-  Level1of2(this.patientProfile, this.levelOneEntity,  this.previousPage);
+//  Level1of2(this.levelOneEntity,  this.previousPage);
+  Level1of2( this.previousPage);
 
   @override
   _Level1of2State createState() => _Level1of2State();
@@ -31,8 +34,8 @@ class _Level1of2State extends State<Level1of2> {
   @override
   Widget build(BuildContext context) {
     int currentPage = widget.currentPage;
-    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
-    InterventionlevelOne levelOneEntity = widget.levelOneEntity;
+  //  Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+  //  InterventionlevelOne levelOneEntity = widget.levelOneEntity;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     final _formKey = GlobalKey<FormBuilderState>();
@@ -43,7 +46,7 @@ class _Level1of2State extends State<Level1of2> {
         title: Text(Level1of2.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, _formKey, futureprofile, currentPage, levelOneEntity),
+      bottomNavigationBar: buttomBarWidget(context, _formKey,currentPage),
       body: Container(
         width: size.width,
         height: size.height,
@@ -159,30 +162,52 @@ class _Level1of2State extends State<Level1of2> {
     return levelOne;
   }
 
-  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne levelOne) {
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, int currentPage,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
         child: Container(
           color: Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              navIconButton(context, buttonText: "Back", buttonActon: (){
-                Navigator.of(context).pop();
-              }),
+          child: StoreConnector<AppState, PatientProfilePodo>(
+            converter: (store) => store.state.patientProfilePodo,
+            builder: (context, PatientProfilePodo patientprofile) => Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                navIconButton(context, buttonText: "Back", buttonActon: (){
+                  Navigator.of(context).pop();
+                }),
 
-              navIconButton(context, buttonText: "Next", buttonActon: (){
-                InterventionlevelOne levelone = getSelectedValue(key, levelOne);
-                ApiAccess().submitLevelone(levelone: levelone);
-                Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of3(levelone, futureProfile,currentPage))
-                    );
+                navIconButton(context, buttonText: "Next", buttonActon: (){
+                  InterventionlevelOne levelOne = patientprofile.interventionLevelsEntity?.levelOneEntity ?? InterventionlevelOne();
+                  InterventionlevelOne levelone = getSelectedValue(key, levelOne);
+                  ApiAccess().submitLevelone(levelone: levelone);
+                  Navigator.push(
+                      context, new MaterialPageRoute(builder: (context) => Level1of3(currentPage))
+                  );
                 }
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
+          // child: Row(
+          //   mainAxisSize: MainAxisSize.max,
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: <Widget>[
+          //     navIconButton(context, buttonText: "Back", buttonActon: (){
+          //       Navigator.of(context).pop();
+          //     }),
+          //
+          //     navIconButton(context, buttonText: "Next", buttonActon: (){
+          //       InterventionlevelOne levelone = getSelectedValue(key, levelOne);
+          //       ApiAccess().submitLevelone(levelone: levelone);
+          //       Navigator.push(
+          //           context, new MaterialPageRoute(builder: (context) => Level1of3(levelone,currentPage))
+          //           );
+          //       }
+          //     ),
+          //   ],
+          // ),
         ),
         elevation: 100,
       ),

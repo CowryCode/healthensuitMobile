@@ -13,12 +13,13 @@ class Level2_2of4 extends StatefulWidget {
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
 
   final LeveltwoVariables l2variables;
 
 
-  Level2_2of4(this.patientProfile, this.l2variables);
+//  Level2_2of4(this.patientProfile, this.l2variables);
+  Level2_2of4(this.l2variables);
 
   @override
   _Level2_2of4State createState() => _Level2_2of4State();
@@ -31,7 +32,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+  //  Future<PatientProfilePodo>? profile = widget.patientProfile;
     LeveltwoVariables variables = widget.l2variables;
 
     final Size size = MediaQuery.of(context).size;
@@ -44,7 +45,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
         title: Text(Level2_2of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, profile, variables),
+      bottomNavigationBar: buttomBarWidget(context,variables),
       body: Container(
         width: size.width,
         height: size.height,
@@ -173,7 +174,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
     }
   }
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? patientProfile, LeveltwoVariables l2variables) {
+  SafeArea buttomBarWidget(BuildContext context, LeveltwoVariables l2variables) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -191,7 +192,7 @@ class _Level2_2of4State extends State<Level2_2of4> {
                 print("Level 2 of 4 ${l2variables.averagenumberofbedhours}");
                 ApiAccess().submitLeveTwo(levelTwo: l2variables);
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level2_3of4(patientProfile,l2variables))
+                    context, new MaterialPageRoute(builder: (context) => Level2_3of4(l2variables))
                     );
                 }
               ),

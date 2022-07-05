@@ -17,11 +17,12 @@ class PsychoEducation extends StatefulWidget {
   final Function? onMenuTap;
   static final String title = 'Psychoeducation';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 1;
 
   PsychoeducationDTO? updatedPED;
-  PsychoEducation({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+  // PsychoEducation({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+  PsychoEducation({Key? key, this.onMenuTap,}) : super(key: key);
 
   @override
   _PsychoEducationState createState() => _PsychoEducationState();
@@ -31,14 +32,14 @@ class _PsychoEducationState extends State<PsychoEducation> {
   @override
   void initState() {
     super.initState();
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+   // Future<PatientProfilePodo>? profile = widget.patientProfile;
     Future<PsychoeducationDTO> psychoeducation  = ApiAccess().getIncompletePsychoeducation();
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       StatusEntity? status;
      PsychoeducationDTO? psyEdu;
-      await profile!.then((value) => {
-        status = value.statusEntity,
-      });
+      // await profile!.then((value) => {
+      //   status = value.statusEntity,
+      // });
       await psychoeducation.then((value) => {
         widget.updatedPED = value,
         psyEdu = value
@@ -49,17 +50,17 @@ class _PsychoEducationState extends State<PsychoEducation> {
         if (nextLevel == 2) {
           Navigator.push(
               context, new MaterialPageRoute(
-              builder: (context) => Psycho2(widget.updatedPED!, profile))
+              builder: (context) => Psycho2(widget.updatedPED!,))
           );
         } else if (nextLevel == 3) {
           Navigator.push(
               context, new MaterialPageRoute(
-              builder: (context) => Psycho3(widget.updatedPED!, profile))
+              builder: (context) => Psycho3(widget.updatedPED!,))
           );
         } else if (nextLevel == 4) {
           Navigator.push(
               context, new MaterialPageRoute(
-              builder: (context) => Psycho4(widget.updatedPED!, profile))
+              builder: (context) => Psycho4(widget.updatedPED!))
           );
         }
       }
@@ -68,19 +69,19 @@ class _PsychoEducationState extends State<PsychoEducation> {
 
    @override
   Widget build(BuildContext context) {
-     Future<PatientProfilePodo>? profile = widget.patientProfile;
+  //   Future<PatientProfilePodo>? profile = widget.patientProfile;
      final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     final _formKey = GlobalKey<FormBuilderState>();
     double pad = 18;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 5,patientprofile: profile,),
+      drawer: NavigationDrawerWidget(indexNum: 5,),
       appBar: AppBar(
         title: Text(PsychoEducation.title),
         centerTitle: true,
       ),
-     bottomNavigationBar: buttomBarWidget(context, _formKey, profile),
+     bottomNavigationBar: buttomBarWidget(context, _formKey,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -175,7 +176,7 @@ class _PsychoEducationState extends State<PsychoEducation> {
                    );
   }
 
-  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key,Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -194,7 +195,7 @@ class _PsychoEducationState extends State<PsychoEducation> {
                 // Intervention Levels ends in 6, we used 7 to represent PsychoEducation
                  ApiAccess().submitPsychoEducation(psychoeducationDTO: psyEdu);
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Psycho2(psyEdu, futureProfile))
+                    context, new MaterialPageRoute(builder: (context) => Psycho2(psyEdu,))
                     );
                 }
               ),

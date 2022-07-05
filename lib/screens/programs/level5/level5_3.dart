@@ -12,10 +12,10 @@ class Level5_3of3 extends StatefulWidget {
   static final String title = 'Level 5';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 3;
 
-  Level5_3of3(this.patientProfile);
+  Level5_3of3();
 
   @override
   _Level5_3of3State createState() => _Level5_3of3State();
@@ -26,7 +26,7 @@ class _Level5_3of3State extends State<Level5_3of3> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+  //  Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     
@@ -37,7 +37,7 @@ class _Level5_3of3State extends State<Level5_3of3> {
         title: Text(Level5_3of3.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, futureprofile),
+      bottomNavigationBar: buttomBarWidget(context,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -110,7 +110,7 @@ class _Level5_3of3State extends State<Level5_3of3> {
   }
 
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -127,7 +127,7 @@ class _Level5_3of3State extends State<Level5_3of3> {
               navIconButton(context, buttonText: "Conclude Level 5", buttonActon: (){
                 ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 5);
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                    builder: (context) => HomeScreen()));
               }
               ),
             ],

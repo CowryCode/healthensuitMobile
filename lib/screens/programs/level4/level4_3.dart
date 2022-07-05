@@ -10,10 +10,10 @@ class Level4_3of4 extends StatefulWidget {
 
   static final String title = 'Level 4';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 3;
 
-  Level4_3of4(this.patientProfile);
+  Level4_3of4();
 
   @override
   _Level40f3State createState() => _Level40f3State();
@@ -24,7 +24,7 @@ class _Level40f3State extends State<Level4_3of4> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+ //   Future<PatientProfilePodo>? profile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     
@@ -35,7 +35,7 @@ class _Level40f3State extends State<Level4_3of4> {
         title: Text(Level4_3of4.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, profile),
+      bottomNavigationBar: buttomBarWidget(context,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -106,7 +106,7 @@ class _Level40f3State extends State<Level4_3of4> {
   }
 
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -123,7 +123,7 @@ class _Level40f3State extends State<Level4_3of4> {
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 4);
                 Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level4_4of4(futureProfile))
+                    context, new MaterialPageRoute(builder: (context) => Level4_4of4())
                     ); 
               }
               ),

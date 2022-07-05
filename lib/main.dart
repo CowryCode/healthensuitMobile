@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
+import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
@@ -22,17 +24,18 @@ bool? loginStatus;
 Future<void> main() async {
   await init();
   // *************** Update ************
-  loginStatus = await Localstorage().getBoolean(key_Login_Status);
-  print("STATUSSSSSSSSSSS 1 : ${loginStatus} " );
-  ((){
-    if(loginStatus == null) {
-      runApp(MyAppLoginScreen());
-    }else{
-      runApp(MyAppHomeScreen());
-    }
-  }());
+  // loginStatus = await Localstorage().getBoolean(key_Login_Status);
+  // print("STATUSSSSSSSSSSS 1 : ${loginStatus} " );
+  // ((){
+  //   if(loginStatus == null) {
+  //     runApp(MyAppLoginScreen());
+  //   }else{
+  //     runApp(MyAppHomeScreen());
+  //   }
+  // }());
   //************** Update end *******************
- // runApp(MyApp());
+  runApp(MyAppLoginScreen());
+
 }
 
 
@@ -66,7 +69,10 @@ class MyAppLoginScreen extends StatelessWidget {
   final Store<AppState> _store = Store<AppState>(
     appStateReducer,
     initialState: AppState(
-      sleepDiariesPODO: SleepDiariesPODO().getCurrentSleepDiary(),
+      sleepDiariesPODO: SleepDiariesPODO(),
+      patientProfilePodo: PatientProfilePodo(),
+      loginPodo: LoginPodo().getInitializedLoginPodo(),
+      leveltwoVariables: LeveltwoVariables()
     )
   );
 
@@ -95,8 +101,8 @@ class MyAppHomeScreen extends StatelessWidget {
 
     return new MaterialApp(
       theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
-      // home: LoginScreen(),
-      home: HomeScreen(futureProfile: null, timedout: true,),
+       home: LoginScreen(loginStatus: false,),
+      // home: HomeScreen(futureProfile: null, timedout: true,),
     );
   }
 }

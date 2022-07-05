@@ -4,10 +4,12 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:healthensuite/screens/login/login_screen.dart';
@@ -17,9 +19,10 @@ import 'package:healthensuite/models/option_button.dart';
 import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
 
 class HomeScreen extends StatefulWidget {
-  Future<PatientProfilePodo>? futureProfile;
+ // Future<PatientProfilePodo>? futureProfile;
   bool timedout;
-  HomeScreen({required this.futureProfile, this.timedout: false });
+ // HomeScreen({required this.futureProfile, this.timedout: false });
+  HomeScreen({this.timedout: false });
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -31,22 +34,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<PatientProfilePodo>? patientprofile;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   patientprofile = widget.futureProfile;
-  //   if(patientprofile == null ){
-  //     patientprofile = ApiAccess().getPatientProfile(null);
-  //   }
-  // }
   @override
   void initState() {
     super.initState();
-    patientprofile = widget.futureProfile;
-    bool loginTimer = widget.timedout;
-    if(patientprofile == null ){
-        patientprofile = ApiAccess().getPatientProfile(null);
-      }
+  //  patientprofile = widget.futureProfile;
+  //   bool loginTimer = widget.timedout;
+  //   if(patientprofile == null ){
+  //       patientprofile = ApiAccess().getPatientProfile(null);
+  //     }
   }
 
   @override
@@ -56,56 +51,62 @@ class _HomeScreenState extends State<HomeScreen> {
 
     double pad = 18;
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 0, patientprofile: patientprofile,),
+      drawer: NavigationDrawerWidget(indexNum: 0,),
       appBar: AppBar(
         title: Text(title),
         centerTitle: true,
       ),
-      body: Container(
-          width: size.width,
-          height: size.height,
-          child: FutureBuilder<PatientProfilePodo>(
-            future: patientprofile,
-            builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
-              print("The initial state is ${widget.timedout}");
-              if(snapshot.hasData){
-                widget.timedout = false;
-                print("The state has data  ${widget.timedout}");
-                PatientProfilePodo profile = snapshot.data!;
-                return homescreenContent(profile);
-               }else{
-                   print("The state is ${widget.timedout}");
-                if(widget.timedout == true){
-                  Timer.periodic(Duration(seconds: timeout_duration), (timer){
-                    print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
-                    if(widget.timedout == true){
-                      if(timer.tick == 1){
-                        // setState(() {
-                        widget.timedout = false;
-                        print("The state chnaged to  ${widget.timedout}");
-                        // });
-                        timer.cancel();
-                        print("Timer cancled ");
-                        showAlertDialog(
-                            context: context, title: "",
-                            message: "Invalid user name or password or you may have lost your network connection. Please check and login again.",
-                            patientprofile: patientprofile
-                        );
-                      }
-                    }else{
-                      timer.cancel();
-                    }
-                  });
-                 }
-                return Container(
-                  child: Center(child: CircularProgressIndicator(),),
-                );
-              }
-            },
-          )
-
-
+      body: StoreConnector<AppState, PatientProfilePodo>(
+        converter: (store) => store.state.patientProfilePodo,
+        builder: (context, PatientProfilePodo profile ) => Container(
+          child:  homescreenContent(profile),
+        ),
       ),
+      // body: Container(
+      //     width: size.width,
+      //     height: size.height,
+      //     child: FutureBuilder<PatientProfilePodo>(
+      //       future: patientprofile,
+      //       builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
+      //         print("The initial state is ${widget.timedout}");
+      //         if(snapshot.hasData){
+      //           widget.timedout = false;
+      //           print("The state has data  ${widget.timedout}");
+      //           PatientProfilePodo profile = snapshot.data!;
+      //           return homescreenContent(profile);
+      //          }else{
+      //              print("The state is ${widget.timedout}");
+      //           if(widget.timedout == true){
+      //             Timer.periodic(Duration(seconds: timeout_duration), (timer){
+      //               print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
+      //               if(widget.timedout == true){
+      //                 if(timer.tick == 1){
+      //                   // setState(() {
+      //                   widget.timedout = false;
+      //                   print("The state chnaged to  ${widget.timedout}");
+      //                   // });
+      //                   timer.cancel();
+      //                   print("Timer cancled ");
+      //                   showAlertDialog(
+      //                       context: context, title: "",
+      //                       message: "Invalid user name or password or you may have lost your network connection. Please check and login again.",
+      //                       patientprofile: patientprofile
+      //                   );
+      //                 }
+      //               }else{
+      //                 timer.cancel();
+      //               }
+      //             });
+      //            }
+      //           return Container(
+      //             child: Center(child: CircularProgressIndicator(),),
+      //           );
+      //         }
+      //       },
+      //     )
+      //
+      //
+      // ),
     );
   }
 
@@ -253,33 +254,33 @@ class _HomeScreenState extends State<HomeScreen> {
   bool countDownComplete = false;
 
 
-  showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
-
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      // title: Text("My title"),
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  // showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
+  //
+  //   // set up the button
+  //   Widget okButton = TextButton(
+  //     child: Text("OK"),
+  //     onPressed: () {
+  //       Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
+  //     },
+  //   );
+  //
+  //   // set up the AlertDialog
+  //   AlertDialog alert = AlertDialog(
+  //     // title: Text("My title"),
+  //     title: Text(title),
+  //     content: Text(message),
+  //     actions: [
+  //       okButton,
+  //     ],
+  //   );
+  //
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 }
 

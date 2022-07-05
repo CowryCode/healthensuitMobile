@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/utilities/default.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
@@ -19,9 +21,10 @@ final assetImage ='assets/images/form-user.jpg';
 
 class NavigationDrawerWidget extends StatefulWidget {
   final int? indexNum;
-  Future<PatientProfilePodo>? patientprofile;
+//  Future<PatientProfilePodo>? patientprofile;
 
-  NavigationDrawerWidget({this. indexNum, required this.patientprofile });
+//  NavigationDrawerWidget({this. indexNum, required this.patientprofile });
+  NavigationDrawerWidget({this. indexNum});
 
   @override
   _NavigationDrawerWidgetState createState() => _NavigationDrawerWidgetState();
@@ -34,136 +37,147 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>?  futureProfile = widget.patientprofile;
+   // Future<PatientProfilePodo>?  futureProfile = widget.patientprofile;
 
       indexClicked = widget.indexNum;
-    return Drawer(
-        child: FutureBuilder<PatientProfilePodo>(
-        future: futureProfile,
-        builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
-          if(snapshot.hasData){
-            PatientProfilePodo profile = snapshot.data!;
-            return drawerContent(profile, futureProfile);
-          }else{
-            return Container(
-              child: Center(child: CircularProgressIndicator(),),
-            );
-          }
-        },
-      )
-
-    );
+      return StoreConnector<AppState, PatientProfilePodo>(
+        converter: (store) => store.state.patientProfilePodo,
+        builder: (context, PatientProfilePodo profile) => Drawer(
+            child: drawerContent(profile)
+            )
+      );
+    // return Drawer(
+    //     child: FutureBuilder<PatientProfilePodo>(
+    //     future: futureProfile,
+    //     builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
+    //       if(snapshot.hasData){
+    //         PatientProfilePodo profile = snapshot.data!;
+    //         return drawerContent(profile, futureProfile);
+    //       }else{
+    //         return Container(
+    //           child: Center(child: CircularProgressIndicator(),),
+    //         );
+    //       }
+    //     },
+    //   )
+    //
+    // );
   }
 
-  Material drawerContent(PatientProfilePodo profile, Future<PatientProfilePodo>?  futureProfile ){
-     bool enableSleepClock = profile.statusEntity!.enableSleepclock()?? false;
-     int groupID = profile.groupID ?? 2;
+  Material drawerContent(PatientProfilePodo patientprofile){
+     bool enableSleepClock = patientprofile.statusEntity!.enableSleepclock()?? false;
+   //  int groupID = patientprofile.groupID ?? 2;
     return Material(
       color:  appBackgroundColor,
       //color: Color.fromRGBO(50, 75, 205, 1),
       child: ListView(
-        children: <Widget>[
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child:  buildHeader(
-              assetImage: assetImage,
-              name: profile.firstName.toString(),
-              email: profile.email.toString(),
-              onClicked: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PatientScreen(
-                  patientProfile: futureProfile,
-                ),
-              )),
+          children: <Widget>[
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child:  buildHeader(
+                assetImage: assetImage,
+                name: patientprofile.firstName.toString(),
+                email: patientprofile.email.toString(),
+                onClicked: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PatientScreen(),
+                )),
+              ),
             ),
-          ),
-          Divider(color: Defaults.drawerItemColor),
-          Container(
-            padding: padding,
-            child: Column(
-              children: [
-                MenuItem(
-                    index: 0,
-                    onClicked: () => selectedItem(context, 0,futureProfile)
-                ),
-                MenuItem(
-                    index: 1,
-                    onClicked: () => selectedItem(context, 1,futureProfile)
-                ),
-                Center(
-                  child: ((){
-                    if(enableSleepClock){
-                     return  getSleepClock(futureProfile);
-                    }else{
-                      SizedBox(height: 10.0,);
-                  }
-                  }())
-                ),
-                MenuItem(
-                    index: 3,
-                    onClicked: () => selectedItem(context, 3,futureProfile)
-                ),
-                Center(
+            Divider(color: Defaults.drawerItemColor),
+            Container(
+              padding: padding,
+              child: Column(
+                children: [
+                  MenuItem(
+                      index: 0,
+                      onClicked: () => selectedItem(context, 0)
+                  ),
+                  MenuItem(
+                      index: 1,
+                      onClicked: () => selectedItem(context, 1)
+                  ),
+                  Center(
                     child: ((){
-                      if(groupID == 0){
-                        return  MenuItem(
-                            index: 4,
-                            onClicked: () => selectedItem(context, 4,futureProfile));
+                    //  if(enableSleepClock){
+                      if(enableSleepClock){
+                       return  getSleepClock();
                       }else{
                         SizedBox(height: 10.0,);
-                      }
+                    }
                     }())
-                ),
-                Center(
-                    child: ((){
-                      if(groupID == 1){
-                        return   MenuItem(
-                            index: 5,
-                            onClicked: () => selectedItem(context, 5,futureProfile));
-                      }else{
-                        SizedBox(height: 10.0,);
-                      }
-                    }())
-                ),
+                  ),
+                  MenuItem(
+                      index: 3,
+                     // onClicked: () => selectedItem(context, 3,futureProfile)
+                      onClicked: () => selectedItem(context, 3,)
+                  ),
+                  Center(
+                      child: ((){
+                        if(patientprofile.groupID == 0){
+                          return  MenuItem(
+                              index: 4,
+                             // onClicked: () => selectedItem(context, 4,futureProfile));
+                              onClicked: () => selectedItem(context, 4,));
+                        }else{
+                          SizedBox(height: 10.0,);
+                        }
+                      }())
+                  ),
+                  Center(
+                      child: ((){
+                        if(patientprofile.groupID == 1){
+                          return   MenuItem(
+                              index: 5,
+                             // onClicked: () => selectedItem(context, 5,futureProfile));
+                              onClicked: () => selectedItem(context, 5,));
+                        }else{
+                          SizedBox(height: 10.0,);
+                        }
+                      }())
+                  ),
 
-                MenuItem(
-                    index: 6,
-                    onClicked: () => selectedItem(context, 6,futureProfile)
-                ),
-                MenuItem(
-                    index: 7,
-                    onClicked: () => selectedItem(context, 7,futureProfile)
-                ),
-                SizedBox(height: 10.0,),
-                Divider(
-                  height: 1.0,
-                  thickness: 1.0,
-                  color: Defaults.drawerItemColor,
-                  indent: 3,
-                  endIndent: 3,
-                ),
-                SizedBox(height: 10.0),
-                Center(
-                  child: Text("Health enSuite",
-                    style: GoogleFonts.sanchez(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 22.0,
-                      color: Defaults.drawerItemColor,
+                  MenuItem(
+                      index: 6,
+                    //  onClicked: () => selectedItem(context, 6,futureProfile)
+                      onClicked: () => selectedItem(context, 6,)
+                  ),
+                  MenuItem(
+                      index: 7,
+                     // onClicked: () => selectedItem(context, 7,futureProfile)
+                      onClicked: () => selectedItem(context, 7,)
+                  ),
+                  SizedBox(height: 10.0,),
+                  Divider(
+                    height: 1.0,
+                    thickness: 1.0,
+                    color: Defaults.drawerItemColor,
+                    indent: 3,
+                    endIndent: 3,
+                  ),
+                  SizedBox(height: 10.0),
+                  Center(
+                    child: Text("Health enSuite",
+                      style: GoogleFonts.sanchez(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 22.0,
+                        color: Defaults.drawerItemColor,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20.0),
-              ],
+                  SizedBox(height: 20.0),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
   }
 
-  Widget getSleepClock(Future<PatientProfilePodo>? futureProfile ){
+ // Widget getSleepClock(Future<PatientProfilePodo>? futureProfile ){
+  Widget getSleepClock(){
     return MenuItem(
         index: 2,
-        onClicked: () => selectedItem(context, 2,futureProfile)
+        onClicked: () => selectedItem(context, 2)
     );
   }
 
@@ -218,57 +232,56 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     );
   }
 
-  void selectedItem(BuildContext context, int index, Future<PatientProfilePodo>?  profile ) {
+  // void selectedItem(BuildContext context, int index, Future<PatientProfilePodo>?  profile ) {
+  void selectedItem(BuildContext context, int index) {
     Navigator.of(context).pop();
 
     switch (index) {
       case 0:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => HomeScreen(futureProfile: profile,),
+         // builder: (context) => HomeScreen(futureProfile: profile,),
+          builder: (context) => HomeScreen(),
         ));
         break;
 
       case 1:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PatientScreen(
-            // name: "Patient Name",
-            // email: "patientEmail@gmail.com",
-            patientProfile: profile,
-          ),
+          builder: (context) => PatientScreen(),
         ));
         break;
       case 2:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SleepClock(patientProfile: profile, timedout: true,),
+          builder: (context) => SleepClock(timedout: true,),
         ));
         break;
       case 3:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => SleepReport(patientProfile: profile,),
+          builder: (context) => SleepReport(),
         ));
         break;
 
       case 4:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProgramContent(patientProfile: profile,),
+          builder: (context) => ProgramContent(),
         ));
         break;
 
       case 5:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PsychoEducation(patientProfile: profile,),
+          builder: (context) => PsychoEducation(),
         ));
         break;
       //  profile = widget.patientprofile;
       case 6:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => MyFeedback(patientProfile: widget.patientprofile,),
+       //   builder: (context) => MyFeedback(patientProfile: widget.patientprofile,),
+          builder: (context) => MyFeedback(),
         ));
         break;
 
       case 7:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => VoluntaryWithdrawal(patientProfile: profile,),
+          builder: (context) => VoluntaryWithdrawal(),
         ));
         break;
     }
