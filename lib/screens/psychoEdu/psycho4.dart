@@ -224,7 +224,7 @@ class _Psycho4 extends State<Psycho4> {
                     ApiAccess().submitPsychoEducation(psychoeducationDTO: completedPsychoeducationObject);
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
-                          HomeScreen(futureProfile: futureProfile,),
+                          HomeScreen(futureProfile: futureProfile, justLoggedIn: false),
                     ));
                   }
               ),

@@ -27,6 +27,7 @@ class Level1of2 extends StatefulWidget {
 
 class _Level1of2State extends State<Level1of2> {
   String patientName = "Henry";
+  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,6 @@ class _Level1of2State extends State<Level1of2> {
     InterventionlevelOne levelOneEntity = widget.levelOneEntity;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
-    final _formKey = GlobalKey<FormBuilderState>();
     double pad = 18;
 
     return Scaffold(
@@ -71,7 +71,7 @@ class _Level1of2State extends State<Level1of2> {
                      SizedBox(height: pad,),
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead2"]!, textStyle: themeData.textTheme.headline5),
                      checkBoxBuilderWidget(_formKey, themeData),
-
+                     // bodyTextWidget(themeData, text: LEVEL1_DATA["bullet134"]!),
                     //  bodyTextWidget(themeData, text: LEVEL1_DATA["bullet4"]),
                     //  bodyTextWidget(themeData, text: LEVEL1_DATA["bullet5"]),
 
@@ -123,7 +123,7 @@ class _Level1of2State extends State<Level1of2> {
     return FormBuilder(
                      key: _formKey,
                      child: FormBuilderCheckboxGroup(
-                        name: "situationList", 
+                        name: "situationList",
                         options: [
                           FormBuilderFieldOption(
                             value: "It often takes me more than 30 minutes to fall asleep.",
@@ -175,10 +175,13 @@ class _Level1of2State extends State<Level1of2> {
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 InterventionlevelOne levelone = getSelectedValue(key, levelOne);
-                ApiAccess().submitLevelone(levelone: levelone);
-                Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level1of3(levelone, futureProfile,currentPage))
-                    );
+                //I added a function here. Please check the return value of the function getSelectedValue(key, levelOne)
+                validateFieldInputs(context, futureProfile,currentPage, levelone);
+
+                // ApiAccess().submitLevelone(levelone: levelone);
+                // Navigator.push(
+                //     context, new MaterialPageRoute(builder: (context) => Level1of3(levelone, futureProfile,currentPage))
+                //     );
                 }
               ),
             ],
@@ -187,6 +190,50 @@ class _Level1of2State extends State<Level1of2> {
         elevation: 100,
       ),
     );
+  }
+
+  void validateFieldInputs(BuildContext context, Future<PatientProfilePodo>? futureProfile, int currentPage, InterventionlevelOne levelOne){
+    _formKey.currentState!.save();
+    if(_formKey.currentState!.validate()){
+      List<String>? theValue = _formKey.currentState!.fields["situationList"]!.value;
+      //print("Checkbox value: $theValue");
+      if(theValue == null || theValue.isEmpty){
+        print("Checkbox is null");
+        createAlertDialog(context, head: "Attention", body: "Please select at least one of the checkboxes to proceed.");
+      }else{
+        print("Checkbox is checked: $theValue");
+        // Navigator.push(
+        //     context, new MaterialPageRoute(builder: (context) => Level1of3())
+        // );
+        ApiAccess().submitLevelone(levelone: levelOne);
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Level1of3(levelOne, futureProfile,currentPage))
+        );
+      }
+    }
+
+  }
+
+  createAlertDialog(BuildContext context, {String? head, String? body}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(head!, style: themeData.textTheme.headline5,),
+            content: Text(body!,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        });
   }
 
   // IconButton navIconButton(BuildContext context, {IconData buttonIcon, Function buttonActon}) {

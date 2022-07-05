@@ -23,17 +23,20 @@ class Level5_1of3 extends StatefulWidget {
 }
 
 class _Level5_1of3State extends State<Level5_1of3> {
-  String patientName = "Henry";
+  String patientName = "";
 
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
+
     Future<PatientProfilePodo>? profile = widget.patientProfile;
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
       StatusEntity? status;
       await profile!.then((value) => {
         status = value.statusEntity,
+        patientName = value.firstName!,
       });
 
       int? nextLevel = status!.nextPage;
@@ -167,7 +170,8 @@ class _Level5_1of3State extends State<Level5_1of3> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,

@@ -5,6 +5,7 @@ import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
+import 'package:healthensuite/utilities/text_data.dart';
 
 class MyChoice{
   String? choice;
@@ -60,12 +61,30 @@ class _MyFeedbackState extends State<MyFeedback> {
               SizedBox(height: pad,),
               Padding(
                 padding: MyFeedback.sidePad,
-                child: Text("Please select the type of the feedback", style: themeData.textTheme.headline6,),
+                child: Text("Contact Us", style: themeData.textTheme.headline3,),
+              ),
+              SizedBox(height: 5.0,),
+              Padding(
+                padding: MyFeedback.sidePad,
+                child: Text("By Email:", style: themeData.textTheme.headline4,),
+              ),
+              textBody(CONTACT_DATA["email"]!),
+              SizedBox(height: 5.0,),
+              Padding(
+                padding: MyFeedback.sidePad,
+                child: Text("By Phone:", style: themeData.textTheme.headline4,),
+              ),
+              textBody(CONTACT_DATA["phoneNumbers"]!),
+              textBody(CONTACT_DATA["tollFree"]!),
+              SizedBox(height: pad,),
+              Padding(
+                padding: MyFeedback.sidePad,
+                child: Text("Please select the type of the feedback", style: themeData.textTheme.headline4,),
               ),
               RadioGroup(),
               Padding(
                 padding: MyFeedback.sidePad,
-                child: Text("Fill and submit suggestion note below", style: themeData.textTheme.headline5,),
+                child: Text("Fill and submit suggestion note below", style: themeData.textTheme.headline4,),
               ),
               buildFeedbackForm(),
               //SizedBox(height: pad,),
@@ -77,9 +96,9 @@ class _MyFeedbackState extends State<MyFeedback> {
                   Center(child: CircularProgressIndicator(),);
                   response.then((value) => {
                     if(value){
-                          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile, justLoggedIn: false)))
                      }else{
-                         Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                         Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile, justLoggedIn: false)))
                      }
                   });
                 }, buttonIcon: Icons.feedback,)
@@ -88,6 +107,15 @@ class _MyFeedbackState extends State<MyFeedback> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget textBody(String txt){
+    final ThemeData themeData = Theme.of(context);
+    return Padding(
+      padding: MyFeedback.sidePad,
+      child: Text(txt
+        , style: themeData.textTheme.bodyText2,),
     );
   }
 
@@ -133,7 +161,7 @@ class _RadioGroupState extends State<RadioGroup> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final ThemeData themeData = Theme.of(context);
     return Column(
       children: [
         Wrap(
@@ -141,7 +169,7 @@ class _RadioGroupState extends State<RadioGroup> {
             Container(
               child: Column(
                 children: choices.map((data) => RadioListTile(
-                  title: Text('${data.choice}'),
+                  title: Text('${data.choice}', style: themeData.textTheme.bodyText2,),
                   groupValue: defaultIndex,
                   value: data.index,
                   onChanged: (dynamic value){

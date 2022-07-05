@@ -30,6 +30,8 @@ class _Level4State extends State<Level4> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
+
     Future<PatientProfilePodo>? profile = widget.patientProfile;
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
       StatusEntity? status;
@@ -176,7 +178,8 @@ class _Level4State extends State<Level4> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,

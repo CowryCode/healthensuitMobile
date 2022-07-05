@@ -5,7 +5,7 @@ import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
-
+import 'package:healthensuite/utilities/text_data.dart';
 
 class VoluntaryWithdrawal extends StatefulWidget{
 
@@ -52,20 +52,39 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: pad,),
+
               Padding(
                 padding: VoluntaryWithdrawal.sidePad,
-                child: Text("To withdraw from the program, please contact us:", style: themeData.textTheme.headline4,),
+                child: Text("Contact Us", style: themeData.textTheme.headline3,),
               ),
-              SizedBox(height: pad,),
+              SizedBox(height: 5.0,),
               Padding(
                 padding: VoluntaryWithdrawal.sidePad,
-                child: Text("By Email: TeamHealthEnSuite@iwk.nshealth.ca", style: themeData.textTheme.headline5,),
+                child: Text("By Email:", style: themeData.textTheme.headline4,),
               ),
-              SizedBox(height: pad,),
+              textBody(CONTACT_DATA["email"]!),
+              SizedBox(height: 5.0,),
               Padding(
                 padding: VoluntaryWithdrawal.sidePad,
-                child: Text("By Phone: (902) 470 7934 or call toll-free number: 1-877-341-8309 press 5", style: themeData.textTheme.headline5,),
+                child: Text("By Phone:", style: themeData.textTheme.headline4,),
               ),
+              textBody(CONTACT_DATA["phoneNumbers"]!),
+              textBody(CONTACT_DATA["tollFree"]!),
+
+              // Padding(
+              //   padding: VoluntaryWithdrawal.sidePad,
+              //   child: Text("To withdraw from the program, please contact us:", style: themeData.textTheme.headline4,),
+              // ),
+              // SizedBox(height: pad,),
+              // Padding(
+              //   padding: VoluntaryWithdrawal.sidePad,
+              //   child: Text("By Email: TeamHealthEnSuite@iwk.nshealth.ca", style: themeData.textTheme.headline5,),
+              // ),
+              // SizedBox(height: pad,),
+              // Padding(
+              //   padding: VoluntaryWithdrawal.sidePad,
+              //   child: Text("By Phone: (902) 470 7934 or call toll-free number: 1-877-341-8309 press 5", style: themeData.textTheme.headline5,),
+              // ),
               SizedBox(height: pad,),
               Center(
                 child: Text("OR", style: themeData.textTheme.headline4,),
@@ -73,7 +92,7 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
               SizedBox(height: pad,),
               Padding(
                 padding: VoluntaryWithdrawal.sidePad,
-                child: Text("Fill and submit withdrawal note below", style: themeData.textTheme.headline5,),
+                child: Text("Fill and submit withdrawal note below", style: themeData.textTheme.headline4,),
               ),
               buildNoteForm(context),
               Center(
@@ -83,6 +102,15 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget textBody(String txt){
+    final ThemeData themeData = Theme.of(context);
+    return Padding(
+      padding: VoluntaryWithdrawal.sidePad,
+      child: Text(txt
+        , style: themeData.textTheme.bodyText2,),
     );
   }
 
@@ -122,9 +150,9 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
                 Future<bool> response = ApiAccess().voluntaryWithdrawal(withdrawalNote:txt);
                 response.then((value) => {
                   if(value){
-                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile, justLoggedIn: false)))
                   }else{
-                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile,)))
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile, justLoggedIn: false)))
                   }
                 });
               //  Navigator.of(context).pop();

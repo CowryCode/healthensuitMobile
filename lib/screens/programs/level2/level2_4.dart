@@ -221,7 +221,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
                     variables.setCompleted(isCompleted: true);
                     ApiAccess().submitLeveTwo(levelTwo: variables);
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                        builder: (context) => HomeScreen(futureProfile: futureProfile, justLoggedIn: false)));
                   }
               ),
             ],

@@ -11,6 +11,7 @@ import 'package:healthensuite/screens/programs/program_content.dart';
 import 'package:healthensuite/screens/psychoEdu/psychoeducation.dart';
 import 'package:healthensuite/screens/sleepClock/sleep_clock.dart';
 import 'package:healthensuite/screens/sleepReport/sleep_report.dart';
+import 'package:healthensuite/screens/login/login_screen.dart';
 
 int? indexClicked = 0;
 // final name1 = 'Ifeanyi Paul';
@@ -151,6 +152,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     ),
                   ),
                 ),
+                SizedBox(height: 10.0),
+                logOutButton(context, buttonText: "Logout", buttonActon: (){createAlertDialog(context);}),
                 SizedBox(height: 20.0),
               ],
             ),
@@ -224,7 +227,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     switch (index) {
       case 0:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => HomeScreen(futureProfile: profile,),
+          builder: (context) => HomeScreen(futureProfile: profile, justLoggedIn: false),
         ));
         break;
 
@@ -273,6 +276,43 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         break;
     }
   }
+}
+
+MaterialButton logOutButton(BuildContext context, {required String buttonText, Function? buttonActon}){
+  return  MaterialButton(
+    child: Text(buttonText, style: TextStyle(color: appItemColorWhite, fontWeight: FontWeight.w700,
+      decoration: TextDecoration.underline, fontSize: 18.0,),),
+    onPressed: buttonActon as void Function()?,
+  );
+}
+
+
+createAlertDialog(BuildContext context){
+  final ThemeData themeData = Theme.of(context);
+  return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context){
+        return AlertDialog(
+          title: Text("Logout!", style: themeData.textTheme.headline5,),
+          content: Text("Wish to log out?",
+            style: themeData.textTheme.bodyText2,),
+          actions: [
+            MaterialButton(
+                child: Text("No", style: TextStyle(fontWeight: FontWeight.w700),),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                }
+            ),
+            MaterialButton(
+                child: Text("Yes", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                onPressed: () {Navigator.push(
+                    context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))
+                );}
+            ),
+          ],
+        );
+      });
 }
 
 

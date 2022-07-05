@@ -127,7 +127,7 @@ class _Level5_3of3State extends State<Level5_3of3> {
               navIconButton(context, buttonText: "Conclude Level 5", buttonActon: (){
                 ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 5);
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                    builder: (context) => HomeScreen(futureProfile: futureProfile, justLoggedIn: false)));
               }
               ),
             ],

@@ -24,8 +24,23 @@ class Level6 extends StatefulWidget {
 }
 
 class _Level6State extends State<Level6> {
-  String patientName = "Henry";
+  String patientName = "";
   static final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  void initState(){
+    super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
+
+    Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      createAlertDialog(context);
+
+      await profile!.then((value) => {
+        patientName = value.firstName!
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +178,8 @@ class _Level6State extends State<Level6> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,
@@ -249,7 +265,7 @@ class _Level6State extends State<Level6> {
                   onPressed: (){
                     submitVariables(key);
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                        builder: (context) => HomeScreen(futureProfile: futureProfile, justLoggedIn: false)));
                   }
               ),
             ],

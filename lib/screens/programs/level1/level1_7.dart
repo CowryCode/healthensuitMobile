@@ -466,7 +466,7 @@ class _Level1of7State extends State<Level1of7> {
                 levelone.nullifyWhichBestdescribesYoursituation();
                 ApiAccess().submitLevelone(levelone: levelone);
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                    builder: (context) => HomeScreen(futureProfile: futureProfile, justLoggedIn: false)));
               }
             ),
           ],

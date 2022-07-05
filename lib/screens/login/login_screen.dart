@@ -30,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool? loginStatus;
 
   bool isLoading = false;
+  String usernameHintText = "Your email address you used to Sign-in";
+  String passwordHintText = "Enter your password";
 
   // @override
   // void initState(){
@@ -44,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
       if(loginStatus != null){
         if(loginStatus == true){
-          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null, timedout: true )));
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null, justLoggedIn: false, timedout: true )));
         }
       }
     });
@@ -77,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.person_sharp,
                 color: Colors.white,
               ),
-              hintText: 'Enter your Username',
+              hintText: usernameHintText,
               hintStyle: kHintTextStyle,
             ),
             controller: usernamecontroller,
@@ -113,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: 'Enter your Password',
+              hintText: passwordHintText,
               hintStyle: kHintTextStyle,
             ),
             controller: passwordcontroller,
@@ -186,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
           String pass = passwordcontroller.value.text.trim();
          // _logindetailFuture =  ApiAccess().login(username: un, password: pass);
           Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
-          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: profile, timedout: true )));
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: profile, justLoggedIn: true, timedout: true )));
           // _logindetailFuture!.then((value) => {
           //   // loginDetail = value
           //   if(value == null){

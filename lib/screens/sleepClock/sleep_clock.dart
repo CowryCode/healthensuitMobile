@@ -225,7 +225,7 @@ class _SleepClockState extends State<SleepClock> {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientprofile, timedout: false)));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientprofile, justLoggedIn: false, timedout: false)));
       },
     );
 

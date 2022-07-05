@@ -31,7 +31,7 @@ class Level2 extends StatefulWidget {
 }
 
 class _Level2State extends State<Level2> {
-  String patientName = "Henry";
+  String patientName = "";
   String sleepEfficiency = "86.9%";
 
   Future<LeveltwoVariables>? l2Vairiables;
@@ -41,14 +41,19 @@ class _Level2State extends State<Level2> {
   @override
   void initState() {
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
+
     l2Vairiables = ApiAccess().getLeveltwoVariables();
     Future<PatientProfilePodo>? profile = widget.patientProfile;
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      createAlertDialog(context);
+
       StatusEntity? status;
       InterventionlevelTwo? levelTwo;
       await profile!.then((value) => {
         status = value.statusEntity,
-        levelTwo = value.interventionLevelsEntity!.levelTwoEntity
+        levelTwo = value.interventionLevelsEntity!.levelTwoEntity,
+        patientName = value.firstName!
       });
 
       LeveltwoVariables l2VExracted = new LeveltwoVariables();
@@ -241,7 +246,8 @@ class _Level2State extends State<Level2> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,
