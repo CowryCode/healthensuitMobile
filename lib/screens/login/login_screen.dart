@@ -30,8 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool? loginStatus;
 
   bool isLoading = false;
-  String usernameHintText = "Your email address you used to Sign-in";
-  String passwordHintText = "Enter your password";
 
   // @override
   // void initState(){
@@ -79,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.person_sharp,
                 color: Colors.white,
               ),
-              hintText: usernameHintText,
+              hintText: 'Enter your Username',
               hintStyle: kHintTextStyle,
             ),
             controller: usernamecontroller,
@@ -115,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Icons.lock,
                 color: Colors.white,
               ),
-              hintText: passwordHintText,
+              hintText: 'Enter your Password',
               hintStyle: kHintTextStyle,
             ),
             controller: passwordcontroller,

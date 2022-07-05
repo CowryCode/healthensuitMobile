@@ -14,7 +14,6 @@ import 'dart:ui';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/screens/programs/program_content.dart';
 
-
 // void main() => runApp(new MyApp());
 bool? loginStatus;
 Future<void> main() async {
