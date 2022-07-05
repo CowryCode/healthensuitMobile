@@ -29,9 +29,22 @@ class Level3 extends StatefulWidget {
 }
 
 class _Level3State extends State<Level3> {
-  String patientName = "Henry";
+  String patientName = "";
   TextEditingController notecontroller = TextEditingController();
 
+  @override
+  void initState(){
+    super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
+  //  Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      createAlertDialog(context);
+      //
+      // await profile!.then((value) => {
+      //   patientName = value.firstName!
+      // });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +173,8 @@ class _Level3State extends State<Level3> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context){
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,

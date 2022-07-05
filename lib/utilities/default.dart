@@ -13,7 +13,7 @@ class Defaults {
     'Sleep Report',
     'Program Content',
     'Psychoeducation',
-    'Feedback',
+    'Contact Us',
     'Voluntary Withdrawal',
   ];
 

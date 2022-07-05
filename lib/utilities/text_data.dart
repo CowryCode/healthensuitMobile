@@ -12,7 +12,8 @@ const HOME_DATA  =
     "bullet7":"•	Record the time you got out of bed to start your day. This should be after your final awakening.",
     "bullet8":"•	Rate the overall quality of your sleep.",
     "bullet9":"•	Note any medications or other sleep aids taken before going to bed.",
-    "description":"Please fill out a sleep diary each day. It is best to do this as soon as you get out of bed so that you don’t forget."
+    "description":"Please fill out a sleep diary each day. It is best to do this as soon as you get out of bed so that you don’t forget.",
+    "disclaimerTxt":"This device in no way replaces decisions made by or the treatment plan given to you by your healthcare provider. The Health enSuite Insomnia App will only be used to assist your healthcare provider support a deprescribing decision or refer you to cognitive behavioural therapy.",
   };
 
   const LEVEL1_DATA = 
@@ -219,8 +220,15 @@ const HOME_DATA  =
     "bullet131": "• Remembering that you can function tomorrow even if you had a poor night’s sleep.",
     "bullet132": "There can be setbacks as you work towards the goal of sleeping drug-free. Talk with your health care provider about your plan for reducing your use of sleeping pills and discuss any modifications as needed. It is better to modify your plan rather than abandoning it altogether. You might need to adjust the plan because of withdrawal symptoms or events in your life like an especially stressful period at work.",
     "bullet133": "Over the last few weeks you have learned a lot of new strategies to manage your sleep. You can continue to use any of the tools within the Health enSuite app to help support your improved sleep habits.",
-    "bullet134": "",
+    "bullet134": "Over the next few weeks you will learn strategies to help resolve this problem.",
+    "bullet135": "",
   };
 
   var hours = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18'];
 
+  const CONTACT_DATA  =
+  {
+    "email":"TeamHealthEnSuite@iwk.nshealth.ca",
+    "phoneNumbers":"(902) 470 7934",
+    "tollFree":"Toll-free number: 1-877-341-8309 press 5",
+  };

@@ -17,12 +17,14 @@ import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/models/option_button.dart';
 import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
+import 'package:healthensuite/utilities/constants.dart';
 
 class HomeScreen extends StatefulWidget {
  // Future<PatientProfilePodo>? futureProfile;
   bool timedout;
  // HomeScreen({required this.futureProfile, this.timedout: false });
   HomeScreen({this.timedout: false });
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -42,12 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
   //   if(patientprofile == null ){
   //       patientprofile = ApiAccess().getPatientProfile(null);
   //     }
+
   }
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final ThemeData themeData = Theme.of(context);
 
     double pad = 18;
     return Scaffold(
@@ -253,7 +255,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool countDownComplete = false;
 
-
   // showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
   //
   //   // set up the button
@@ -282,5 +283,69 @@ class _HomeScreenState extends State<HomeScreen> {
   //     },
   //   );
   // }
+  // showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
+  //
+  //   // set up the button
+  //   Widget okButton = TextButton(
+  //     child: Text("OK"),
+  //     onPressed: () {
+  //       Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
+  //     },
+  //   );
+  //
+  //   // set up the AlertDialog
+  //   AlertDialog alert = AlertDialog(
+  //     // title: Text("My title"),
+  //     title: Text(title),
+  //     content: Text(message),
+  //     actions: [
+  //       okButton,
+  //     ],
+  //   );
+  //
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+
+
+
+  // createAlertDialog(BuildContext context){
+  //   final ThemeData themeData = Theme.of(context);
+  //   return showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (context){
+  //         return AlertDialog(
+  //           title: Text("Disclaimer", style: themeData.textTheme.headline5,),
+  //           content: SingleChildScrollView(
+  //             scrollDirection: Axis.vertical,
+  //             physics: ClampingScrollPhysics(),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 splashTextWidget(themeData, text: HOME_DATA["disclaimerTxt"]!),
+  //               ],
+  //             ),
+  //           ),
+  //           actions: [
+  //             MaterialButton(
+  //                 child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+  //                 onPressed: (){
+  //                   Navigator.of(context).pop();
+  //                 }
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
+
+  Text splashTextWidget(ThemeData themeData, {required String text}) {
+    return Text(text,
+      style: themeData.textTheme.bodyText1,);
+  }
 }
 

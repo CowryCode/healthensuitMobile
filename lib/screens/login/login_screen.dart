@@ -50,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if(loginStatus != null){
         if(loginStatus == true){
           Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
+
         }
       }
     });

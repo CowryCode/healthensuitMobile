@@ -32,7 +32,7 @@ class Level2 extends StatefulWidget {
 }
 
 class _Level2State extends State<Level2> {
-  String patientName = "Henry";
+  String patientName = "";
   String sleepEfficiency = "86.9%";
 
   Future<LeveltwoVariables>? l2Vairiables;
@@ -42,6 +42,8 @@ class _Level2State extends State<Level2> {
   @override
   void initState() {
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
+
     l2Vairiables = ApiAccess().getLeveltwoVariables();
   //  Future<PatientProfilePodo>? profile = widget.patientProfile;
     WidgetsBinding.instance!.addPostFrameCallback((_) async {
@@ -76,6 +78,9 @@ class _Level2State extends State<Level2> {
       //       context, new MaterialPageRoute(builder: (context) => Level2_4of4(profile, l2VExracted))
       //   );
       // }
+
+      createAlertDialog(context);
+
     });
   }
 
@@ -242,7 +247,8 @@ class _Level2State extends State<Level2> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,

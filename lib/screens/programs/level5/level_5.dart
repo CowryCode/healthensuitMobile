@@ -23,7 +23,7 @@ class Level5_1of3 extends StatefulWidget {
 }
 
 class _Level5_1of3State extends State<Level5_1of3> {
-  String patientName = "Henry";
+  String patientName = "";
 
 
   @override
@@ -167,7 +167,8 @@ class _Level5_1of3State extends State<Level5_1of3> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,

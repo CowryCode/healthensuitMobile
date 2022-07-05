@@ -21,7 +21,6 @@ class Level1 extends StatefulWidget {
   // final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 1;
   final int previousPage;
-
   // Level1(this.patientProfile,this.previousPage);
   Level1({required this.previousPage,});
 
@@ -30,9 +29,12 @@ class Level1 extends StatefulWidget {
 }
 
 class _Level1State extends State<Level1> {
+  String patientName = "";
+
   @override
   void initState() {
     super.initState();
+
   //  Future<PatientProfilePodo>? profile = widget.patientProfile;
   //   WidgetsBinding.instance!.addPostFrameCallback((_) async {
   //     StatusEntity? status;
@@ -77,9 +79,11 @@ class _Level1State extends State<Level1> {
   //       );
   //     }
   //   });
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
+
   }
 
-   String patientName = "Henry";
   @override
   Widget build(BuildContext context) {
     int currentPage = widget.currentPage;
@@ -182,7 +186,8 @@ class _Level1State extends State<Level1> {
               );
   }
 
-  createAlertDialog(BuildContext context, ThemeData themeData) async{
+  createAlertDialog(BuildContext context){
+    final ThemeData themeData = Theme.of(context);
     return showDialog(
       context: context, 
       barrierDismissible: false,
