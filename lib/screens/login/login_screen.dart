@@ -52,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if(loginPodo.successfull == true){
         Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
       }
+      //TODO: IMPLEMENT AUTO LOGIN ONCE SIGNED IN
       // if(loginStatus != null){
       //   if(loginStatus == true){
       //     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
