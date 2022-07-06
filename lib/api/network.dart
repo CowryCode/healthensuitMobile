@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelfivePODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelsixPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelthreePODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/loginobject.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/medicationsPODO.dart';
 import 'package:healthensuite/api/networkmodels/mysleepclock.dart';
@@ -18,16 +20,19 @@ import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/sleepwindowsPODO.dart';
 import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/textexchangePODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:http/http.dart' as http;
 
 import 'networkmodels/mysleepreport.dart';
+import 'package:redux/redux.dart';
 
 class ApiAccess {
 
- // Future<LoginPodo> login({String? username, String? password}) async {
-  Future<PatientProfilePodo>? login({String? username, String? password}) async {
+ // Future<PatientProfilePodo>? login({String? username, String? password}) async {
+  Future<LoginObject> login({String? username, String? password}) async {
     final response = await http.post(
       Uri.parse(loginURL),
       headers: <String, String>{
@@ -38,14 +43,15 @@ class ApiAccess {
     );
 
     if (response.statusCode == 200) {
-      LoginPodo cc = LoginPodo.fromJson(jsonDecode(response.body));
-      print("Person ID : ${cc.personID}");
-      print("Token : ${cc.token} ");
-      String? token = cc.token ?? "";
+      LoginPodo loginPodo = LoginPodo.fromJson(jsonDecode(response.body));
+      print("Person ID : ${loginPodo.personID}");
+      print("Token : ${loginPodo.token} ");
+      String? token = loginPodo.token ?? "";
       print("Token 2 :  $token");
       Localstorage().saveString(key_login_token, token);
       Localstorage().saveBoolean(key_Login_Status, true);
-      Status? status = cc.status;
+
+      Status? status = loginPodo.status;
       if (status != null) {
         Localstorage().saveInteger(key_Next_Page, status.nextPage!);
         Localstorage().saveBoolean(
@@ -61,11 +67,12 @@ class ApiAccess {
         Localstorage().saveBoolean(
             key_Level_Six, status.readInterventionGrouplevelsixArticle!);
       }
-      PatientProfilePodo profile = await getPatientProfile(cc.token) ??
+      PatientProfilePodo profile = await getPatientProfile(loginPodo.token) ??
           PatientProfilePodo();
       if (profile.firstName != null) {
         uploadDeviceIdentifier(token);
-        return profile;
+
+        return LoginObject(loginPodo: loginPodo, patientProfilePodo: profile);
       } else {
         throw Exception("Could not pull Profile ${response.statusCode}");
       }

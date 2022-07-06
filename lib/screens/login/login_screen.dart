@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/loginobject.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/statemanagement/actions.dart';
@@ -46,12 +47,16 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     loginStatus = widget.loginStatus;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if(loginStatus != null){
-        if(loginStatus == true){
-          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
-
-        }
+      LoginPodo loginPodo = StoreProvider.of<AppState>(context).state.loginPodo;
+      print(" Login STATUS STATE : ${loginPodo.successfull}");
+      if(loginPodo.successfull == true){
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
       }
+      // if(loginStatus != null){
+      //   if(loginStatus == true){
+      //     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
+      //   }
+      // }
     });
   }
 
@@ -188,26 +193,33 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: ()  {
           String un = usernamecontroller.value.text.trim();
           String pass = passwordcontroller.value.text.trim();
-          Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
           // 04/07/2022 START
           LoginPodo login = LoginPodo(showLoginloading: true);
           StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(login));
+        //  Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
+          Future<LoginObject> loginObject =  ApiAccess().login(username: un, password: pass);
           Timer.periodic(Duration(seconds: timeout_duration), (timer){
-            print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
-            profile?.then((value) => {
-              print(" Name is : ${value.firstName}"),
-              StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
-              StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(
-                LoginPodo(showLoginloading: false)
-              )),
-            timer.cancel(),
+            loginObject.then((value) => {
+              StoreProvider.of<AppState>(context).dispatch(
+                  UpdatePatientProfileAction(value.getPatientprofile)),
+              StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
+              timer.cancel(),
               Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
             });
+            // profile?.then((value) => {
+            //   print(" Name is : ${value.firstName}"),
+            //   StoreProvider.of<AppState>(context).dispatch(
+            //       UpdatePatientProfileAction(value)),
+            //   StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(
+            //     LoginPodo(showLoginloading: false))),
+            // timer.cancel(),
+            //   Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
+            // });
+
+            timer.cancel();
             if (timer.tick == 1) {
-              LoginPodo login = LoginPodo(showLoginloading: false);
-              StoreProvider.of<AppState>(context)
-                  .dispatch(UpdateLoginPodoAction(login));
               timer.cancel();
+              showAlertDialog(context, "Login failed kindly check your login credentials and try again", "Failed Login");
             }
             {
               timer.cancel();
@@ -232,18 +244,21 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  showAlertDialog(BuildContext context) {
+  showAlertDialog(BuildContext context, String msg, String title) {
 
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
-      onPressed: () { },
+      onPressed: () {
+        StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+        Navigator.of(context).pop();
+      },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("My title"),
-      content: Text("This is my message."),
+      title: Text(title),
+      content: Text(msg),
       actions: [
         okButton,
       ],

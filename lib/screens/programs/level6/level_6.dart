@@ -33,9 +33,8 @@ class _Level6State extends State<Level6> {
     // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
 
   //  Future<PatientProfilePodo>? profile = widget.patientProfile;
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       createAlertDialog(context);
-
     });
   }
 

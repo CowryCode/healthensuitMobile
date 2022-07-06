@@ -46,7 +46,7 @@ class _Level2State extends State<Level2> {
 
     l2Vairiables = ApiAccess().getLeveltwoVariables();
   //  Future<PatientProfilePodo>? profile = widget.patientProfile;
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       // StatusEntity? status;
       // InterventionlevelTwo? levelTwo;
       // await profile!.then((value) => {

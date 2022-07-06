@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/regimenPODO.dart';
 import 'package:healthensuite/api/networkmodels/sharedreportsPODO.dart';
@@ -171,5 +172,13 @@ class PatientProfilePodo {
 
   void setInterventionLevelsEntity(InterventionLevelsEntity value){
     this.interventionLevelsEntity = value;
+  }
+
+  void updateSleepDiary(SleepDiariesPODO sleepDiariesPODO){
+    if(this.sleepDiaries != null){
+      this.sleepDiaries!.map((sleepdiary)
+      => sleepdiary.id == sleepDiariesPODO.id
+          ? sleepDiariesPODO : sleepdiary).toList();
+    }
   }
 }

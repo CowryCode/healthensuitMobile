@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/utilities/default.dart';
 import 'package:healthensuite/utilities/constants.dart';
@@ -14,6 +16,7 @@ import 'package:healthensuite/screens/psychoEdu/psychoeducation.dart';
 import 'package:healthensuite/screens/sleepClock/sleep_clock.dart';
 import 'package:healthensuite/screens/sleepReport/sleep_report.dart';
 import 'package:healthensuite/screens/login/login_screen.dart';
+import 'package:redux/redux.dart';
 
 int? indexClicked = 0;
 // final name1 = 'Ifeanyi Paul';
@@ -319,7 +322,13 @@ createAlertDialog(BuildContext context){
             ),
             MaterialButton(
                 child: Text("Yes", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
-                onPressed: () {Navigator.push(
+                onPressed: () {
+                  AppState appstate  = StoreProvider.of<AppState>(context).state;
+                  StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(PatientProfilePodo()));
+                  StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+                  Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
+
+                  Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))
                 );}
             ),
