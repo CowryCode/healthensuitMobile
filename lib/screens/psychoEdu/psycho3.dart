@@ -92,7 +92,6 @@ class _Psycho3 extends State<Psycho3> {
               navIconButton(context, buttonText: "Back", buttonActon: (){
                 Navigator.of(context).pop();
               }),
-
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 7);
                 Navigator.push(

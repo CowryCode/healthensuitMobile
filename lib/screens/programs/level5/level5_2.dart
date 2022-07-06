@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelfivePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level5/level5_3.dart';
+import 'package:redux/redux.dart';
 
 class Level5_2of3 extends StatefulWidget {
 
@@ -104,7 +110,7 @@ class _Level50f2State extends State<Level5_2of3> {
 
   }
 
-  void submitVariables(GlobalKey<FormBuilderState> key){
+  void submitVariables(GlobalKey<FormBuilderState> key, PatientProfilePodo patientProfilePodo){
     var hoursofsleep = key.currentState!.fields["sleepExpect"]!.value;
     var fullofenergy = key.currentState!.fields["energyExpect"]!.value;
     var fallasleep = key.currentState!.fields["stayAsleepExpect"]!.value;
@@ -117,6 +123,16 @@ class _Level50f2State extends State<Level5_2of3> {
     L5.setdidnotsleepwelllastnight(didnotsleep);
     L5.setcancelsocialmedia(cancelsm);
     ApiAccess().submitLevelfive(levelfive: L5);
+
+    // Update State
+    StatusEntity status = patientProfilePodo.statusEntity ?? StatusEntity();
+    status.setCompletedLevelFive(true);
+    patientProfilePodo.setStatusEntity(status);
+    InterventionLevelsEntity interventionLevelsEntity = patientProfilePodo.interventionLevelsEntity ?? InterventionLevelsEntity();
+    interventionLevelsEntity.setLevelFive(L5);
+    patientProfilePodo.setInterventionLevelsEntity(interventionLevelsEntity);
+    StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
+    // Update state end
   }
 
   SingleChildScrollView headerWidget(ThemeData themeData) {
@@ -151,27 +167,32 @@ class _Level50f2State extends State<Level5_2of3> {
         color: Colors.transparent,
         child: Container(
           color: Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              navIconButton(context, buttonText: "Back", buttonActon: (){
-                Navigator.of(context).pop();
-              }),
+          child: StoreConnector<AppState, PatientProfilePodo>(
+            converter: (store) => store.state.patientProfilePodo,
+            builder: (context, PatientProfilePodo patientprofile) => Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                navIconButton(context, buttonText: "Back", buttonActon: (){
+                  Navigator.of(context).pop();
+                }),
 
-              navIconButton(context, buttonText: "Submit Your Views", buttonActon: (){
-                submitAlertDialog(
-                    context: context,
-                    title: "Warning!",
-                    message: "Are you sure you want to save at this moment ?",
-                    key: key,);
-               //  submitVariables(key);
-               // Navigator.push(
-               //      context, new MaterialPageRoute(builder: (context) => Level5of3(futureProfile))
-               //      );
-               }
-              ),
-            ],
+                navIconButton(context, buttonText: "Submit Your Views", buttonActon: (){
+                  submitAlertDialog(
+                      context: context,
+                      title: "Warning!",
+                      message: "Are you sure you want to save at this moment ?",
+                      key: key,
+                    patientProfilePodo: patientprofile
+                  );
+                 //  submitVariables(key);
+                 // Navigator.push(
+                 //      context, new MaterialPageRoute(builder: (context) => Level5of3(futureProfile))
+                 //      );
+                 }
+                ),
+              ],
+            ),
           ),
         ),
         elevation: 100,
@@ -245,7 +266,7 @@ class _Level50f2State extends State<Level5_2of3> {
   }
 
 
-  submitAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key,}){
+  submitAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key, required PatientProfilePodo patientProfilePodo}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -266,7 +287,7 @@ class _Level50f2State extends State<Level5_2of3> {
               MaterialButton(
                   child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                   onPressed: (){
-                    submitVariables(key);
+                    submitVariables(key, patientProfilePodo);
                     Navigator.push(
                         context, new MaterialPageRoute(builder: (context) => Level5_3of3())
                     );

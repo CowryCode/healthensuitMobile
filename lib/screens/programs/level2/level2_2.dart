@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level2/level2_3.dart';
@@ -180,23 +186,31 @@ class _Level2_2of4State extends State<Level2_2of4> {
         color: Colors.transparent,
         child: Container(
           color: Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              navIconButton(context, buttonText: "Back", buttonActon: (){
-                Navigator.of(context).pop();
-              }),
-
-              navIconButton(context, buttonText: "Submit Rise Time", buttonActon: (){
-                print("Level 2 of 4 ${l2variables.averagenumberofbedhours}");
-                ApiAccess().submitLeveTwo(levelTwo: l2variables);
-                Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Level2_3of4(l2variables))
-                    );
-                }
-              ),
-            ],
+          child: StoreConnector<AppState, PatientProfilePodo>(
+            converter: (store) => store.state.patientProfilePodo,
+            builder: (context, PatientProfilePodo profile) => Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                navIconButton(context, buttonText: "Back", buttonActon: (){
+                  Navigator.of(context).pop();
+                }),
+                navIconButton(context, buttonText: "Submit Rise Time", buttonActon: (){
+                  print("Level 2 of 4 ${l2variables.averagenumberofbedhours}");
+                  ApiAccess().submitLeveTwo(levelTwo: l2variables);
+                  // Update State
+                  InterventionLevelsEntity levelsentities = profile.interventionLevelsEntity ?? InterventionLevelsEntity();
+                  levelsentities.setLevelTwoVariables(l2variables);
+                  profile.setInterventionLevelsEntity(levelsentities);
+                  StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(profile));
+                  // Update state end
+                  Navigator.push(
+                      context, new MaterialPageRoute(builder: (context) => Level2_3of4(l2variables))
+                      );
+                  }
+                ),
+              ],
+            ),
           ),
         ),
         elevation: 100,

@@ -94,7 +94,6 @@ class _Level1of6State extends State<Level1of6> {
               navIconButton(context, buttonText: "Back", buttonActon: (){
                 Navigator.of(context).pop();
               }),
-
               navIconButton(context, buttonText: "Next", buttonActon: (){
                 ApiAccess().savePage(currentPage: currentPage, interventionLevel: 1);
                  Navigator.push(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -110,9 +112,15 @@ class _Level1of5State extends State<Level1of5> {
 
                 navIconButton(context, buttonText: "Next", buttonActon: (){
                   print("This thing got here :::::::::::::::::::::::::");
-                  InterventionlevelOne levelone = patientProfilePodo.interventionLevelsEntity!.levelOneEntity ?? InterventionlevelOne();
+                  InterventionLevelsEntity levelsentities = patientProfilePodo.interventionLevelsEntity ?? InterventionLevelsEntity();
+                  InterventionlevelOne levelone = levelsentities.levelOneEntity ?? InterventionlevelOne();
                   InterventionlevelOne updatedLevelone = getSelectedValue(levelone);
                   ApiAccess().submitLevelone(levelone: updatedLevelone);
+                  // Update State
+                  levelsentities.setLevelOne(updatedLevelone);
+                  patientProfilePodo.setInterventionLevelsEntity(levelsentities);
+                  StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
+                  // Update state end
                   Navigator.push(
                       context, new MaterialPageRoute(builder: (context) => Level1of6(currentPage))
                       );

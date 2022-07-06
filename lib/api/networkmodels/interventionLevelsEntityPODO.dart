@@ -3,12 +3,14 @@ import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelsixPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelthreePODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoPODO.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 
 class InterventionLevelsEntity {
   int? id;
   int? interventionLevel;
   InterventionlevelOne? levelOneEntity;
   InterventionlevelTwo? levelTwoEntity;
+  LeveltwoVariables? leveltwoVariables;
   LevelthreeVariables? levelThreeEntity;
   Levelfive? levelFiveEntity;
   LevelSix? levelSixEntity;
@@ -20,6 +22,7 @@ class InterventionLevelsEntity {
         this.interventionLevel,
         this.levelOneEntity,
         this.levelTwoEntity,
+        this.leveltwoVariables,
         this.levelThreeEntity,
         this.levelFiveEntity,
         this.levelSixEntity,
@@ -32,6 +35,7 @@ class InterventionLevelsEntity {
     levelOneEntity = json['levelOneEntity'] != null ? new InterventionlevelOne.fromJson(json['levelOneEntity']): null;
 
     levelTwoEntity = json['levelTwoEntity'] != null ? new InterventionlevelTwo.fromJson(json['levelTwoEntity']): null;
+    leveltwoVariables = json['leveltwoVariables'] != null ? new LeveltwoVariables.fromJson(json['leveltwoVariables']): null;
 
     levelThreeEntity = json['levelThreeEntity'] != null ? new LevelthreeVariables.fromJson(json['levelThreeEntity'])
         : null;
@@ -53,6 +57,9 @@ class InterventionLevelsEntity {
     data['interventionLevel'] = this.interventionLevel;
     if (this.levelOneEntity != null) {
       data['levelOneEntity'] = this.levelOneEntity!.toJson();
+    }
+    if (this.leveltwoVariables != null) {
+      data['leveltwoVariables'] = this.leveltwoVariables!.toJson();
     }
     if (this.levelTwoEntity != null) {
       data['levelTwoEntity'] = this.levelTwoEntity!.toJson();
@@ -80,13 +87,16 @@ class InterventionLevelsEntity {
   void setLevelTwo(InterventionlevelTwo value){
     this.levelTwoEntity = value;
   }
+  void setLevelTwoVariables(LeveltwoVariables value){
+    this.leveltwoVariables = value;
+  }
   void setLevelThree(LevelthreeVariables value){
     this.levelThreeEntity = value;
   }
   void setLevelFive(Levelfive value){
     this.levelFiveEntity = value;
   }
-    void setLevelSix(LevelSix value){
+  void setLevelSix(LevelSix value){
     this.levelSixEntity = value;
   }
 }

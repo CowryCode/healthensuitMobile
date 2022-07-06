@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelsixPODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
 import 'package:healthensuite/screens/programs/level5/level5_2.dart';
+import 'package:redux/redux.dart';
 
 
 class Level6 extends StatefulWidget {
@@ -131,23 +137,27 @@ class _Level6State extends State<Level6> {
         color: Colors.transparent,
         child: Container(
           color: Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              MaterialButton(
-                child: Text("Conclude Level 6", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
-                onPressed: (){
-                  submitAlertDialog(
-                      context: context,
-                      title: "Warning!",
-                      message: "Congratulations! You have finished level 6!",
-                      key: key,
-                      );
-                }
-              ),
-              
-            ],
+          child: StoreConnector<AppState, PatientProfilePodo>(
+            converter: (store) => store.state.patientProfilePodo,
+            builder: (context, PatientProfilePodo patientprofile) => Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                MaterialButton(
+                  child: Text("Conclude Level 6", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    submitAlertDialog(
+                        context: context,
+                        title: "Warning!",
+                        message: "Congratulations! You have finished level 6!",
+                        key: key,
+                      patientProfilePodo: patientprofile
+                    );
+                  }
+                ),
+
+              ],
+            ),
           ),
         ),
         elevation: 100,
@@ -155,7 +165,7 @@ class _Level6State extends State<Level6> {
     );
   }
 
-  void submitVariables(GlobalKey<FormBuilderState> key){
+  void submitVariables(GlobalKey<FormBuilderState> key, PatientProfilePodo profile){
     var reply = key.currentState!.fields["yourResp"]!.value;
     var strtgy = key.currentState!.fields["yourStrat"]!.value;
 
@@ -163,6 +173,18 @@ class _Level6State extends State<Level6> {
     l6.setfears(reply);
     l6.setStrategy(strtgy);
     ApiAccess().submitLevelsix(levelsix: l6);
+
+
+    // Update State
+    StatusEntity status = profile.statusEntity ?? StatusEntity();
+    status.setCompletedLevelSix(true);
+    profile.setStatusEntity(status);
+    InterventionLevelsEntity interventionLevelsEntity = profile.interventionLevelsEntity ?? InterventionLevelsEntity();
+    interventionLevelsEntity.setLevelSix(l6);
+    profile.setInterventionLevelsEntity(interventionLevelsEntity);
+    StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(profile));
+    // Update state end
+
   }
 
    Padding sectionTitleWidget(ThemeData themeData, {required String text, TextStyle? textStyle} ) {
@@ -238,7 +260,7 @@ class _Level6State extends State<Level6> {
   }
 
 
-  submitAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key,}){
+  submitAlertDialog({required BuildContext context, required String title, required String message, required GlobalKey<FormBuilderState> key, required PatientProfilePodo patientProfilePodo}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -259,7 +281,7 @@ class _Level6State extends State<Level6> {
               MaterialButton(
                   child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                   onPressed: (){
-                    submitVariables(key);
+                    submitVariables(key, patientProfilePodo);
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => HomeScreen()));
 

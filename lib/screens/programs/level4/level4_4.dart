@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -106,26 +111,30 @@ class _Level4_4of4State extends State<Level4_4of4> {
         color: Colors.transparent,
         child: Container(
           color: Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              navIconButton(context, buttonText: "Back", buttonActon: (){
-                Navigator.of(context).pop();
-              }),
+          child: StoreConnector<AppState, PatientProfilePodo>(
+            converter: (store) => store.state.patientProfilePodo,
+            builder: (context, PatientProfilePodo profile) => Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                navIconButton(context, buttonText: "Back", buttonActon: (){
+                  Navigator.of(context).pop();
+                }),
 
-              navIconButton(context, buttonText: "Conclude Level 4", buttonActon: (){
-                submitAlertDialog(
-                    context: context,
-                    title: "",
-                    message: "Congratulations! You have finished level 4!",
-                    );
-                // ApiAccess().submitLevelfour(levelfour: true);
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
-              }
-              ),
-            ],
+                navIconButton(context, buttonText: "Conclude Level 4", buttonActon: (){
+                  submitAlertDialog(
+                      context: context,
+                      title: "",
+                      message: "Congratulations! You have finished level 4!",
+                    patientProfilePodo: profile
+                      );
+                  // ApiAccess().submitLevelfour(levelfour: true);
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                }
+                ),
+              ],
+            ),
           ),
         ),
         elevation: 100,
@@ -166,7 +175,7 @@ class _Level4_4of4State extends State<Level4_4of4> {
                 );
    }
 
-  submitAlertDialog({required BuildContext context, required String title, required String message,}){
+  submitAlertDialog({required BuildContext context, required String title, required String message, required PatientProfilePodo patientProfilePodo}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -188,6 +197,12 @@ class _Level4_4of4State extends State<Level4_4of4> {
                   child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                   onPressed: (){
                     ApiAccess().submitLevelfour(levelfour: true);
+                    // Update State
+                    StatusEntity status = patientProfilePodo.statusEntity ?? StatusEntity();
+                    status.setCompletedLevelFour(true);
+                    patientProfilePodo.setStatusEntity(status);
+                    StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
+                    // Update state end
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => HomeScreen()));
                   }

@@ -165,6 +165,9 @@ class PatientProfilePodo {
   StatusEntity? getStatusEntity(){
     return this.statusEntity;
   }
+  void setStatusEntity(StatusEntity value){
+    this.statusEntity = value;
+  }
 
   int? getTrialtype(){
     return this.trialType;

@@ -194,6 +194,7 @@ class _PsychoEducationState extends State<PsychoEducation> {
                 PsychoeducationDTO psyEdu = getSelectedValue(key, widget.updatedPED!);
                 // Intervention Levels ends in 6, we used 7 to represent PsychoEducation
                  ApiAccess().submitPsychoEducation(psychoeducationDTO: psyEdu);
+
                 Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => Psycho2(psyEdu,))
                     );

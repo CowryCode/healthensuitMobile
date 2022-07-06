@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVariables.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -129,27 +134,31 @@ class _Level2_4of4State extends State<Level2_4of4> {
         color: Colors.transparent,
         child: Container(
           color: Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              navIconButton(context, buttonText: "Back", buttonActon: (){
-                Navigator.of(context).pop();
-              }),
-              navIconButton(context, buttonText: "Conclude Level 2", buttonActon: (){
-                createAlertDialog(
-                    context: context,
-                    title: "",
-                    message: "Congratulations! You have finished level 2!",
-                    variables: variables,
-                    );
+          child: StoreConnector<AppState, PatientProfilePodo>(
+            converter: (store) => store.state.patientProfilePodo,
+            builder: (context,PatientProfilePodo profile) => Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                navIconButton(context, buttonText: "Back", buttonActon: (){
+                  Navigator.of(context).pop();
+                }),
+                navIconButton(context, buttonText: "Conclude Level 2", buttonActon: (){
+                  createAlertDialog(
+                      context: context,
+                      title: "",
+                      message: "Congratulations! You have finished level 2!",
+                      variables: variables,
+                    patientprofile: profile
+                      );
 
-                // ApiAccess().submitLeveTwo(levelTwo: variables);
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
-              }
-              ),
-            ],
+                  // ApiAccess().submitLeveTwo(levelTwo: variables);
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
+                }
+                ),
+              ],
+            ),
           ),
         ),
         elevation: 100,
@@ -197,7 +206,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
    }
 
 
-  createAlertDialog({required BuildContext context, required String title, required String message,required LeveltwoVariables variables,}){
+  createAlertDialog({required BuildContext context, required String title, required String message,required LeveltwoVariables variables, required PatientProfilePodo patientprofile}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -220,6 +229,16 @@ class _Level2_4of4State extends State<Level2_4of4> {
                   onPressed: (){
                     variables.setCompleted(isCompleted: true);
                     ApiAccess().submitLeveTwo(levelTwo: variables);
+                    // Update State
+                    InterventionLevelsEntity levelsentities = patientprofile.interventionLevelsEntity ?? InterventionLevelsEntity();
+                    levelsentities.setLevelTwoVariables(variables);
+                    patientprofile.setInterventionLevelsEntity(levelsentities);
+                    StatusEntity status = patientprofile.statusEntity ?? StatusEntity();
+                    status.setCompletedLevelTwo(true);
+                    patientprofile.setStatusEntity(status);
+                    StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientprofile));
+                    // Update state end
+
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => HomeScreen()));
                   }

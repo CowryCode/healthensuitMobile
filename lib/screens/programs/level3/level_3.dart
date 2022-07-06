@@ -5,6 +5,7 @@ import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelthreePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
 import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
@@ -156,6 +157,9 @@ class _Level3State extends State<Level3> {
     InterventionLevelsEntity interventionLevelsEntity = profilePodo.interventionLevelsEntity ?? InterventionLevelsEntity();
     interventionLevelsEntity.setLevelThree(level3);
     profilePodo.setInterventionLevelsEntity(interventionLevelsEntity);
+    StatusEntity statusEntity = profilePodo.statusEntity ?? StatusEntity();
+    statusEntity.setCompletedLevelThree(true);
+    profilePodo.setStatusEntity(statusEntity);
 
     StoreProvider.of<AppState>(context).dispatch(
       UpdatePatientProfileAction(profilePodo)

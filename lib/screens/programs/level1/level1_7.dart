@@ -5,6 +5,7 @@ import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
 import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
@@ -200,6 +201,9 @@ class _Level1of7State extends State<Level1of7> {
     InterventionLevelsEntity levelsEntity = patientprofile.interventionLevelsEntity ?? InterventionLevelsEntity();
     levelsEntity.setLevelOne(levelone);
     patientprofile.setInterventionLevelsEntity(levelsEntity);
+    StatusEntity status = patientprofile.statusEntity ?? StatusEntity();
+    status.setCompletedLevelOne(true);
+    patientprofile.setStatusEntity(status);
     StoreProvider.of<AppState>(context).dispatch(
       UpdatePatientProfileAction(patientprofile)
     );
@@ -477,12 +481,19 @@ class _Level1of7State extends State<Level1of7> {
               builder: (context, PatientProfilePodo profile) => MaterialButton(
                 child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                 onPressed: (){
-                  InterventionlevelOne levelone = profile.interventionLevelsEntity!.levelOneEntity ?? InterventionlevelOne();
+                  InterventionLevelsEntity levelsentities = profile.interventionLevelsEntity ?? InterventionLevelsEntity();
+                  InterventionlevelOne levelone = levelsentities.levelOneEntity ?? InterventionlevelOne();
                   levelone.setsleepalone(sleepalone);
                   levelone.setnominateRoommate(nominaterooMate);
                   levelone.nullifyHowIsitgoingSofar();
                   levelone.nullifyWhichBestdescribesYoursituation();
                   ApiAccess().submitLevelone(levelone: levelone);
+                  // Update State
+                  levelsentities.setLevelOne(levelone);
+                  profile.setInterventionLevelsEntity(levelsentities);
+                  StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(profile));
+                  // Update state end
+
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => HomeScreen()));
                 }

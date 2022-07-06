@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelonePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -179,13 +181,18 @@ class _Level1of2State extends State<Level1of2> {
                 }),
 
                 navIconButton(context, buttonText: "Next", buttonActon: (){
-                  InterventionlevelOne levelOne = patientprofile.interventionLevelsEntity?.levelOneEntity ?? InterventionlevelOne();
+                  InterventionLevelsEntity levelsentities = patientprofile.interventionLevelsEntity ?? InterventionLevelsEntity();
+                  InterventionlevelOne levelOne = levelsentities.levelOneEntity ?? InterventionlevelOne();
                   InterventionlevelOne levelone = getSelectedValue(key, levelOne);
                   ApiAccess().submitLevelone(levelone: levelone);
+                  // Update State
+                  levelsentities.setLevelOne(levelone);
+                  patientprofile.setInterventionLevelsEntity(levelsentities);
+                  StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientprofile));
+                  // Update state end
                   Navigator.push(
                       context, new MaterialPageRoute(builder: (context) => Level1of3(currentPage))
                   );
-
           // child: Row(
           //   mainAxisSize: MainAxisSize.max,
           //   mainAxisAlignment: MainAxisAlignment.spaceBetween,

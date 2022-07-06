@@ -106,8 +106,26 @@ class StatusEntity {
   int? getInterventionLevel(){
     return this.interventionLevel;
   }
-
   bool? enableSleepclock(){
     return this.enableSleepClockbutton;
+  }
+
+  void setCompletedLevelOne(bool iscompleted){
+    this.readInterventionGroupleveloneArticle = iscompleted;
+  }
+  void setCompletedLevelTwo(bool iscompleted){
+    this.readInterventionGroupleveltwoArticle = iscompleted;
+  }
+  void setCompletedLevelThree(bool iscompleted){
+    this.readInterventionGrouplevelthreeArticle = iscompleted;
+  }
+  void setCompletedLevelFour(bool iscompleted){
+    this.readInterventionGrouplevelfourArticle = iscompleted;
+  }
+  void setCompletedLevelFive(bool iscompleted){
+    this.readInterventionGrouplevelfiveArticle = iscompleted;
+  }
+  void setCompletedLevelSix(bool iscompleted){
+    this.readInterventionGrouplevelsixArticle = iscompleted;
   }
 }
