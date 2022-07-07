@@ -168,18 +168,23 @@ class _Level2State extends State<Level2> {
   }
   
   Widget getcontent(ThemeData themeData, Size size, double pad, LeveltwoVariables l2var){
+    double paraHeight = 3;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: pad,),
         sectionTitleWidget(themeData, text: "Introduction to Sleep Restriction", textStyle: themeData.textTheme.headline4),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet23"]!),
+        SizedBox(height: paraHeight,),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet24"]!),
+        SizedBox(height: paraHeight,),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet25"]!),
         SizedBox(height: pad,),
         sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead5"]!, textStyle: themeData.textTheme.headline5),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet26"]!),
+        SizedBox(height: paraHeight,),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet27"]!),
+        SizedBox(height: paraHeight,),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet28"]!),
 
         SizedBox(height: pad,),
@@ -190,7 +195,9 @@ class _Level2State extends State<Level2> {
         SizedBox(height: pad,),
         bodyTextWidget(themeData, text: "This means that your average sleep efficiency was ${l2var.averagesleepefficiency}"),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet31"]!),
+        SizedBox(height: paraHeight,),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet32"]!),
+        SizedBox(height: paraHeight,),
         bodyTextWidget(themeData, text: LEVEL1_DATA["bullet33"]!),
       ],
     );

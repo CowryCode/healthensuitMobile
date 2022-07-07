@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_redux/flutter_redux.dart';
@@ -14,6 +15,7 @@ import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/models/icon_button.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
+import 'package:healthensuite/utilities/text_data.dart';
 
 
 // ignore: must_be_immutable
@@ -35,6 +37,8 @@ class SleepDiary extends StatefulWidget {
 class _SleepDiaryState extends State<SleepDiary> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool moreDrugIsVisible = false;
+  bool extraDrugIsVisible = false;
+  bool secondExtraDrugIsVisible = false;
 
   TimeOfDay? time;
 
@@ -95,6 +99,8 @@ class _SleepDiaryState extends State<SleepDiary> {
                     style: themeData.textTheme.headline4,),
                 ),
               ),
+              bodyTextWidget(themeData, sidePad, text: SLEEP_DIARY_DATA["para1"]!),
+              bodyTextWidget(themeData, sidePad, text: SLEEP_DIARY_DATA["para2"]!),
               Expanded(
                 flex: 1,
                 child: SingleChildScrollView(
@@ -105,56 +111,73 @@ class _SleepDiaryState extends State<SleepDiary> {
                     children: [
                       SizedBox(height: pad,),
 
-                      timeQuestion(sidePad, themeData, context, bedtime,
-                          question: "What time did you get into bed last?",
+                      timeQuestion(sidePad, themeData, context,
+                          timeOfDay: TimeOfDay(hour: 19, minute: 0),
+                          question: "1. What time did you get into bed last? (Required)",
                           valName: "inBed"),
+                      // timeQuestion(sidePad, themeData, context, bedtime,
+                      //     question: "What time did you get into bed last?",
+                      //     valName: "inBed"),
 
                       SizedBox(height: pad,),
 
-                      timeQuestion(sidePad, themeData, context, trySleepTime,
-                          question: "What time did you try to go to sleep?",
+                      timeQuestion(sidePad, themeData, context,
+                          timeOfDay: TimeOfDay(hour: 19, minute: 30),
+                          question: "2. What time did you try to go to sleep? (Required)",
                           valName: "tryBed"),
+                      // timeQuestion(sidePad, themeData, context, trySleepTime,
+                      //     question: "What time did you try to go to sleep?",
+                      //     valName: "tryBed"),
 
                       SizedBox(height: pad,),
 
                       hourMinute(sidePad, themeData, hours, minutes,
-                          question: "How long did it take you to fall asleep? (Please select hour then minute)",
+                          question: "3. How long did it take you to fall asleep? (Please select hour then minute)",
                           hrValName: "hrs1", mnValName: "mns1"),
 
                       SizedBox(height: pad,),
 
                       numberInput(sidePad, themeData, wakeupCount!,
-                          question: "How many times did you wake up, not counting your final awakening?",
+                          question: "4. How many times did you wake up, not counting your final awakening? (Required)",
                           valName: "wakeTimes"),
 
                       SizedBox(height: pad,),
 
                       hourMinute(sidePad, themeData, hours, minutes,
-                          question: "In total, how long did these awakenings last? (Please select hour then minute)",
+                          question: "5. In total, how long did these awakenings last? (Please select hour then minute)",
                           hrValName: "hrs2", mnValName: "mns2"),
 
                       SizedBox(height: pad,),
 
-                      timeQuestion(sidePad, themeData, context, finalWakeupTime,
-                          question: "What time was your final awakening?",
+                      timeQuestion(sidePad, themeData, context,
+                          timeOfDay: TimeOfDay(hour: 5, minute: 0),
+                          question: "6. What time was your final awakening? (Required)",
                           valName: "finAwake"),
+                      // timeQuestion(sidePad, themeData, context, finalWakeupTime,
+                      //     question: "What time was your final awakening?",
+                      //     valName: "finAwake"),
 
                       SizedBox(height: pad,),
 
-                      timeQuestion(sidePad, themeData, context, timeLeftbed,
-                          question: "What time did you get out of bed?",
+                      timeQuestion(sidePad, themeData, context,
+                          timeOfDay: TimeOfDay(hour: 5, minute: 30),
+                          question: "7. What time did you get out of bed? (Required)",
                           valName: "outBed"),
+                      // timeQuestion(sidePad, themeData, context, timeLeftbed,
+                      //     question: "What time did you get out of bed?",
+                      //     valName: "outBed"),
 
                       SizedBox(height: pad,),
 
                       sleepQualityChoice(sidePad, themeData),
 
+                      SizedBox(height: pad,),
 
                       (() {
                         if (med1 != null) {
                         //  widget.isMed1 = true;
                           return drugNumberInput(sidePad, themeData,
-                              question: "How much ${med1.medicationName} did you take today?",
+                              question: "How much ${med1.medicationName} (milligrams) did you take today? (Required)",
                               valName: "drNum1",
                               valAmount: "${med1.amount}");
                         } else {
@@ -169,7 +192,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                         if (med2 != null) {
                          // widget.isMed2 = true;
                           return drugNumberInput(sidePad, themeData,
-                              question: "How much ${med2.medicationName} did you take today?",
+                              question: "How much ${med2.medicationName} (milligrams) did you take today? (Required)",
                               valName: "drNum2",
                               valAmount: "${med2.amount}");
                         } else {
@@ -177,15 +200,39 @@ class _SleepDiaryState extends State<SleepDiary> {
                         }
                       }()),
 
-                      SizedBox(height: pad,),
-
-                      switchToMoreDrug(sidePad, themeData),
+                      switchToMoreDrug(sidePad, themeData,
+                      questionTxt: "Did you take any other medications before going to sleep? (Optional)"),
 
                       Visibility(child: SizedBox(height: pad,), visible: moreDrugIsVisible,),
-                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the medication name", valName: "medName1"), visible: moreDrugIsVisible,),
+                      Visibility(child:  Padding(
+                            padding: sidePad,
+                            child: Text(SLEEP_DIARY_DATA["extraMedSubHead"]!,
+                              style: themeData.textTheme.headline5,),
+                          ), visible: moreDrugIsVisible,),
                       Visibility(child: SizedBox(height: pad,), visible: moreDrugIsVisible,),
-                      Visibility(child: drugNumberInput(sidePad, themeData,question: "Enter the amount taken", valName: "amTaken1", valAmount: '0'), visible: moreDrugIsVisible,),
+                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the medication name 1", valName: "medName1"), visible: moreDrugIsVisible,),
+                      Visibility(child: SizedBox(height: pad,), visible: moreDrugIsVisible,),
+                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the amount taken 1", valName: "amTaken1"), visible: moreDrugIsVisible,),
 
+                      Visibility(child: SizedBox(height: pad,), visible: moreDrugIsVisible,),
+                      Visibility(child: switchToExtraDrug(sidePad, themeData,
+                          questionTxt: "Add more medication?"),
+                        visible: moreDrugIsVisible,),
+
+                      Visibility(child: SizedBox(height: pad,), visible: extraDrugIsVisible,),
+                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the medication name 2", valName: "medName2"), visible: extraDrugIsVisible,),
+                      Visibility(child: SizedBox(height: pad,), visible: extraDrugIsVisible,),
+                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the amount taken 2", valName: "amTaken2"), visible: extraDrugIsVisible,),
+
+                      Visibility(child: SizedBox(height: pad,), visible: extraDrugIsVisible,),
+                      Visibility(child: switchToSecondExtraDrug(sidePad, themeData,
+                          questionTxt: "Add more medication?"),
+                        visible: extraDrugIsVisible,),
+
+                      Visibility(child: SizedBox(height: pad,), visible: secondExtraDrugIsVisible,),
+                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the medication name 3", valName: "medName3"), visible: secondExtraDrugIsVisible,),
+                      Visibility(child: SizedBox(height: pad,), visible: secondExtraDrugIsVisible,),
+                      Visibility(child: normalTextInput(sidePad, themeData,question: "Enter the amount taken 3", valName: "amTaken3"), visible: secondExtraDrugIsVisible,),
                       // SizedBox(height: pad,),
                       //
                       // normalTextInput(sidePad, themeData,
@@ -237,13 +284,21 @@ class _SleepDiaryState extends State<SleepDiary> {
     return nums;
   }
 
-  Padding switchToMoreDrug(EdgeInsets sidePad, ThemeData themeData) {
+  Padding bodyTextWidget(ThemeData themeData, EdgeInsets sidePad, {required String text}) {
+    return Padding(
+      padding: sidePad,
+      child: Text(text,
+        style: themeData.textTheme.bodyText1,),
+    );
+  }
+
+  Padding switchToMoreDrug(EdgeInsets sidePad, ThemeData themeData, {required String questionTxt}) {
     return Padding(
       padding: sidePad,
       child: FormBuilderSwitch(
-        name: "moreDrug",
+        name: "extraDrug",
         initialValue: moreDrugIsVisible,
-        title: Text("Did you take any other medications before going to sleep?",
+        title: Text(questionTxt,
           style: themeData.textTheme.headline5,),
         onChanged: (val){
           if(val == true){
@@ -254,21 +309,64 @@ class _SleepDiaryState extends State<SleepDiary> {
           else if(val == false){
             setState(() {
               moreDrugIsVisible = false;
+              extraDrugIsVisible = false;
+              secondExtraDrugIsVisible = false;
             });
           }
         },
       ),
     );
-    // return Padding(
-    //   padding: sidePad,
-    //   child: FormBuilderSwitch(
-    //     name: "moreDrug",
-    //     initialValue: false,
-    //     title: Text("Did you take any other medications before going to sleep?",
-    //       style: themeData.textTheme.headline5,),
-    //   ),
-    // );
   }
+
+  Padding switchToExtraDrug(EdgeInsets sidePad, ThemeData themeData, {required String questionTxt}) {
+    return Padding(
+      padding: sidePad,
+      child: FormBuilderSwitch(
+        name: "extraDrug",
+        initialValue: extraDrugIsVisible,
+        title: Text(questionTxt,
+          style: themeData.textTheme.headline5,),
+        onChanged: (val){
+          if(val == true){
+            setState(() {
+              extraDrugIsVisible = true;
+            });
+          }
+          else if(val == false){
+            setState(() {
+              extraDrugIsVisible = false;
+              secondExtraDrugIsVisible = false;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Padding switchToSecondExtraDrug(EdgeInsets sidePad, ThemeData themeData, {required String questionTxt}) {
+    return Padding(
+      padding: sidePad,
+      child: FormBuilderSwitch(
+        name: "secondExtraDrug",
+        initialValue: secondExtraDrugIsVisible,
+        title: Text(questionTxt,
+          style: themeData.textTheme.headline5,),
+        onChanged: (val){
+          if(val == true){
+            setState(() {
+              secondExtraDrugIsVisible = true;
+            });
+          }
+          else if(val == false){
+            setState(() {
+              secondExtraDrugIsVisible = false;
+            });
+          }
+        },
+      ),
+    );
+  }
+
 
   Padding buildFeedbackForm(EdgeInsets sidePad, ThemeData themeData) {
     return Padding(
@@ -276,7 +374,7 @@ class _SleepDiaryState extends State<SleepDiary> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Anything else you would like to note:",
+          Text("Anything else you would like to note: (Optional)",
             style: themeData.textTheme.headline5,),
           SizedBox(height: 10,),
           Container(
@@ -314,6 +412,9 @@ class _SleepDiaryState extends State<SleepDiary> {
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             style: themeData.textTheme.bodyText1,
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.min(context, 0),
+            ]),
           ),
         ],
       ),
@@ -371,6 +472,12 @@ class _SleepDiaryState extends State<SleepDiary> {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             keyboardType: TextInputType.number,
             initialValue: initialVal.toString(),
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(context,
+                errorText: "Please enter number of times you woke up"),
+              FormBuilderValidators.numeric(context),
+              FormBuilderValidators.min(context, 0),
+            ]),
             style: themeData.textTheme.bodyText1,
           ),
         ],
@@ -394,6 +501,9 @@ class _SleepDiaryState extends State<SleepDiary> {
               Expanded(
                 child: FormBuilderDropdown(
                   name: hrValName,
+                  // validator: FormBuilderValidators.compose(
+                  //     [FormBuilderValidators.required(context,
+                  //     errorText: "Hour is required")]),
                   hint: Text("Select hours"),
                   style: themeData.textTheme.bodyText1,
                   items: hours.map((hr) =>
@@ -407,6 +517,9 @@ class _SleepDiaryState extends State<SleepDiary> {
               Expanded(
                 child: FormBuilderDropdown(
                   name: mnValName,
+                  // validator: FormBuilderValidators.compose(
+                  //     [FormBuilderValidators.required(context,
+                  //         errorText: "Minute is required")]),
                   hint: Text("Select Minutes"),
                   style: themeData.textTheme.bodyText1,
                   items: minutes.map((mn) =>
@@ -430,11 +543,15 @@ class _SleepDiaryState extends State<SleepDiary> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Please rate the overall quality of your sleep:',
+          Text('8. Please rate the overall quality of your sleep: (Required)',
             style: themeData.textTheme.headline5,),
           FormBuilderChoiceChip(
               name: "spQuality",
               alignment: WrapAlignment.spaceEvenly,
+              selectedColor: appItemColorBlue,
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(context,
+                  errorText: 'Please select one option above',)]),
               spacing: 4,
               // decoration: InputDecoration(
               //   labelText: "Please rate the overall quality of your sleep:",
@@ -456,8 +573,8 @@ class _SleepDiaryState extends State<SleepDiary> {
   }
 
   Padding timeQuestion(EdgeInsets sidePad, ThemeData themeData,
-      BuildContext context, TimeOfDay? timeOfDay,
-      {required String question, required String valName}) {
+      BuildContext context,
+      {required TimeOfDay timeOfDay, required String question, required String valName}) {
     return Padding(
       padding: sidePad,
       child: Column(
@@ -465,23 +582,38 @@ class _SleepDiaryState extends State<SleepDiary> {
         children: [
           Text(question,
             style: themeData.textTheme.headline5,),
-          Row(
-            children: [
-              Expanded(
-                child: FormBuilderTextField(
-                  name: valName,
-                  initialValue: getCurrentTime(_formKey, timeOfDay, valName),
-                  readOnly: true,
-                  style: themeData.textTheme.bodyText1,
-                ),
-              ),
-              IconButton(
-                onPressed: () => pickTime(context, _formKey, valName, time),
-                icon: Icon(Icons.lock_clock),
-                color: appItemColorBlue,
-              ),
-            ],
+          FormBuilderDateTimePicker(
+            name: valName,
+            // onChanged: _onChanged,
+            inputType: InputType.time,
+            decoration: const InputDecoration(
+              labelText: 'Select Time (Required)',
+            ),
+            initialTime: timeOfDay,
+            // initialTime: TimeOfDay(hour: timeOfDay, minute: 0),
+            style: themeData.textTheme.bodyText1,
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(context,
+                errorText: 'Please set time for this question',)]),
           ),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: FormBuilderTextField(
+          //         name: valName,
+          //         autovalidateMode: AutovalidateMode.always,
+          //         initialValue: getCurrentTime(_formKey, timeOfDay, valName),
+          //         readOnly: true,
+          //         style: themeData.textTheme.bodyText1,
+          //       ),
+          //     ),
+          //     IconButton(
+          //       onPressed: () => pickTime(context, _formKey, valName, time),
+          //       icon: Icon(Icons.lock_clock),
+          //       color: appItemColorBlue,
+          //     ),
+          //   ],
+          // ),
 
         ],
       ),
@@ -536,18 +668,73 @@ class _SleepDiaryState extends State<SleepDiary> {
 
       print(key.currentState!.value);
 
-      var bedTime = key.currentState!.fields["inBed"]!.value;
-      if(bedTime == "Select Time"){
+      DateFormat dateFormat = DateFormat("hh:mm a");
+
+      String? bedTime = key.currentState!.fields["inBed"]!.value.toString();
+      bedTime = dateFormat.format(DateTime.parse(bedTime));
+      String? tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
+      tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
+      String durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
+      String durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!.value.toString();
+      double durationB4sleep = double.parse(
+          durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
+      int wakeUptimeCount = int.parse(
+          key.currentState!.fields["wakeTimes"]!.value);
+      String totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
+      String totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+      double awakeningDurations = double.parse(
+          totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
+      String? finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
+      finalWakeupTime = dateFormat.format(DateTime.parse(finalWakeupTime));
+      String? timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
+      timeLeftbed = dateFormat.format(DateTime.parse(timeLeftbed));
+      String? slpQuality = key.currentState!.fields["spQuality"]!.value;
+      String? drugAmount1 = key.currentState!.fields["drNum1"]!.value;
+      String? drugAmount2 = key.currentState!.fields["drNum2"]!.value;
+      String? newMedname = key.currentState!.fields["medName1"]!.value;
+      String? newMedamount = key.currentState!.fields["amTaken1"]!.value;
+      String? newMedname2 = key.currentState!.fields["medName2"]!.value;
+      String? newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
+      String? newMedname3 = key.currentState!.fields["medName3"]!.value;
+      String? newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
+      String? otherThings = key.currentState!.fields["otherNote"]!.value;
+
+      bool sleepTimeIsOkay = compareTimeSelected(bedTime, tryTosleepTime);
+      bool sleepAndAwakeTimeIsOkay = compareTimeSelected(tryTosleepTime, finalWakeupTime);
+      bool wakeTimeIsOkay = compareTimeSelected(finalWakeupTime, timeLeftbed);
+
+      if(!sleepTimeIsOkay){
+        createAlertDialog(context,
+        msg: "Check Question #1 and #2. The time you tried to sleep is before your bed time.");
+      }
+      else if(!sleepAndAwakeTimeIsOkay){
+        createAlertDialog(context,
+            msg: "Check Question #2 and #6. The time you tried to sleep is the same or beyond your wake up time.");
+      }
+      else if(!wakeTimeIsOkay){
+        createAlertDialog(context,
+            msg: "Check Question #6 and #7. Your out of bed time is before your final awakening time.");
+      }
+      else{
+        print("BetTime: $bedTime, \nTryToSleepTime: $tryTosleepTime, "
+            "\nTakeYouToSleep: $durationB4sleep, \nTimesWakeUpCount: $wakeUptimeCount, "
+            "\nWakeUpDurationTime: $awakeningDurations, \nFinalWakeupTime: $finalWakeupTime, "
+            "\nTimeLeftbed: $timeLeftbed, \nSlpQuality: $slpQuality, "
+            "\nDrugAmount1: $drugAmount1, \nDrugAmount2: $drugAmount2, "
+            "\nNewMedname1: $newMedname, \nNewMedamount1: $newMedamount, "
+            "\nNewMedname2: $newMedname2, \nNewMedamount2: $newMedamount2, "
+            "\nNewMedname3: $newMedname3, \nNewMedamount3: $newMedamount3, "
+            "\nOtherThings: $otherThings");
+      }
+
+      if(bedTime == "Select Time (Required)"){
         bedTime = widget.sleepDiariesPODO.bedTime;
       }
-      var tryTosleepTime = key.currentState!.fields["tryBed"]!.value;
-      if(tryTosleepTime == "Select Time"){
+
+      if(tryTosleepTime == "Select Time (Required)"){
         tryTosleepTime = widget.sleepDiariesPODO.tryTosleepTime;
       }
-      double durationB4sleep;
-      var durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value;
-      var durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!
-          .value;
+
       if (durationBeforesleepoffHOUR == null ||
           durationBeforesleepoffMINUTES == null) {
         durationB4sleep = widget.sleepDiariesPODO.durationBeforesleepoff ?? 0.0;
@@ -555,10 +742,9 @@ class _SleepDiaryState extends State<SleepDiary> {
         durationB4sleep = double.parse(
             durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
       }
+
       // "In total, how long did these awakenings last?"
-      double awakeningDurations;
-      var totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value;
-      var totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value;
+
       if (totalWakeUpdurationHOUR == null ||
           totalWakeUpdurationMINUTE == null) {
         awakeningDurations = widget.sleepDiariesPODO.totalWakeUpduration ?? 0.0;
@@ -567,22 +753,16 @@ class _SleepDiaryState extends State<SleepDiary> {
             totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
       }
       // "Sleep quality"
-      var slpQuality = key.currentState!.fields["spQuality"]!.value;
       var sleepQuality = slpQuality ?? widget.sleepDiariesPODO.sleepQuality;
 
-      int wakeUptimeCount = int.parse(
-          key.currentState!.fields["wakeTimes"]!.value);
 
-      var finalWakeupTime = key.currentState!.fields["finAwake"]!.value;
-      if(finalWakeupTime == "Select Time"){
+      if(finalWakeupTime == "Select Time (Required)"){
         finalWakeupTime = widget.sleepDiariesPODO.finalWakeupTime;
       }
-      var timeLeftbed = key.currentState!.fields["outBed"]!.value;
-      if(timeLeftbed == "Select Time"){
+
+      if(timeLeftbed == "Select Time (Required)"){
         timeLeftbed = widget.sleepDiariesPODO.timeLeftbed;
       }
-
-      var otherThings = key.currentState!.fields["otherNote"]!.value;
 
       OtherMedicationsEntity? othermed;
 
@@ -609,8 +789,6 @@ class _SleepDiaryState extends State<SleepDiary> {
        List<Medications> currentMeds = List.filled(
            2, new Medications(), growable: true);
 
-      String? drugAmount1;
-      String? drugAmount2;
       if (med1 != null) {
         currentMeds.clear();
         drugAmount1 = key.currentState!.fields["drNum1"]!.value;
@@ -677,6 +855,78 @@ class _SleepDiaryState extends State<SleepDiary> {
         Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
 
       });
+    }else{
+      createAlertDialog(context,
+          msg: "All required fields are not properly filled. Please review and fill the required fields");
+      print("All fields are not properly filled!!!");
     }
   }
+
+  bool compareTimeSelected(String firstTime, String secondTime){
+    bool timeIsOkay = true;
+
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd hh:mm a");
+
+    DateTime dt1 = dateFormat.parse("0001-01-01 "+ firstTime);
+    DateTime dt2 = DateTime.now();
+    if(firstTime.contains('PM') && secondTime.contains('AM')){
+      dt2 = dateFormat.parse("0001-01-02 "+ secondTime);
+    }else{
+      dt2 = dateFormat.parse("0001-01-01 "+ secondTime);
+    }
+
+    // if(dt1.compareTo(dt2) == 0){
+    //   print("Both date time are at same moment.");
+    // }
+    // if(dt1.compareTo(dt2) < 0){
+    //   print("DT1 is before DT2");
+    // }
+
+    if(dt1.isBefore(dt2)){
+      print("DT1 is before DT2");
+      return timeIsOkay;
+    }
+
+    // if(dt1.compareTo(dt2) > 0){
+    //   print("DT1 is after DT2");
+    // }
+    if(dt1.isAfter(dt2)){
+      print("DT1 is after DT2");
+      timeIsOkay = false;
+      return timeIsOkay;
+    }
+    return timeIsOkay;
+  }
+
+  createAlertDialog(BuildContext context, {required String msg}) {
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Attention", style: themeData.textTheme.headline5,),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: ClampingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(msg,
+                    style: themeData.textTheme.bodyText1,)
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        });
+  }
+
 }
