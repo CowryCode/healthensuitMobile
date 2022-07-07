@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/medicationsPODO.dart';
 import 'package:healthensuite/api/networkmodels/otherMedicationsPODO.dart';
+import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/models/icon_button.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
@@ -818,6 +822,11 @@ class _SleepDiaryState extends State<SleepDiary> {
       Future<SleepDiariesPODO> savedSleepDiary = ApiAccess().saveSleepDiaries(
           sleepDiary: widget.sleepDiariesPODO);
 
+      PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
+      patientProfilePodo.updateSleepDiary(widget.sleepDiariesPODO);
+
+      StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
+
       print("Bed : $bedTime , "
           "Try to sleep : $tryTosleepTime , "
           "Sleep Quality : $sleepQuality , "
@@ -835,9 +844,7 @@ class _SleepDiaryState extends State<SleepDiary> {
       print(
           "::::::::::::::::::::::::::::::::: SAVED ITEMS ::::::::::::::::::::::::::::::::::::::::::::::::::::");
       savedSleepDiary.then((value) =>
-      {
-
-        print("Bed : ${value.bedTime} , Try to sleep : ${value.tryTosleepTime} , "
+      {     print("Bed : ${value.bedTime} , Try to sleep : ${value.tryTosleepTime} , "
             "Sleep Quality : ${value.sleepQuality} , Wake up count : ${value
             .wakeUptimeCount} , Final Wake up : ${value.finalWakeupTime} ,"
             "Time Left Bed : ${value
@@ -845,7 +852,8 @@ class _SleepDiaryState extends State<SleepDiary> {
             .totalWakeUpduration} "
             "Current Med 2 amount : , Duration before sleep ${value.bedTime} "
             "New Med Name : , New Med Amount : , Other things : "),
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null, justLoggedIn: false)))
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
+
       });
     }else{
       createAlertDialog(context,

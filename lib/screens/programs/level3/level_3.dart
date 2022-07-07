@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/interventionlevels/levelthreePODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/text_data.dart';
@@ -14,10 +19,11 @@ class Level3 extends StatefulWidget {
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
   static final optionPad = EdgeInsets.only(bottom: 18.0);
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
 
 
-  Level3(this.patientProfile);
+//  Level3(this.patientProfile);
+  Level3();
 
   @override
   _Level3State createState() => _Level3State();
@@ -31,13 +37,13 @@ class _Level3State extends State<Level3> {
   void initState(){
     super.initState();
     // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+  //  Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       createAlertDialog(context);
-
-      await profile!.then((value) => {
-        patientName = value.firstName!
-      });
+      //
+      // await profile!.then((value) => {
+      //   patientName = value.firstName!
+      // });
     });
   }
 
@@ -47,7 +53,7 @@ class _Level3State extends State<Level3> {
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
     final _formKey = GlobalKey<FormBuilderState>();
-    Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
+ //   Future<PatientProfilePodo>? futureprofile = widget.patientProfile;
 
     //Future.delayed(Duration.zero, () => createAlertDialog(context, themeData));
 
@@ -56,7 +62,7 @@ class _Level3State extends State<Level3> {
         title: Text(Level3.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, _formKey, futureprofile),
+      bottomNavigationBar: buttomBarWidget(context, _formKey,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -104,7 +110,7 @@ class _Level3State extends State<Level3> {
 
   }
 
-  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key,  Future<PatientProfilePodo>? futureProfile) {
+  SafeArea buttomBarWidget(BuildContext context, GlobalKey<FormBuilderState> key, ) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -123,7 +129,7 @@ class _Level3State extends State<Level3> {
                       title: "",
                       message: "Congratulations! You have finished level 3!",
                       key: key,
-                      futureProfile: futureProfile);
+                     );
                   // Navigator.of(context).push(MaterialPageRoute(
                   //     builder: (context) => HomeScreen(futureProfile: futureProfile)));
                 }
@@ -136,7 +142,7 @@ class _Level3State extends State<Level3> {
     );
   }
 
-  void getSubmitvalues(GlobalKey<FormBuilderState> key){
+  void getSubmitvalues(GlobalKey<FormBuilderState> key, PatientProfilePodo profilePodo){
     var result = key.currentState!.fields["toDoList"]!.value;
     String? note;
     if(notecontroller.value.text.isNotEmpty){
@@ -147,6 +153,18 @@ class _Level3State extends State<Level3> {
     String choices = result.toString();
     level3.updateFields(choices);
     level3.setNote(note: note);
+
+    InterventionLevelsEntity interventionLevelsEntity = profilePodo.interventionLevelsEntity ?? InterventionLevelsEntity();
+    interventionLevelsEntity.setLevelThree(level3);
+    profilePodo.setInterventionLevelsEntity(interventionLevelsEntity);
+    StatusEntity statusEntity = profilePodo.statusEntity ?? StatusEntity();
+    statusEntity.setCompletedLevelThree(true);
+    profilePodo.setStatusEntity(statusEntity);
+
+    StoreProvider.of<AppState>(context).dispatch(
+      UpdatePatientProfileAction(profilePodo)
+    );
+
     ApiAccess().submitLevethree(level3: level3);
   }
 
@@ -296,7 +314,7 @@ class _Level3State extends State<Level3> {
       );
   }
 
-  submitAlertDialog({required BuildContext context, required String title, required String message,required GlobalKey<FormBuilderState> key, required Future<PatientProfilePodo>? futureProfile}){
+  submitAlertDialog({required BuildContext context, required String title, required String message,required GlobalKey<FormBuilderState> key,}){
     final ThemeData themeData = Theme.of(context);
     return showDialog(
         context: context,
@@ -314,13 +332,16 @@ class _Level3State extends State<Level3> {
                     Navigator.of(context).pop();
                   }
               ),
-              MaterialButton(
-                  child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
-                  onPressed: (){
-                    getSubmitvalues(key);
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => HomeScreen(futureProfile: futureProfile, justLoggedIn: false)));
-                  }
+              StoreConnector<AppState, PatientProfilePodo>(
+                converter: (store) => store.state.patientProfilePodo,
+                builder: (context, PatientProfilePodo patientprofile) => MaterialButton(
+                    child: Text("Submit Anyway", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                    onPressed: (){
+                      getSubmitvalues(key, patientprofile);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => HomeScreen()));
+                    }
+                ),
               ),
             ],
           );

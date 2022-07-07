@@ -18,10 +18,10 @@ class SleepClock extends StatefulWidget {
   final Function? onMenuTap;
   static final String title = 'Sleep Clock';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
-  final Future<PatientProfilePodo>? patientProfile;
+//  final Future<PatientProfilePodo>? patientProfile;
   bool timedout;
 
-  SleepClock({Key? key, this.onMenuTap, required this.patientProfile, this.timedout: false}) : super(key: key);
+  SleepClock({Key? key, this.onMenuTap, this.timedout: false}) : super(key: key);
  // const SleepClock({Key? key, this.onMenuTap, required this.patientProfile, this.timedout: false}) : super(key: key);
 
   @override
@@ -40,14 +40,15 @@ class _SleepClockState extends State<SleepClock> {
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+ //   Future<PatientProfilePodo>? profile = widget.patientProfile;
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
     double innerPad = 10;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 2,patientprofile: profile,),
+     // drawer: NavigationDrawerWidget(indexNum: 2,patientprofile: profile,),
+      drawer: NavigationDrawerWidget(indexNum: 2),
       appBar: AppBar(
         title: Text(SleepClock.title),
         centerTitle: true,
@@ -74,7 +75,6 @@ class _SleepClockState extends State<SleepClock> {
                     showAlertDialog(
                         context: context, title: "",
                         message: "To see the Sleep clock and change its settings, you will have to complete at least 5 sleep diaries within the last week.",
-                        patientprofile: profile
                     );
                   }
                 }else{
@@ -90,6 +90,44 @@ class _SleepClockState extends State<SleepClock> {
           }
         },
       ),
+      // body:  FutureBuilder<SleepClockDTO>(
+      //   future: futureMysleepClock,
+      //   builder: (BuildContext context, AsyncSnapshot<SleepClockDTO> snapshot){
+      //     if(snapshot.hasData){
+      //       widget.timedout = false;
+      //       SleepClockDTO sleepclock = snapshot.data!;
+      //       return getContent(themeData: themeData, size: size, pad: pad, sleepclock: sleepclock);
+      //     }else{
+      //       if(widget.timedout == true){
+      //         Timer.periodic(Duration(seconds: timeout_duration), (timer){
+      //           print("Timer PRE CHECK ran . . . . . . ${timer.tick}");
+      //           if(widget.timedout == true){
+      //             if(timer.tick == 1){
+      //               // setState(() {
+      //               widget.timedout = false;
+      //               print("The state chnaged to  ${widget.timedout}");
+      //               // });
+      //               timer.cancel();
+      //               print("Timer cancled ");
+      //               showAlertDialog(
+      //                   context: context, title: "",
+      //                   message: "To see the Sleep clock and change its settings, you will have to complete at least 5 sleep diaries within the last week.",
+      //                   patientprofile: profile
+      //               );
+      //             }
+      //           }else{
+      //             timer.cancel();
+      //           }
+      //         });
+      //       }
+      //
+      //
+      //       return Container(
+      //         child: Center(child: CircularProgressIndicator(),),
+      //       );
+      //     }
+      //   },
+      // ),
       
     );
   }
@@ -219,13 +257,13 @@ class _SleepClockState extends State<SleepClock> {
     );
   }
 
-  showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
+  showAlertDialog({required BuildContext context, required String title, required String message}) {
 
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientprofile, justLoggedIn: false, timedout: false)));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => HomeScreen(timedout: false)));
       },
     );
 

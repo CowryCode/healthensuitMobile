@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:healthensuite/api/networkmodels/interventionLevelsEntityPODO.dart';
 import 'package:healthensuite/api/networkmodels/regimenPODO.dart';
 import 'package:healthensuite/api/networkmodels/sharedreportsPODO.dart';
@@ -49,6 +50,10 @@ class PatientProfilePodo {
         this.voided,
         this.verify,
         this.dateCreated});
+
+  PatientProfilePodo getEmptyProfile(){
+    return PatientProfilePodo();
+  }
 
   PatientProfilePodo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -160,9 +165,23 @@ class PatientProfilePodo {
   StatusEntity? getStatusEntity(){
     return this.statusEntity;
   }
+  void setStatusEntity(StatusEntity value){
+    this.statusEntity = value;
+  }
 
   int? getTrialtype(){
     return this.trialType;
   }
 
+  void setInterventionLevelsEntity(InterventionLevelsEntity value){
+    this.interventionLevelsEntity = value;
+  }
+
+  void updateSleepDiary(SleepDiariesPODO sleepDiariesPODO){
+    if(this.sleepDiaries != null){
+      this.sleepDiaries!.map((sleepdiary)
+      => sleepdiary.id == sleepDiariesPODO.id
+          ? sleepDiariesPODO : sleepdiary).toList();
+    }
+  }
 }

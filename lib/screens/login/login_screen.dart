@@ -1,19 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
+import 'package:healthensuite/api/networkmodels/interventionlevels/loginobject.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
-import 'package:healthensuite/api/statemanagement/diskstorage.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
+import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/screens/login/forgot_password_email.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/background.dart';
-//import 'package:healthensuite/models/name_logo.dart';
+import 'package:redux/redux.dart';
 
 class LoginScreen extends StatefulWidget {
-  bool loginStatus;
-  LoginScreen({required this.loginStatus});
+ bool loginStatus;
+ LoginScreen({required this.loginStatus});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -41,12 +46,18 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     loginStatus = widget.loginStatus;
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      if(loginStatus != null){
-        if(loginStatus == true){
-          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null, justLoggedIn: false, timedout: true )));
-        }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      LoginPodo loginPodo = StoreProvider.of<AppState>(context).state.loginPodo;
+      print(" Login STATUS STATE : ${loginPodo.successfull}");
+      if(loginPodo.successfull == true){
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
       }
+      //TODO: IMPLEMENT AUTO LOGIN ONCE SIGNED IN
+      // if(loginStatus != null){
+      //   if(loginStatus == true){
+      //     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
+      //   }
+      // }
     });
   }
 
@@ -167,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLoginBtn() {
-    return Container(
+    return  Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: ElevatedButton(
@@ -180,23 +191,43 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.circular(30.0),
           ),
         ),
-        //onPressed: () => print('Login Button Pressed'),
         onPressed: ()  {
           String un = usernamecontroller.value.text.trim();
           String pass = passwordcontroller.value.text.trim();
-         // _logindetailFuture =  ApiAccess().login(username: un, password: pass);
-          Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
-          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: profile, justLoggedIn: true, timedout: true )));
-          // _logindetailFuture!.then((value) => {
-          //   // loginDetail = value
-          //   if(value == null){
-          //     showAlertDialog(context)
-          // }else{
-          //     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: null,)))
-          //   }
-          // } );
+          // 04/07/2022 START
+          LoginPodo login = LoginPodo(showLoginloading: true);
+          StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(login));
+        //  Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
+          Future<LoginObject> loginObject =  ApiAccess().login(username: un, password: pass);
+          Timer.periodic(Duration(seconds: timeout_duration), (timer){
+            loginObject.then((value) => {
+              StoreProvider.of<AppState>(context).dispatch(
+                  UpdatePatientProfileAction(value.getPatientprofile)),
+              StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
+              timer.cancel(),
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
+            });
+            // profile?.then((value) => {
+            //   print(" Name is : ${value.firstName}"),
+            //   StoreProvider.of<AppState>(context).dispatch(
+            //       UpdatePatientProfileAction(value)),
+            //   StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(
+            //     LoginPodo(showLoginloading: false))),
+            // timer.cancel(),
+            //   Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
+            // });
 
-
+            timer.cancel();
+            if (timer.tick == 1) {
+              timer.cancel();
+              showAlertDialog(context, "Login failed kindly check your login credentials and try again", "Failed Login");
+            }
+            {
+              timer.cancel();
+            }
+          });
+          // 04/07/2022 END
+       // Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: profile, timedout: true )));
         },
         child: Text(
           'LOGIN',
@@ -214,18 +245,21 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  showAlertDialog(BuildContext context) {
+  showAlertDialog(BuildContext context, String msg, String title) {
 
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
-      onPressed: () { },
+      onPressed: () {
+        StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+        Navigator.of(context).pop();
+      },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("My title"),
-      content: Text("This is my message."),
+      title: Text(title),
+      content: Text(msg),
       actions: [
         okButton,
       ],
@@ -252,38 +286,46 @@ class _LoginScreenState extends State<LoginScreen> {
 
               new Background("assets/images/girl.jpg"),
               Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 120.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Patient Sign In',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Montserrat',
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                child: StoreConnector<AppState, LoginPodo>(
+                  converter: (store) => store.state.loginPodo,
+                  builder: (context, LoginPodo loginpodo) =>
+                  loginpodo.showLoginloading ? Container(
+                    child: Center(child: CircularProgressIndicator(),) ,
+                  ) : Container(
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40.0,
+                        vertical: 120.0,
                       ),
-                      SizedBox(height: 30.0),
-                      _buildEmailTF(),
-                      SizedBox(
-                        height: 30.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Patient Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Montserrat',
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 30.0),
+                          _buildEmailTF(),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          _buildPasswordTF(),
+                          _buildForgotPasswordBtn(),
+                          _buildRememberMeCheckbox(),
+                          _buildLoginBtn(),
+                          //_buildSignInWithText(),
+                          //_buildSocialBtnRow(),
+                          //_buildSignupBtn(),
+                        ],
                       ),
-                      _buildPasswordTF(),
-                      _buildForgotPasswordBtn(),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
-                      //_buildSignInWithText(),
-                      //_buildSocialBtnRow(),
-                      //_buildSignupBtn(),
-                    ],
+                    ),
                   ),
                 ),
               )
@@ -295,7 +337,34 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
+showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
 
+  // set up the button
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    // title: Text("My title"),
+    title: Text(title),
+    content: Text(message),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 
 
 

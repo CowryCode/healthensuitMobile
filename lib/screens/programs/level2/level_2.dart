@@ -21,10 +21,11 @@ class Level2 extends StatefulWidget {
   static final String title = 'Level 2';
   static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
   final int currentPage = 1;
 
-  Level2({ required this.patientProfile, this.timedout: false});
+//  Level2({ required this.patientProfile, this.timedout: false});
+  Level2({this.timedout: false});
 
   @override
   _Level2State createState() => _Level2State();
@@ -44,49 +45,49 @@ class _Level2State extends State<Level2> {
     // WidgetsBinding.instance.addPostFrameCallback((_) => createAlertDialog(context));
 
     l2Vairiables = ApiAccess().getLeveltwoVariables();
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+  //  Future<PatientProfilePodo>? profile = widget.patientProfile;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // StatusEntity? status;
+      // InterventionlevelTwo? levelTwo;
+      // await profile!.then((value) => {
+      //   status = value.statusEntity,
+      //   levelTwo = value.interventionLevelsEntity!.levelTwoEntity
+      // });
+      //
+      // LeveltwoVariables l2VExracted = new LeveltwoVariables();
+      // await l2Vairiables!.then((value) => {
+      //   l2VExracted = value
+      // });
+      //
+      // int? nextLevel = status!.nextPage;
+      // bool? isCompleted = status!.readInterventionGroupleveltwoArticle;
+      // if(isCompleted!){
+      //   Navigator.push(
+      //       context, new MaterialPageRoute(builder: (context) => Level2_4of4(profile, l2VExracted))
+      //   );
+      // }else if(nextLevel == 2){
+      //   Navigator.push(
+      //       context, new MaterialPageRoute(builder: (context) => Level2_2of4(profile, l2VExracted))
+      //   );
+      // }else if(nextLevel == 3){
+      //   Navigator.push(
+      //       context, new MaterialPageRoute(builder: (context) => Level2_3of4(profile,l2VExracted))
+      //   );
+      // }else if(nextLevel == 4){
+      //   Navigator.push(
+      //       context, new MaterialPageRoute(builder: (context) => Level2_4of4(profile, l2VExracted))
+      //   );
+      // }
+
       createAlertDialog(context);
 
-      StatusEntity? status;
-      InterventionlevelTwo? levelTwo;
-      await profile!.then((value) => {
-        status = value.statusEntity,
-        levelTwo = value.interventionLevelsEntity!.levelTwoEntity,
-        patientName = value.firstName!
-      });
-
-      LeveltwoVariables l2VExracted = new LeveltwoVariables();
-      await l2Vairiables!.then((value) => {
-        l2VExracted = value
-      });
-
-      int? nextLevel = status!.nextPage;
-      bool? isCompleted = status!.readInterventionGroupleveltwoArticle;
-      if(isCompleted!){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level2_4of4(profile, l2VExracted))
-        );
-      }else if(nextLevel == 2){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level2_2of4(profile, l2VExracted))
-        );
-      }else if(nextLevel == 3){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level2_3of4(profile,l2VExracted))
-        );
-      }else if(nextLevel == 4){
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Level2_4of4(profile, l2VExracted))
-        );
-      }
     });
   }
 
 
   @override
   Widget build(BuildContext context) {
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+   // Future<PatientProfilePodo>? profile = widget.patientProfile;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
@@ -99,7 +100,7 @@ class _Level2State extends State<Level2> {
         title: Text(Level2.title),
         centerTitle: true,
       ),
-      bottomNavigationBar: buttomBarWidget(context, profile),
+      bottomNavigationBar: buttomBarWidget(context,),
       body: Container(
         width: size.width,
         height: size.height,
@@ -143,7 +144,7 @@ class _Level2State extends State<Level2> {
                               showAlertDialog(
                                   context: context, title: "",
                                   message: "It' seems you have network issues or have not filled any sleep Diary for the past 4 days please do so",
-                                  patientprofile: profile
+
                               );
                             }
                           }else{
@@ -202,7 +203,7 @@ class _Level2State extends State<Level2> {
     );
   }
 
-  SafeArea buttomBarWidget(BuildContext context, Future<PatientProfilePodo>? patientProfile) {
+  SafeArea buttomBarWidget(BuildContext context,) {
     return SafeArea(
       child: BottomAppBar(
         color: Colors.transparent,
@@ -223,7 +224,7 @@ class _Level2State extends State<Level2> {
                           print("Level 1 of 4 ${l2V.averagesleepefficiency}");
                           ApiAccess().savePage(currentPage: widget.currentPage, interventionLevel: 2);
                           Navigator.push(
-                              context, new MaterialPageRoute(builder: (context) => Level2_2of4(patientProfile, l2V))
+                              context, new MaterialPageRoute(builder: (context) => Level2_2of4(l2V))
                           );
                         }
                     );
@@ -303,14 +304,14 @@ class _Level2State extends State<Level2> {
 
 
 
-  showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
+  showAlertDialog({required BuildContext context, required String title, required String message,}) {
 
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProgramContent(patientProfile: patientprofile,),
+          builder: (context) => ProgramContent(),
         ));
       },
     );

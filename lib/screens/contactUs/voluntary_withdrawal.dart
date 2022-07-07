@@ -13,10 +13,10 @@ class VoluntaryWithdrawal extends StatefulWidget{
     static final String title = 'Voluntary Withdrawal';
     static final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
-  final Future<PatientProfilePodo>? patientProfile;
+ // final Future<PatientProfilePodo>? patientProfile;
 
 
-  const VoluntaryWithdrawal({Key? key, this.onMenuTap, required this.patientProfile}) : super(key: key);
+  const VoluntaryWithdrawal({Key? key, this.onMenuTap,}) : super(key: key);
 
   @override
   _VoluntaryWithdrawalState createState() => _VoluntaryWithdrawalState();
@@ -26,18 +26,18 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
 
   TextEditingController withdrawalNote = TextEditingController();
 
-  get patientProfile => widget.patientProfile;
+ // get patientProfile => widget.patientProfile;
 
   @override
   Widget build(BuildContext context) {
 
-    Future<PatientProfilePodo>? profile = widget.patientProfile;
+ //   Future<PatientProfilePodo>? profile = widget.patientProfile;
 
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 7,  patientprofile: profile,),
+      drawer: NavigationDrawerWidget(indexNum: 7,),
       appBar: AppBar(
         title: Text(VoluntaryWithdrawal.title),
         centerTitle: true,
@@ -150,9 +150,9 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
                 Future<bool> response = ApiAccess().voluntaryWithdrawal(withdrawalNote:txt);
                 response.then((value) => {
                   if(value){
-                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile, justLoggedIn: false)))
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
                   }else{
-                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: patientProfile, justLoggedIn: false)))
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
                   }
                 });
               //  Navigator.of(context).pop();

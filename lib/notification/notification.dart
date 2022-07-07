@@ -46,11 +46,12 @@ class FCM  {
           String msg;
           String tittle;
           if (message != null) {
-            print(message.toString());
+            print("THE MESSAGE : ${message.toString()}");
             if (message.notification != null) {
               print(message.notification.toString());
               if (message.notification!.title != null) {
                 tittle = message.notification!.title!;
+                print("THE TITLE: ${message.toString()}");
               } else {
                 tittle = "message.notification.title is null";
               }

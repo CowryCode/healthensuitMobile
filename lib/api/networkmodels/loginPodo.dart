@@ -10,6 +10,7 @@ class LoginPodo {
   bool? admin;
   bool? superAdmin;
   bool? patient;
+  bool showLoginloading = false;
 
   LoginPodo(
       {this.profileID,
@@ -22,7 +23,15 @@ class LoginPodo {
         this.provider,
         this.admin,
         this.superAdmin,
-        this.patient});
+        this.patient,
+        this.showLoginloading = false
+      });
+
+  LoginPodo getInitializedLoginPodo(){
+    return LoginPodo(
+      showLoginloading: false
+    );
+  }
 
   LoginPodo.fromJson(Map<String, dynamic> json) {
     profileID = json['profileID'];
@@ -37,6 +46,7 @@ class LoginPodo {
     admin = json['admin'];
     superAdmin = json['superAdmin'];
     patient = json['patient'];
+    showLoginloading = false;
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +64,7 @@ class LoginPodo {
     data['admin'] = this.admin;
     data['superAdmin'] = this.superAdmin;
     data['patient'] = this.patient;
+    data['showLoginloading'] = this.showLoginloading;
     return data;
   }
 }
