@@ -18,6 +18,7 @@ import 'package:redux/redux.dart';
 
 class LoginScreen extends StatefulWidget {
  bool loginStatus;
+
  LoginScreen({required this.loginStatus});
 
   @override
@@ -30,35 +31,30 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController usernamecontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
 
-  Future<LoginPodo>? _logindetailFuture;
-  LoginPodo? loginDetail;
-  bool? loginStatus;
+  // LoginPodo? loginDetail1;
+   bool? loginStatus;
 
   bool isLoading = false;
 
-  // @override
-  // void initState(){
-  //   super.initState();
-  //  // getData();
-  // }
+
 
   @override
   void initState() {
     super.initState();
     loginStatus = widget.loginStatus;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      LoginPodo loginPodo = StoreProvider.of<AppState>(context).state.loginPodo;
-      print(" Login STATUS STATE : ${loginPodo.successfull}");
-      if(loginPodo.successfull == true){
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
-      }
-      //TODO: IMPLEMENT AUTO LOGIN ONCE SIGNED IN
-      // if(loginStatus != null){
-      //   if(loginStatus == true){
-      //     Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
-      //   }
-      // }
-    });
+    // if(loginStatus == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        PatientProfilePodo? patientprofile = await ApiAccess()
+            .getPatientProfile(null);
+        if (patientprofile != null && patientprofile.firstName != null) {
+          StoreProvider.of<AppState>(context).dispatch(
+              UpdatePatientProfileAction(patientprofile));
+          Navigator.push(context, new MaterialPageRoute(
+              builder: (context) => HomeScreen(timedout: true)));
+        }
+        //TODO: IMPLEMENT AUTO LOGIN ONCE SIGNED IN
+      });
+    // }
   }
 
 
@@ -201,22 +197,11 @@ class _LoginScreenState extends State<LoginScreen> {
           Future<LoginObject> loginObject =  ApiAccess().login(username: un, password: pass);
           Timer.periodic(Duration(seconds: timeout_duration), (timer){
             loginObject.then((value) => {
-              StoreProvider.of<AppState>(context).dispatch(
-                  UpdatePatientProfileAction(value.getPatientprofile)),
+              StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
               StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
               timer.cancel(),
               Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
             });
-            // profile?.then((value) => {
-            //   print(" Name is : ${value.firstName}"),
-            //   StoreProvider.of<AppState>(context).dispatch(
-            //       UpdatePatientProfileAction(value)),
-            //   StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(
-            //     LoginPodo(showLoginloading: false))),
-            // timer.cancel(),
-            //   Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
-            // });
-
             timer.cancel();
             if (timer.tick == 1) {
               timer.cancel();

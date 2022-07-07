@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/statemanagement/actions.dart';
@@ -38,6 +39,11 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   final padding = EdgeInsets.symmetric(horizontal: 20);
 
 
+  @override
+  void dispose() {
+    // StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(PatientProfilePodo()));
+    // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -323,11 +329,9 @@ createAlertDialog(BuildContext context){
             MaterialButton(
                 child: Text("Yes", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
                 onPressed: () {
-                  AppState appstate  = StoreProvider.of<AppState>(context).state;
-                  StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(PatientProfilePodo()));
-                  StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
-                  Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )));
-
+                  // StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(PatientProfilePodo()));
+                  // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+                   ApiAccess().clearLocalData();
                   Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))
                 );}
