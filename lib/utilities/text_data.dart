@@ -232,3 +232,13 @@ const HOME_DATA  =
     "phoneNumbers":"(902) 470 7934",
     "tollFree":"Toll-free number: 1-877-341-8309 press 5",
   };
+
+  const SLEEP_DIARY_DATA  =
+  {
+    "para1":"It’s time to answer some questions about your sleep the night before last.",
+    "para2":"Tracking your experience is important. Take a few minutes to complete yesterday’s sleep diary.",
+    "para3":"Questions marked with * are mandatory.",
+    "extraMedSubHead":"How many milligrams or pills or tablespoons, as applicable?",
+  };
+
+

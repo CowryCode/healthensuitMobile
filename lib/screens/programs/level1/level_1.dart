@@ -94,6 +94,7 @@ class _Level1State extends State<Level1> {
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
+    double paraHeight = 3;
     //Future.delayed(Duration.zero, () => createAlertDialog(context, themeData));
     InterventionlevelOne levelOne = new InterventionlevelOne();
     futureprofile!.then((value) => {
@@ -137,7 +138,9 @@ class _Level1State extends State<Level1> {
                    SizedBox(height: pad,),
                    sectionTitleWidget(themeData, text: "Introduction to Health enSuite Insomnia", textStyle: themeData.textTheme.headline4),
                    bodyTextWidget(themeData, text: LEVEL1_DATA["bullet1"]!),
+                   SizedBox(height: paraHeight,),
                    bodyTextWidget(themeData, text: LEVEL1_DATA["bullet2"]!),
+                   SizedBox(height: paraHeight,),
                    bodyTextWidget(themeData, text: LEVEL1_DATA["bullet3"]!),
                    SizedBox(height: pad,),
                    sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead1"]!, textStyle: themeData.textTheme.headline5),

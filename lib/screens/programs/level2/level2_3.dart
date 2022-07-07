@@ -37,6 +37,7 @@ class _Level2_3of4State extends State<Level2_3of4> {
     final ThemeData themeData = Theme.of(context);
     
     double pad = 18;
+    double paraHeight = 3;
 
   //  l2variables.setNewbedTime(yourBTime);
   //  l2variables.setNewriseTime(yourRTime);
@@ -67,6 +68,7 @@ class _Level2_3of4State extends State<Level2_3of4> {
                      sectionTitleWidget(themeData, text: "Set Your Sleep Window", textStyle: themeData.textTheme.headline4),
                      bodyTextWidget(themeData, text: "Based on your last 7 sleep diaries, you slept an average of ${l2variables.averagesleepefficiency} per night."),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet36"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet37"]!),
 
                      SizedBox(height: pad,),

@@ -36,7 +36,7 @@ class _Level2_4of4State extends State<Level2_4of4> {
     Future<PatientProfilePodo>? profile = widget.patientProfile;
     LeveltwoVariables? l2variable = widget.l2variables;
 
-
+    double paraHeight = 3;
     double pad = 18;
 
     return Scaffold(
@@ -64,8 +64,11 @@ class _Level2_4of4State extends State<Level2_4of4> {
                      SizedBox(height: pad,),
                      sectionTitleWidget(themeData, text: "Improving Sleep Efficiency", textStyle: themeData.textTheme.headline4),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet39"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet40"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet41"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet42"]!),
                      
                      bodyTextWidget(themeData, text: "Based on the sleep diaries you completed over the past week, your average sleep efficiency is ${l2variable.averagesleepefficiency}. Ideally, sleep efficiency should be around 85-90%."),
@@ -83,7 +86,9 @@ class _Level2_4of4State extends State<Level2_4of4> {
                      SizedBox(height: pad,),
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead8"]!, textStyle: themeData.textTheme.headline5),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet48"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet49"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet50"]!),
                      
                    ],

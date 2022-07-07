@@ -61,7 +61,9 @@ class _ProgramContentState extends State<ProgramContent> {
                   builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
                     if(snapshot.hasData){
                       PatientProfilePodo profileData = snapshot.data!;
+                      //Commented code below is actual intervention level from the backend
                       int interventionLevel = profileData.statusEntity!.getInterventionLevel() ?? - 1;
+                      // int interventionLevel = 6;
                       return  getInterventionLevel(themeData, size, pad, context, profile, interventionLevel);
                     }else{
                       return Container(

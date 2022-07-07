@@ -37,6 +37,7 @@ class _Level1of2State extends State<Level1of2> {
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
+    double paraHeight = 3;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +67,9 @@ class _Level1of2State extends State<Level1of2> {
                        padding: Level1of2.sidePad,
                        child: Image.asset('assets/images/Insomnia-img.jpg'),
                      ),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet6"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet7"]!),
                      SizedBox(height: pad,),
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead2"]!, textStyle: themeData.textTheme.headline5),

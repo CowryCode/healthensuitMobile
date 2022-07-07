@@ -44,6 +44,7 @@ class _Level1of5State extends State<Level1of5> {
     final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
+    double paraHeight = 3;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,8 +73,11 @@ class _Level1of5State extends State<Level1of5> {
                        padding: Level1of5.sidePad,
                        child: Image.asset('assets/images/sleepPills1-img.jpg'),
                      ),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet12"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet13"]!),
+                     SizedBox(height: paraHeight,),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet14"]!),
                      SizedBox(height: pad,),
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead3"]!, textStyle: themeData.textTheme.headline5),
@@ -235,15 +239,15 @@ class _RadioGroupState extends State<RadioGroup> {
                         defaultChoice = data.choice; 
                         defaultIndex = data.index;
                         if(value == 0){
-                          createAlertDialog(context, head: "Great!", body: "You can track your progress in the Medication Log.");
+                          // createAlertDialog(context, head: "Great!", body: "You can track your progress in the Medication Log.");
                           choiceglobal = 0;
                         }
                         else if(value == 1){
-                          createAlertDialog(context, head: "Change can be difficult!", body: "This app provides tools that should help make it easier for you. If you need to modify the plan please consult your health care provider.");
+                          // createAlertDialog(context, head: "Change can be difficult!", body: "This app provides tools that should help make it easier for you. If you need to modify the plan please consult your health care provider.");
                           choiceglobal = 1;
                         }
                         else if(value == 2){
-                          createAlertDialog(context, head: "Attention!", body: "Use the medications tab on the dashboard to view your tapering schedule.");
+                          // createAlertDialog(context, head: "Attention!", body: "Use the medications tab on the dashboard to view your tapering schedule.");
                           choiceglobal = 2;
                         }
                         print('You clicked me: $value');         
