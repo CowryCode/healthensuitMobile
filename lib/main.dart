@@ -56,7 +56,7 @@ Future init() async {
       // );
     }
   });
-
+//TODO: INTEGRATE NOTIFICATION FOR iOS
   FirebaseMessaging.instance.getToken().then((token){
     ApiAccess().saveDeviceIdentifier(code: token);
     print("token $token");
