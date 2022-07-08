@@ -81,6 +81,19 @@ class ApiAccess {
     }
   }
 
+
+  void clearLocalData(){
+      Localstorage().saveString(key_login_token, "");
+      Localstorage().saveBoolean(key_Login_Status, false);
+      Localstorage().saveInteger(key_Next_Page, -1);
+      Localstorage().saveBoolean(key_Level_One, false);
+      Localstorage().saveBoolean(key_Level_Two,false);
+      Localstorage().saveBoolean(key_Level_Three, false);
+      Localstorage().saveBoolean(key_Level_Four, false);
+      Localstorage().saveBoolean(key_Level_Five, false);
+      Localstorage().saveBoolean(key_Level_Six, false);
+  }
+
   Future<bool> confirmUser({String? username}) async {
     final response = await http.post(
       Uri.parse(confirmUsername_URL),
@@ -196,9 +209,16 @@ class ApiAccess {
   Future<PatientProfilePodo>? getPatientProfile(String? code) async {
     print("Got to this point to pull Profile");
     String? token;
+    bool? isLoggedin;
       if(code == null){
+        Future<bool?> status = Localstorage().getBoolean(key_Login_Status);
         Future<String?> tk = Localstorage().getString(key_login_token);
-        await tk.then((value) => {token = value!});
+        await status.then((value) => {isLoggedin = value});
+        if(isLoggedin != null && isLoggedin == true){
+          await tk.then((value) => {token = value!});
+        }else{
+          throw Exception("Couldn't pull patient profile");
+        }
       }else{
         token = code;
       }

@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //  patientprofile = widget.futureProfile;
   //   bool loginTimer = widget.timedout;
   //   if(patientprofile == null ){
-  //       patientprofile = ApiAccess().getPatientProfile(null);
+  //    patientprofile = ApiAccess().getPatientProfile(null);
   //     }
 
   }
