@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "569940856882",
+    "project_id": "healthensuite-project",
+    "storage_bucket": "healthensuite-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569940856882:android:05c7c9e23c6ba857396c2b",
+        "android_client_info": {
+          "package_name": "com.example.healthensuite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569940856882-d9ilp8kukf0f007kurfo2d3hhhis05dq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYBxQsYSBqndNDs5am6nf3KJN9Yp9gxBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569940856882-d9ilp8kukf0f007kurfo2d3hhhis05dq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

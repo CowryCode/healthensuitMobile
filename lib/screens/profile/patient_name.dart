@@ -37,10 +37,10 @@ class PatientName extends StatelessWidget{
               ),
               ),
               SizedBox(width: 1.0,),
-              IconButton(
-                onPressed: buttonEvent as void Function()?,
-                icon: Icon(Icons.edit),
-              ),
+              // IconButton(
+              //   onPressed: buttonEvent as void Function()?,
+              //   icon: Icon(Icons.edit),
+              // ),
             ] 
           ),
         ),

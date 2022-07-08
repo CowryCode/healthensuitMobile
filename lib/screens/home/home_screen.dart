@@ -39,6 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      createAlertDialog(context);
+    });
   //  patientprofile = widget.futureProfile;
   //   bool loginTimer = widget.timedout;
   //   if(patientprofile == null ){
@@ -313,35 +316,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-  // createAlertDialog(BuildContext context){
-  //   final ThemeData themeData = Theme.of(context);
-  //   return showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (context){
-  //         return AlertDialog(
-  //           title: Text("Disclaimer", style: themeData.textTheme.headline5,),
-  //           content: SingleChildScrollView(
-  //             scrollDirection: Axis.vertical,
-  //             physics: ClampingScrollPhysics(),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 splashTextWidget(themeData, text: HOME_DATA["disclaimerTxt"]!),
-  //               ],
-  //             ),
-  //           ),
-  //           actions: [
-  //             MaterialButton(
-  //                 child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
-  //                 onPressed: (){
-  //                   Navigator.of(context).pop();
-  //                 }
-  //             ),
-  //           ],
-  //         );
-  //       });
-  // }
+  createAlertDialog(BuildContext context){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Disclaimer", style: themeData.textTheme.headline5,),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: ClampingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  splashTextWidget(themeData, text: HOME_DATA["disclaimerTxt"]!),
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        });
+  }
 
   Text splashTextWidget(ThemeData themeData, {required String text}) {
     return Text(text,

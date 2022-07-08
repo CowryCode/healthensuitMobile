@@ -1,5 +1,8 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
@@ -29,6 +32,11 @@ class PatientScreen extends StatefulWidget{
 }
 
 class _PatientScreenState extends State<PatientScreen> {
+
+  final _emailFormKey = GlobalKey<FormBuilderState>();
+  final _passwordFormKey = GlobalKey<FormBuilderState>();
+
+  bool isObs = false;
   @override
   Widget build(BuildContext context) {
    // Future<PatientProfilePodo>?  profile = widget.patientProfile;
@@ -58,6 +66,7 @@ class _PatientScreenState extends State<PatientScreen> {
 
   //Container getContent({required PatientProfilePodo profile}){
   Container getContent(){
+    final sidePad = EdgeInsets.symmetric(horizontal: 2);
     return Container(
       child: StoreConnector<AppState, PatientProfilePodo>(
         converter: (store) => store.state.patientProfilePodo,
@@ -100,12 +109,50 @@ class _PatientScreenState extends State<PatientScreen> {
 
                   SizedBox(height: 20.0),
                 //  RowItemEdit(rowIcon: Icons.email, rowText: widget.email, buttonIcon: Icons.edit, buttonEvent: (){},),
-                  RowItemEdit(rowIcon: Icons.email, rowText: "${patientprofile.email}", buttonIcon: Icons.edit, buttonEvent: (){},),
+                  RowItemEdit(rowIcon: Icons.email, rowText: "${patientprofile.email}", buttonIcon: Icons.edit,
+                    buttonEvent: (){
+                      createAlertDialog(context, sidePad,
+                        dialogFormKey: _emailFormKey,
+                        question1: "Current Email Address",
+                        fieldName1: "curEmail",
+                        question2: "New Email Address",
+                        fieldName2: "newEmail",
+                        question3: "Re-enter New Email Address",
+                        fieldName3: "reNewEmail",
+                        initVal: patientprofile.email.toString(),
+                        isObscure: false,
+                        validatorTxt: "CheckEmail",
+                        textInputType: TextInputType.emailAddress,
+                        otherInitVal: "",
+                        dialogHeaderTxt: "Update Email",
+                          errorMsg: "New Email does not match. Please re-type it and try again.",
+                      );
+                    },
+                  ),
 
 
                   SizedBox(height: 20.0),
 
-                  IconUserButton(buttonText: "Change Password", buttonEvent: () {}, buttonIcon: Icons.edit,)
+                  IconUserButton(buttonText: "Change Password", buttonIcon: Icons.edit,
+                    buttonEvent: () {
+                      createAlertDialog(context, sidePad,
+                        dialogFormKey: _passwordFormKey,
+                        question1: "Current Password",
+                        fieldName1: "curPassword",
+                        question2: "New Password",
+                        fieldName2: "newPassword",
+                        question3: "Re-enter New Password",
+                        fieldName3: "reNewPassword",
+                        initVal: "",
+                        validatorTxt: "CheckPassword",
+                        textInputType: TextInputType.visiblePassword,
+                        isObscure: true,
+                        otherInitVal: "",
+                        dialogHeaderTxt: "Update Password",
+                        errorMsg: "New Password does not match. Please re-type it and try again.",
+                      );
+                    },
+                  ),
 
 
                 ],
@@ -117,4 +164,221 @@ class _PatientScreenState extends State<PatientScreen> {
       ),
     );
   }
+
+  createAlertDialog(BuildContext context, EdgeInsets sidePad,
+      {required GlobalKey<FormBuilderState> dialogFormKey,
+        required String question1, required String fieldName1,
+        required String question2, required String fieldName2,
+        required String question3, required String fieldName3,
+        required String initVal, required String validatorTxt,
+        required TextInputType textInputType, required String otherInitVal,
+        required String dialogHeaderTxt, required String errorMsg,
+        required isObscure}){
+    final ThemeData themeData = Theme.of(context);
+    double pad = 28;
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(dialogHeaderTxt, style: themeData.textTheme.headline5,),
+            content: FormBuilder(
+              key: dialogFormKey,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                physics: ClampingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    textInput(sidePad, themeData, question: question1, fieldName: fieldName1,
+                        initVal: initVal, validatorTxt: validatorTxt, textInputType: textInputType,
+                        isObscure: isObscure),
+                    SizedBox(height: pad,),
+                    textInput(sidePad, themeData, question: question2, fieldName: fieldName2,
+                        initVal: otherInitVal, validatorTxt: validatorTxt, textInputType: textInputType,
+                        isObscure: isObscure),
+                    SizedBox(height: pad,),
+                    textInput(sidePad, themeData, question: question3, fieldName: fieldName3,
+                        initVal: otherInitVal, validatorTxt: validatorTxt, textInputType: textInputType,
+                        isObscure: isObscure),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                  child: Text("Cancel", style: TextStyle(fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+              MaterialButton(
+                  child: Text("Save Changes", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    validateForm(dialogFormKey, context,
+                        valName1: fieldName1,
+                        valName2: fieldName2,
+                        valName3: fieldName3,
+                        errorMsg: errorMsg,
+                    );
+                    // Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        });
+  }
+
+  Padding textInput(EdgeInsets sidePad, ThemeData themeData,
+      {required String question, required String fieldName,
+      required String initVal, required String validatorTxt,
+      required TextInputType textInputType, required bool isObscure}) {
+    bool isEmail(String input) => EmailValidator.validate(input);
+    return Padding(
+      padding: sidePad,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(question,
+            style: themeData.textTheme.headline5,),
+          FormBuilderTextField(
+            name: fieldName,
+            style: themeData.textTheme.bodyText1,
+            keyboardType: textInputType,
+            initialValue: initVal,
+            obscureText: isObscure,
+            decoration: InputDecoration(),
+            validator: (value) {
+              String? msg = "";
+              if (validatorTxt == "CheckEmail") {
+                if(value!.isEmpty || !isEmail(value)){
+                  msg = "Invalid email address";
+                  return msg;
+                }
+              }else{
+                if(value!.isEmpty || value.length < 6){
+                  msg = "Enter at least 6 characters";
+                  return msg;
+                }
+              }
+            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Padding passwordTextInput(EdgeInsets sidePad, ThemeData themeData,
+  //     {required String question, required String fieldName,
+  //       required String initVal, required String validatorTxt,
+  //       required TextInputType textInputType, required bool isObscure}) {
+  //   bool isEmail(String input) => EmailValidator.validate(input);
+  //   return Padding(
+  //     padding: sidePad,
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(question,
+  //           style: themeData.textTheme.headline5,),
+  //         FormBuilderTextField(
+  //           name: fieldName,
+  //           style: themeData.textTheme.bodyText1,
+  //           keyboardType: textInputType,
+  //           initialValue: initVal,
+  //           obscureText: isObs,
+  //           decoration: InputDecoration(
+  //             labelText: 'Password',
+  //             hintText: 'Enter your password',
+  //             // Here is key idea
+  //             suffixIcon: IconButton(
+  //               icon: Icon(
+  //                 // Based on passwordVisible state choose the icon
+  //                 isObs
+  //                     ? Icons.visibility
+  //                     : Icons.visibility_off,
+  //                 color: Theme.of(context).primaryColorDark,
+  //               ),
+  //               onPressed: () {
+  //                 // Update the state i.e. toogle the state of passwordVisible variable
+  //                 setState(() {
+  //                   isObs = !isObs;
+  //                 });
+  //               },
+  //             ),
+  //           ),
+  //           validator: (value) {
+  //             String? msg = "";
+  //             if (validatorTxt == "CheckEmail") {
+  //               if(value!.isEmpty || !isEmail(value)){
+  //                 msg = "Invalid email address";
+  //                 return msg;
+  //               }
+  //             }else{
+  //               if(value!.isEmpty || value.length < 6){
+  //                 msg = "Enter at least 6 characters";
+  //                 return msg;
+  //               }
+  //             }
+  //           },
+  //           autovalidateMode: AutovalidateMode.onUserInteraction,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  void validateForm(GlobalKey<FormBuilderState> key,  BuildContext context, {required String valName1,
+    required String valName2, required String valName3, required String errorMsg}){
+    if (key.currentState!.saveAndValidate()){
+      print(key.currentState!.value);
+      String? txtField1 = key.currentState!.fields[valName1]!.value;
+      String? txtField2 = key.currentState!.fields[valName2]!.value;
+      String? txtField3 = key.currentState!.fields[valName3]!.value;
+
+      if(txtField2 == txtField3){
+        print("TxtField1: $txtField1, \nTxtField2: $txtField2, \nTxtField3: $txtField3");
+        Navigator.of(context).pop();
+      }else{
+        simpleAlertDialog(context, msg: errorMsg);
+      }
+
+    }else{
+      simpleAlertDialog(context, msg: "All fields are not properly filled.");
+      print("All fields are not properly filled!!!");
+    }
+  }
+
+  simpleAlertDialog(BuildContext context, {required String msg}) {
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Attention", style: themeData.textTheme.headline5,),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: ClampingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(msg,
+                    style: themeData.textTheme.bodyText1,)
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        });
+  }
+
+
 }
