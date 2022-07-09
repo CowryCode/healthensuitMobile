@@ -56,7 +56,7 @@ class _SleepReportState extends State<SleepReport> {
     double innerPad = 10;
 
     bool reportStatus  = widget.showreport;
-
+//TODO: PUT A TIMEOUT ON THE LOADING OF THE REPORT
     return Scaffold(
       drawer: NavigationDrawerWidget(indexNum: 3,),
       appBar: AppBar(

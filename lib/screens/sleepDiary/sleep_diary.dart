@@ -680,19 +680,24 @@ class _SleepDiaryState extends State<SleepDiary> {
       tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
       String durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
       String durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!.value.toString();
-      double durationB4sleep = double.parse(
-          durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
+      //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
+      // double durationB4sleep = double.parse(
+      //     durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
+      double durationB4sleep = convertHoursandMinutesToMinutes(durationBeforesleepoffHOUR,durationBeforesleepoffMINUTES );
       int wakeUptimeCount = int.parse(
           key.currentState!.fields["wakeTimes"]!.value);
       String totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
       String totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
-      double awakeningDurations = double.parse(
-          totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
+      //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
+      // double awakeningDurations = double.parse(
+      //     totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
+      double awakeningDurations = convertHoursandMinutesToMinutes(totalWakeUpdurationHOUR,totalWakeUpdurationMINUTE );
       String? finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
       finalWakeupTime = dateFormat.format(DateTime.parse(finalWakeupTime));
       String? timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
       timeLeftbed = dateFormat.format(DateTime.parse(timeLeftbed));
       String? slpQuality = key.currentState!.fields["spQuality"]!.value;
+      //TODO: DRUG AMOUNT WAS NOT CAPTURED IN THE FILING
       String? drugAmount1 = key.currentState!.fields["drNum1"]!.value;
       String? drugAmount2 = key.currentState!.fields["drNum2"]!.value;
       String? newMedname = key.currentState!.fields["medName1"]!.value;
@@ -729,6 +734,35 @@ class _SleepDiaryState extends State<SleepDiary> {
             "\nNewMedname2: $newMedname2, \nNewMedamount2: $newMedamount2, "
             "\nNewMedname3: $newMedname3, \nNewMedamount3: $newMedamount3, "
             "\nOtherThings: $otherThings");
+
+        OtherMedicationsEntity med1 = OtherMedicationsEntity();
+        med1.setOthermedicationFields(newMedname!, newMedamount!);
+        OtherMedicationsEntity med2 = OtherMedicationsEntity();
+        med2.setOthermedicationFields(newMedname2!, newMedamount2!);
+        OtherMedicationsEntity med3 = OtherMedicationsEntity();
+        med3.setOthermedicationFields(newMedname3!, newMedamount3!);
+        List<OtherMedicationsEntity> othermeds = [
+          med1,med2,med3
+        ];
+        widget.sleepDiariesPODO.updateVariable(
+            bedTime,
+            tryTosleepTime,
+            durationB4sleep,
+            wakeUptimeCount,
+            awakeningDurations,
+            finalWakeupTime,
+            timeLeftbed,
+            slpQuality,
+            otherThings,
+            othermeds);
+
+         ApiAccess().saveSleepDiaries(sleepDiary: widget.sleepDiariesPODO);
+        PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
+        patientProfilePodo.updateSleepDiary(widget.sleepDiariesPODO);
+
+        StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()));
+
       }
 
       // if(bedTime == "Select Time (Required)"){
@@ -864,6 +898,11 @@ class _SleepDiaryState extends State<SleepDiary> {
           msg: "All required fields are not properly filled. Please review and fill the required fields");
       print("All fields are not properly filled!!!");
     }
+  }
+
+  double convertHoursandMinutesToMinutes(String hour, String minutes){
+    double totalhours = double.parse(hour) * 60;
+    return totalhours + double.parse(minutes);
   }
 
   bool compareTimeSelected(String firstTime, String secondTime){

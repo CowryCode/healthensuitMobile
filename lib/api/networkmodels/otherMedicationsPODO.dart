@@ -4,7 +4,7 @@ class OtherMedicationsEntity {
   String? amount;
   String? dateCreated;
 
-  OtherMedicationsEntity({this.id, this.medicationName, this.amount, this.dateCreated});
+  OtherMedicationsEntity({this.medicationName, this.amount});
 
   OtherMedicationsEntity.fromJson(Map<String, dynamic> json) {
     id = json['id'];

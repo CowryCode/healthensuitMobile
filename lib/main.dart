@@ -11,6 +11,7 @@ import 'package:healthensuite/api/networkmodels/interventionlevels/leveltwoVaria
 import 'package:healthensuite/api/networkmodels/loginPodo.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
 import 'package:healthensuite/api/statemanagement/reducer.dart';
@@ -25,16 +26,17 @@ Future<void> main() async {
   await init();
   // *************** Update ************
   // loginStatus = await Localstorage().getBoolean(key_Login_Status);
-  // print("STATUSSSSSSSSSSS 1 : ${loginStatus} " );
   // ((){
-  //   if(loginStatus == null) {
-  //     runApp(MyAppLoginScreen());
-  //   }else{
+  //   print("LOGIN STATUS IS ${loginStatus}");
+  //   if(loginStatus == true){
   //     runApp(MyAppHomeScreen());
+  //   }else{
+  //     runApp(MyAppLoginScreen());
   //   }
   // }());
   //************** Update end *******************
-  runApp(MyAppLoginScreen());
+
+  runApp(MyAppLoginScreen()); // 2022-Jul-07
 
 }
 
@@ -76,6 +78,9 @@ class MyAppLoginScreen extends StatelessWidget {
     )
   );
 
+
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -94,15 +99,36 @@ class MyAppLoginScreen extends StatelessWidget {
 
 class MyAppHomeScreen extends StatelessWidget {
 
+  final Store<AppState> _store = Store<AppState>(
+      appStateReducer,
+      initialState: AppState(
+          sleepDiariesPODO: SleepDiariesPODO(),
+          patientProfilePodo: PatientProfilePodo(),
+          loginPodo: LoginPodo().getInitializedLoginPodo(),
+          leveltwoVariables: LeveltwoVariables()
+      )
+  );
+
+
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = window.physicalSize.width;
 
-    return new MaterialApp(
-      theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
-       home: LoginScreen(loginStatus: false,),
-      // home: HomeScreen(futureProfile: null, timedout: true,),
+    Future<PatientProfilePodo>? patientprofile =  ApiAccess().getPatientProfile(null);
+      patientprofile!.then((value) => {
+      if (value != null && value.firstName != null) {
+          StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
+      Navigator.push(context, new MaterialPageRoute(
+          builder: (context) => HomeScreen(timedout: true)))
+      }
+      });
+
+    return StoreProvider<AppState>(
+      store: _store,
+      child: MaterialApp(
+        theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
+        home: HomeScreen(timedout: true,),
+      ),
     );
   }
 }

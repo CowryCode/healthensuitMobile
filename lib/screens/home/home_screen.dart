@@ -9,6 +9,7 @@ import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
 import 'package:healthensuite/api/statemanagement/diskstorage.dart';
@@ -42,12 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       createAlertDialog(context);
     });
-  //  patientprofile = widget.futureProfile;
-  //   bool loginTimer = widget.timedout;
-  //   if(patientprofile == null ){
-  //    patientprofile = ApiAccess().getPatientProfile(null);
-  //     }
-
   }
 
   @override
