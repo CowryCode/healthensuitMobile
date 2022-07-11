@@ -43,6 +43,7 @@ const COLOR_BLACK = Color.fromRGBO(48, 47, 48, 1.0);
 const COLOR_GREY = Color.fromRGBO(141, 141, 141, 1.0);
 final Color appItemColorWhite = Colors.white;
 final Color appItemColorBlue = Colors.blueAccent;
+const ITEM_COLOR_BLUE = Color.fromRGBO(68, 138, 255, 1.0);
 final Color appBodyColor = Colors.white;
 final Color? appItemColorLightGrey = Colors.grey[200];
 final EdgeInsets edgePaddingLeft = const EdgeInsets.only(left: 20.0);
@@ -70,6 +71,8 @@ const TextTheme TEXT_THEME_DEFAULT = TextTheme(
         color: COLOR_GREY, fontSize: 12, fontWeight: FontWeight.w400),
     caption: TextStyle(
         color: COLOR_DARK_BLUE, fontWeight: FontWeight.w700, fontSize: 16),
+    labelMedium: TextStyle(
+        color: COLOR_BLACK, fontWeight: FontWeight.w700, fontSize: 14),
     );
 
 const TextTheme TEXT_THEME_SMALL = TextTheme(
@@ -95,4 +98,6 @@ const TextTheme TEXT_THEME_SMALL = TextTheme(
         color: COLOR_GREY, fontSize: 10, fontWeight: FontWeight.w400),
     caption: TextStyle(
       color: COLOR_DARK_BLUE, fontWeight: FontWeight.w700, fontSize: 14),
+    labelMedium: TextStyle(
+        color: COLOR_BLACK, fontWeight: FontWeight.w700, fontSize: 12),
     );

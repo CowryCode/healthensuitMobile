@@ -39,6 +39,7 @@ class _SleepDiaryState extends State<SleepDiary> {
   bool moreDrugIsVisible = false;
   bool extraDrugIsVisible = false;
   bool secondExtraDrugIsVisible = false;
+  bool extraMedFieldIsOkay = true;
 
   TimeOfDay? time;
 
@@ -169,10 +170,6 @@ class _SleepDiaryState extends State<SleepDiary> {
 
                       SizedBox(height: pad,),
 
-                      sleepQualityChoice(sidePad, themeData),
-
-                      SizedBox(height: pad,),
-
                       (() {
                         if (med1 != null) {
                         //  widget.isMed1 = true;
@@ -248,6 +245,10 @@ class _SleepDiaryState extends State<SleepDiary> {
 
                       SizedBox(height: pad,),
 
+                      sleepQualityChoice(sidePad, themeData),
+
+                      SizedBox(height: pad,),
+
                       buildFeedbackForm(sidePad, themeData),
 
                       SizedBox(height: pad,),
@@ -296,7 +297,7 @@ class _SleepDiaryState extends State<SleepDiary> {
     return Padding(
       padding: sidePad,
       child: FormBuilderSwitch(
-        name: "extraDrug",
+        name: "moreDrug",
         initialValue: moreDrugIsVisible,
         title: Text(questionTxt,
           style: themeData.textTheme.headline5,),
@@ -545,7 +546,7 @@ class _SleepDiaryState extends State<SleepDiary> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('8. Please rate the overall quality of your sleep: (Required)',
+          Text('Please rate the overall quality of your sleep: (Required)',
             style: themeData.textTheme.headline5,),
           FormBuilderChoiceChip(
               name: "spQuality",
@@ -568,7 +569,10 @@ class _SleepDiaryState extends State<SleepDiary> {
                 FormBuilderFieldOption(child: Text("Good"), value: "Good",),
                 FormBuilderFieldOption(
                   child: Text("Very Good"), value: "Very Good",),
-              ]
+              ],
+            onChanged: (value){
+              validateExtraMedOptions(_formKey);
+            },
           ),
         ],
       ),
@@ -667,9 +671,54 @@ class _SleepDiaryState extends State<SleepDiary> {
     }
   }
 
+  bool validateExtraMedOptions(GlobalKey<FormBuilderState> key){
+
+    bool firstBoolIsPositive = key.currentState!.fields["moreDrug"]!.value;
+    print("I am here: $firstBoolIsPositive");
+    bool secondBoolIsPositive;
+    bool thirdBoolIsPositive;
+
+    if(firstBoolIsPositive){
+      secondBoolIsPositive = key.currentState!.fields["extraDrug"]!.value;
+      String? newMedname = key.currentState!.fields["medName1"]!.value;
+      String? newMedamount = key.currentState!.fields["amTaken1"]!.value;
+      if(newMedname == null || newMedname == "" || newMedamount == null || newMedamount == ""){
+        extraMedFieldIsOkay = false;
+        createAlertDialog(context,
+            msg: "You selected that you took other medications before going to sleep. Please fill the medication details properly or unselect the other medication button.");
+      }else if(secondBoolIsPositive){
+        thirdBoolIsPositive = key.currentState!.fields["secondExtraDrug"]!.value;
+        String? newMedname2 = key.currentState!.fields["medName2"]!.value;
+        String? newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
+        extraMedFieldIsOkay = false;
+        if(newMedname2 == null || newMedname2 == "" || newMedamount2 == null || newMedamount2 == ""){
+          createAlertDialog(context,
+              msg: "You selected that you took more than one other medications before going to sleep. Please fill the medication details properly or unselect the other medication button.");
+        }else if(thirdBoolIsPositive){
+          String? newMedname3 = key.currentState!.fields["medName3"]!.value;
+          String? newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
+          extraMedFieldIsOkay = false;
+          if(newMedname3 == null || newMedname3 == "" || newMedamount3 == null || newMedamount3 == ""){
+            createAlertDialog(context,
+                msg: "You selected that you took more than two other medications before going to sleep. Please fill the medication details properly or unselect the other medication button.");
+          }
+        }else{
+          extraMedFieldIsOkay = true;
+        }
+      }
+    }else{
+      extraMedFieldIsOkay = true;
+    }
+    return extraMedFieldIsOkay;
+  }
+
   void validateForm(GlobalKey<FormBuilderState> key) {
     if (key.currentState!.saveAndValidate()) {
 
+      extraMedFieldIsOkay = validateExtraMedOptions(_formKey);
+      if(!extraMedFieldIsOkay){
+        return;
+      }
       print(key.currentState!.value);
 
       DateFormat dateFormat = DateFormat("hh:mm a");
@@ -720,6 +769,7 @@ class _SleepDiaryState extends State<SleepDiary> {
             msg: "Check Question #6 and #7. Your out of bed time is before your final awakening time.");
       }
       else{
+        //TODO This is the echoed data
         print("BetTime: $bedTime, \nTryToSleepTime: $tryTosleepTime, "
             "\nTakeYouToSleep: $durationB4sleep, \nTimesWakeUpCount: $wakeUptimeCount, "
             "\nWakeUpDurationTime: $awakeningDurations, \nFinalWakeupTime: $finalWakeupTime, "
