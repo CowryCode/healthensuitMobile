@@ -815,85 +815,87 @@ class _SleepDiaryState extends State<SleepDiary> {
 
       }
 
-      // if(bedTime == "Select Time (Required)"){
-      //   bedTime = widget.sleepDiariesPODO.bedTime;
-      // }
-      //
-      // if(tryTosleepTime == "Select Time (Required)"){
-      //   tryTosleepTime = widget.sleepDiariesPODO.tryTosleepTime;
-      // }
-      //
-      // if (durationBeforesleepoffHOUR == null ||
-      //     durationBeforesleepoffMINUTES == null) {
-      //   durationB4sleep = widget.sleepDiariesPODO.durationBeforesleepoff ?? 0.0;
-      // } else {
-      //   durationB4sleep = double.parse(
-      //       durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
-      // }
-      //
-      // // "In total, how long did these awakenings last?"
-      //
-      // if (totalWakeUpdurationHOUR == null ||
-      //     totalWakeUpdurationMINUTE == null) {
-      //   awakeningDurations = widget.sleepDiariesPODO.totalWakeUpduration ?? 0.0;
-      // } else {
-      //   awakeningDurations = double.parse(
-      //       totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
-      // }
-      // // "Sleep quality"
-      // var sleepQuality = slpQuality ?? widget.sleepDiariesPODO.sleepQuality;
-      //
-      //
-      // if(finalWakeupTime == "Select Time (Required)"){
-      //   finalWakeupTime = widget.sleepDiariesPODO.finalWakeupTime;
-      // }
-      //
-      // if(timeLeftbed == "Select Time (Required)"){
-      //   timeLeftbed = widget.sleepDiariesPODO.timeLeftbed;
-      // }
-      //
-      // OtherMedicationsEntity? othermed;
-      //
-      // if(moreDrugIsVisible == true){
-      //   var newMedname = key.currentState!.fields["medName1"]!.value;
-      //   var newMedamount = key.currentState!.fields["amTaken1"]!.value;
-      //   if(newMedname != null && newMedamount != null){
-      //     othermed = OtherMedicationsEntity();
-      //     othermed.setOthermedicationFields(newMedname, newMedamount);
-      //
-      //   }
-      // }
-      //
-      // Medications? med1 = Workflow().getMedications(
-      //     widget.sleepDiariesPODO.medications, isfirstmedication: true,
-      //     isSecondmedication: false);
-      // Medications? med2 = Workflow().getMedications(
-      //     widget.sleepDiariesPODO.medications, isfirstmedication: false,
-      //     isSecondmedication: true);
-      //
-      // // print("Medication 1 ID is : ${med1!.id}");
-      // // print("Medication 2 ID is : ${med2!.id}");
-      //
-      //  List<Medications> currentMeds = List.filled(
-      //      2, new Medications(), growable: true);
-      //
-      // if (med1 != null) {
-      //   currentMeds.clear();
-      //   drugAmount1 = key.currentState!.fields["drNum1"]!.value;
-      //   if (drugAmount1 != null) {
-      //     med1.setDrugAmount(drugAmount1);
-      //     currentMeds.add(med1);
-      //   }
-      //   if (med2 != null) {
-      //     drugAmount2 = key.currentState!.fields["drNum2"]!.value;
-      //     if (drugAmount2 != null) {
-      //       med2.setDrugAmount(drugAmount2);
-      //       currentMeds.add(med2);
-      //     }
-      //   }
-      //   widget.sleepDiariesPODO.updateCurrentmeds(currentMeds);
-      // }
-      //
+      if(bedTime == "Select Time (Required)"){
+        bedTime = widget.sleepDiariesPODO.bedTime;
+      }
+
+      if(tryTosleepTime == "Select Time (Required)"){
+        tryTosleepTime = widget.sleepDiariesPODO.tryTosleepTime;
+      }
+
+      if (durationBeforesleepoffHOUR == null ||
+          durationBeforesleepoffMINUTES == null) {
+        durationB4sleep = widget.sleepDiariesPODO.durationBeforesleepoff ?? 0.0;
+      } else {
+        durationB4sleep = double.parse(
+            durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
+      }
+
+      // "In total, how long did these awakenings last?"
+
+      if (totalWakeUpdurationHOUR == null ||
+          totalWakeUpdurationMINUTE == null) {
+        awakeningDurations = widget.sleepDiariesPODO.totalWakeUpduration ?? 0.0;
+      } else {
+        awakeningDurations = double.parse(
+            totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
+      }
+      // "Sleep quality"
+      var sleepQuality = slpQuality ?? widget.sleepDiariesPODO.sleepQuality;
+
+
+      if(finalWakeupTime == "Select Time (Required)"){
+        finalWakeupTime = widget.sleepDiariesPODO.finalWakeupTime;
+      }
+
+      if(timeLeftbed == "Select Time (Required)"){
+        timeLeftbed = widget.sleepDiariesPODO.timeLeftbed;
+      }
+
+      OtherMedicationsEntity? othermed;
+
+      if(moreDrugIsVisible == true){
+        var newMedname = key.currentState!.fields["medName1"]!.value;
+        var newMedamount = key.currentState!.fields["amTaken1"]!.value;
+        if(newMedname != null && newMedamount != null){
+          othermed = OtherMedicationsEntity();
+          othermed.setOthermedicationFields(newMedname, newMedamount);
+
+        }
+      }
+
+      Medications? med1 = Workflow().getMedications(
+          widget.sleepDiariesPODO.medications, isfirstmedication: true,
+          isSecondmedication: false);
+      Medications? med2 = Workflow().getMedications(
+          widget.sleepDiariesPODO.medications, isfirstmedication: false,
+          isSecondmedication: true);
+
+      // print("Medication 1 ID is : ${med1!.id}");
+      // print("Medication 2 ID is : ${med2!.id}");
+
+       List<Medications> currentMeds = List.filled(
+           2, new Medications(), growable: true);
+
+      if (med1 != null) {
+        currentMeds.clear();
+        drugAmount1 = key.currentState!.fields["drNum1"]!.value;
+        if (drugAmount1 != null) {
+          med1.setDrugAmount(drugAmount1);
+          currentMeds.add(med1);
+        }
+        if (med2 != null) {
+          drugAmount2 = key.currentState!.fields["drNum2"]!.value;
+          if (drugAmount2 != null) {
+            med2.setDrugAmount(drugAmount2);
+            currentMeds.add(med2);
+          }
+        }
+        widget.sleepDiariesPODO.updateCurrentmeds(currentMeds);
+      }
+
+      //TODO I commented out codes below. Kindly Review
+
       // widget.sleepDiariesPODO.updateVariable(
       //     bedTime,
       //     tryTosleepTime,
@@ -906,43 +908,43 @@ class _SleepDiaryState extends State<SleepDiary> {
       //     otherThings,
       //     othermed
       // );
-      //
-      // Future<SleepDiariesPODO> savedSleepDiary = ApiAccess().saveSleepDiaries(
-      //     sleepDiary: widget.sleepDiariesPODO);
-      //
-      // PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
-      // patientProfilePodo.updateSleepDiary(widget.sleepDiariesPODO);
-      //
-      // StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
-      //
-      // print("Bed : $bedTime , "
-      //     "Try to sleep : $tryTosleepTime , "
-      //     "Sleep Quality : $sleepQuality , "
-      //     "Wake up count : $wakeUptimeCount ,"
-      //     " Final Wake up : $finalWakeupTime ,"
-      //     "Time Left Bed : $timeLeftbed , "
-      //     "Awakening Duration : $awakeningDurations"
-      //     "Current Med 1 Amount : $drugAmount1 , "
-      //     "Current Med 2 amount : $drugAmount2 , "
-      //     "Duration before sleep $durationB4sleep "
-      //     // "New Med Name : $newMedname ,"
-      //     // " New Med Amount : $newMedamount ,"
-      //     " Other things : $otherThings");
-      //
-      // print(
-      //     "::::::::::::::::::::::::::::::::: SAVED ITEMS ::::::::::::::::::::::::::::::::::::::::::::::::::::");
-      // savedSleepDiary.then((value) =>
-      // {     print("Bed : ${value.bedTime} , Try to sleep : ${value.tryTosleepTime} , "
-      //       "Sleep Quality : ${value.sleepQuality} , Wake up count : ${value
-      //       .wakeUptimeCount} , Final Wake up : ${value.finalWakeupTime} ,"
-      //       "Time Left Bed : ${value
-      //       .timeLeftbed}, Current Med 1 Amount : , Awakening Duration : ${value
-      //       .totalWakeUpduration} "
-      //       "Current Med 2 amount : , Duration before sleep ${value.bedTime} "
-      //       "New Med Name : , New Med Amount : , Other things : "),
-      //   Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
-      //
-      // });
+
+      Future<SleepDiariesPODO> savedSleepDiary = ApiAccess().saveSleepDiaries(
+          sleepDiary: widget.sleepDiariesPODO);
+
+      PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
+      patientProfilePodo.updateSleepDiary(widget.sleepDiariesPODO);
+
+      StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
+
+      print("Bed : $bedTime , "
+          "Try to sleep : $tryTosleepTime , "
+          "Sleep Quality : $sleepQuality , "
+          "Wake up count : $wakeUptimeCount ,"
+          " Final Wake up : $finalWakeupTime ,"
+          "Time Left Bed : $timeLeftbed , "
+          "Awakening Duration : $awakeningDurations"
+          "Current Med 1 Amount : $drugAmount1 , "
+          "Current Med 2 amount : $drugAmount2 , "
+          "Duration before sleep $durationB4sleep "
+          // "New Med Name : $newMedname ,"
+          // " New Med Amount : $newMedamount ,"
+          " Other things : $otherThings");
+
+      print(
+          "::::::::::::::::::::::::::::::::: SAVED ITEMS ::::::::::::::::::::::::::::::::::::::::::::::::::::");
+      savedSleepDiary.then((value) =>
+      {     print("Bed : ${value.bedTime} , Try to sleep : ${value.tryTosleepTime} , "
+            "Sleep Quality : ${value.sleepQuality} , Wake up count : ${value
+            .wakeUptimeCount} , Final Wake up : ${value.finalWakeupTime} ,"
+            "Time Left Bed : ${value
+            .timeLeftbed}, Current Med 1 Amount : , Awakening Duration : ${value
+            .totalWakeUpduration} "
+            "Current Med 2 amount : , Duration before sleep ${value.bedTime} "
+            "New Med Name : , New Med Amount : , Other things : "),
+        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
+
+      });
     }else{
       createAlertDialog(context,
           msg: "All required fields are not properly filled. Please review and fill the required fields");
