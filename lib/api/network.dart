@@ -243,8 +243,19 @@ class ApiAccess {
       }
   }
 
-  Future<SleepDiariesPODO> saveSleepDiaries(
-      {required SleepDiariesPODO sleepDiary}) async {
+  Future<SleepDiariesPODO> saveSleepDiaries({required SleepDiariesPODO sleepDiary}) async {
+
+    print("IN NETWORK CLASS");
+
+    print("BetTime: ${sleepDiary.bedTime}, \nTryToSleepTime: ${sleepDiary.tryTosleepTime}, "
+        "\nTakeYouToSleep: ${sleepDiary.durationBeforesleepoff}, \nTimesWakeUpCount: ${sleepDiary.wakeUptimeCount}, "
+        "\nWakeUpDurationTime: ${sleepDiary.totalWakeUpduration}, \nFinalWakeupTime: ${sleepDiary.finalWakeupTime}, "
+        "\nTimeLeftbed: ${sleepDiary.timeLeftbed}, \nSlpQuality: ${sleepDiary.sleepQuality}, "
+        "\nCurrent Medication: ${sleepDiary.getmedications()},  "
+        "\nOther Medicationa : ${sleepDiary.getOthermeds()},"
+        "\nOtherThings: ${sleepDiary.otherThings}");
+
+
       String? token;
       Future<String?> tk = Localstorage().getString(key_login_token);
       await tk.then((value) => {token = value!});
@@ -277,7 +288,7 @@ class ApiAccess {
         print("${sleepDiary.toString()}");
         return sleepDiary;
       } else {
-        throw Exception("Couldn't pull patient profile , status code ${result.statusCode} ");
+        throw Exception("Couldn't save patient profile , status code ${result.statusCode} ");
       }
   }
 

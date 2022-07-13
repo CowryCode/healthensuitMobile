@@ -51,6 +51,14 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  // Just added 2022-07-11 START
+  @override
+  void dispose() {
+
+  }
+
+  // Just added 2022-7-11 End
+
 
   Widget _buildEmailTF() {
     return Column(
@@ -190,8 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
           Future<LoginObject> loginObject =  ApiAccess().login(username: un, password: pass);
           Timer.periodic(Duration(seconds: timeout_duration), (timer){
             loginObject.then((value) => {
-             // StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
-             // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
+             StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
+             StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
               timer.cancel(),
               Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
             });

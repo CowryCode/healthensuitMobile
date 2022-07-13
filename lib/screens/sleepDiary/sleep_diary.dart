@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -669,48 +671,147 @@ class _SleepDiaryState extends State<SleepDiary> {
 
   void validateForm(GlobalKey<FormBuilderState> key) {
     if (key.currentState!.saveAndValidate()) {
+      // widget.sleepDiariesPODO
 
       print(key.currentState!.value);
 
       DateFormat dateFormat = DateFormat("hh:mm a");
 
-      String? bedTime = key.currentState!.fields["inBed"]!.value.toString();
-      bedTime = dateFormat.format(DateTime.parse(bedTime));
-      String? tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
-      tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
-      String durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
-      String durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!.value.toString();
+      String? bedTime;
+      dynamic? bedtimeField = key.currentState!.fields["inBed"];
+      if(bedtimeField != null){
+       // String? bedTime = key.currentState!.fields["inBed"]!.value.toString();
+         bedTime = key.currentState!.fields["inBed"]!.value.toString();
+        bedTime = dateFormat.format(DateTime.parse(bedTime));
+      }
+      String? tryTosleepTime;
+      dynamic? tryTosleepTimeField = key.currentState!.fields["tryBed"];
+      if(tryTosleepTimeField != null){
+       // String? tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
+        tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
+        tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
+      }
+      String? durationBeforesleepoffHOUR;
+      dynamic? durationBeforesleepoffHOURField =  key.currentState!.fields["hrs1"];
+      if(durationBeforesleepoffHOURField != null){
+      //  String durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
+        durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
+      }
+      String? durationBeforesleepoffMINUTES;
+      dynamic? durationBeforesleepoffMINUTESField = key.currentState!.fields["mns1"];
+      if(durationBeforesleepoffMINUTESField != null){
+         durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!.value.toString();
+      }
       //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
       // double durationB4sleep = double.parse(
       //     durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
-      double durationB4sleep = convertHoursandMinutesToMinutes(durationBeforesleepoffHOUR,durationBeforesleepoffMINUTES );
-      int wakeUptimeCount = int.parse(
-          key.currentState!.fields["wakeTimes"]!.value);
-      String totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
-      String totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+      double durationB4sleep = convertHoursandMinutesToMinutes(hours: durationBeforesleepoffHOUR, mins: durationBeforesleepoffMINUTES );
+      int? wakeUptimeCount;
+      dynamic? wakeUptimeCountField = key.currentState!.fields["wakeTimes"];
+      if(wakeUptimeCountField != null){
+       // int? wakeUptimeCount = int.parse(key.currentState!.fields["wakeTimes"]!.value);
+        wakeUptimeCount = int.parse(key.currentState!.fields["wakeTimes"]!.value);
+      }
+
+      String? totalWakeUpdurationHOUR;
+      dynamic? totalWakeUpdurationHOURField = key.currentState!.fields["hrs2"];
+      if(totalWakeUpdurationHOURField != null){
+      //  String totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
+        totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
+      }
+      String? totalWakeUpdurationMINUTE;
+      dynamic? totalWakeUpdurationMINUTEField = key.currentState!.fields["mns2"];
+      if(totalWakeUpdurationMINUTEField != null){
+       // String totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+        totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+      }
       //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
       // double awakeningDurations = double.parse(
       //     totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
-      double awakeningDurations = convertHoursandMinutesToMinutes(totalWakeUpdurationHOUR,totalWakeUpdurationMINUTE );
-      String? finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
-      finalWakeupTime = dateFormat.format(DateTime.parse(finalWakeupTime));
-      String? timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
-      timeLeftbed = dateFormat.format(DateTime.parse(timeLeftbed));
-      String? slpQuality = key.currentState!.fields["spQuality"]!.value;
-      //TODO: DRUG AMOUNT WAS NOT CAPTURED IN THE FILING
-      String? drugAmount1 = key.currentState!.fields["drNum1"]!.value;
-      String? drugAmount2 = key.currentState!.fields["drNum2"]!.value;
-      String? newMedname = key.currentState!.fields["medName1"]!.value;
-      String? newMedamount = key.currentState!.fields["amTaken1"]!.value;
-      String? newMedname2 = key.currentState!.fields["medName2"]!.value;
-      String? newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
-      String? newMedname3 = key.currentState!.fields["medName3"]!.value;
-      String? newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
-      String? otherThings = key.currentState!.fields["otherNote"]!.value;
+      double awakeningDurations = convertHoursandMinutesToMinutes(
+          hours: totalWakeUpdurationHOUR,mins: totalWakeUpdurationMINUTE );
 
-      bool sleepTimeIsOkay = compareTimeSelected(bedTime, tryTosleepTime);
-      bool sleepAndAwakeTimeIsOkay = compareTimeSelected(tryTosleepTime, finalWakeupTime);
-      bool wakeTimeIsOkay = compareTimeSelected(finalWakeupTime, timeLeftbed);
+      String? finalWakeupTime;
+      dynamic? finalWakeupTimeField =  key.currentState!.fields["finAwake"];
+      if(finalWakeupTimeField != null){
+      //  String? finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
+        finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
+        finalWakeupTime = dateFormat.format(DateTime.parse(finalWakeupTime));
+      }
+
+      String? timeLeftbed;
+      dynamic? timeLeftbedField = key.currentState!.fields["outBed"];
+      if(timeLeftbedField != null){
+       // String? timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
+        timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
+        timeLeftbed = dateFormat.format(DateTime.parse(timeLeftbed));
+      }
+
+      String? slpQuality;
+      dynamic? slpQualityField = key.currentState!.fields["spQuality"];
+      if(slpQualityField != null){
+       // String? slpQuality = key.currentState!.fields["spQuality"]!.value;
+        slpQuality = key.currentState!.fields["spQuality"]!.value;
+      }
+      //TODO: DRUG AMOUNT WAS NOT CAPTURED IN THE FILING
+      //TODO: TEST WITH PATIENTS THAT HAVE DRUG THEY ARE TAKING
+      String? drugAmount1;
+      dynamic? drugAmount1Field = key.currentState!.fields["drNum1"];
+      if(drugAmount1Field != null){
+       // String? drugAmount1 = key.currentState!.fields["drNum1"]!.value;
+        drugAmount1 = key.currentState!.fields["drNum1"]!.value;
+      }
+      String? drugAmount2;
+      dynamic? drugAmount2Field = key.currentState!.fields["drNum2"];
+      if(drugAmount2Field != null){
+       // String? drugAmount2 = key.currentState!.fields["drNum2"]!.value;
+        drugAmount2 = key.currentState!.fields["drNum2"]!.value;
+      }
+      String? newMedname;
+      dynamic? newMednameField = key.currentState!.fields["medName1"];
+      if(newMednameField != null){
+        // String? newMedname = key.currentState!.fields["medName1"]!.value;
+        newMedname = key.currentState!.fields["medName1"]!.value;
+      }
+      String? newMedamount;
+      dynamic? newMedamountField = key.currentState!.fields["amTaken1"];
+      if(newMedamountField != null){
+     //   String? newMedamount = key.currentState!.fields["amTaken1"]!.value;
+       newMedamount = key.currentState!.fields["amTaken1"]!.value;
+      }
+      String? newMedname2;
+      dynamic? newMedname2Field = key.currentState!.fields["medName2"];
+      if(newMedname2Field != null){
+        //String? newMedname2 = key.currentState!.fields["medName2"]!.value;
+        newMedname2 = key.currentState!.fields["medName2"]!.value;
+      }
+      String? newMedamount2;
+      dynamic? newMedamount2Field = key.currentState!.fields["amTaken2"];
+      if(newMedamount2Field != null){
+       // String? newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
+        newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
+      }
+      String? newMedname3;
+      dynamic? newMedname3Field = key.currentState!.fields["medName3"];
+      if(newMedname3Field != null){
+       // String? newMedname3 = key.currentState!.fields["medName3"]!.value;
+        newMedname3 = key.currentState!.fields["medName3"]!.value;
+      }
+      String? newMedamount3;
+      dynamic? newMedamount3Field  = key.currentState!.fields["amTaken3"];
+      if(newMedamount3Field != null){
+      //  String? newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
+        newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
+      }
+      String? otherThings;
+      dynamic? otherThingsField = key.currentState!.fields["otherNote"];
+      if(otherThingsField != null){
+       // String? otherThings = key.currentState!.fields["otherNote"]!.value;
+        otherThings = key.currentState!.fields["otherNote"]!.value;
+      }
+      bool sleepTimeIsOkay = compareTimeSelected(firstTime: bedTime, secondTime: tryTosleepTime);
+      bool sleepAndAwakeTimeIsOkay = compareTimeSelected(firstTime: tryTosleepTime, secondTime: finalWakeupTime);
+      bool wakeTimeIsOkay = compareTimeSelected(firstTime: finalWakeupTime, secondTime: timeLeftbed);
 
       if(!sleepTimeIsOkay){
         createAlertDialog(context,
@@ -735,26 +836,64 @@ class _SleepDiaryState extends State<SleepDiary> {
             "\nNewMedname3: $newMedname3, \nNewMedamount3: $newMedamount3, "
             "\nOtherThings: $otherThings");
 
-        OtherMedicationsEntity med1 = OtherMedicationsEntity();
-        med1.setOthermedicationFields(newMedname!, newMedamount!);
-        OtherMedicationsEntity med2 = OtherMedicationsEntity();
-        med2.setOthermedicationFields(newMedname2!, newMedamount2!);
-        OtherMedicationsEntity med3 = OtherMedicationsEntity();
-        med3.setOthermedicationFields(newMedname3!, newMedamount3!);
-        List<OtherMedicationsEntity> othermeds = [
-          med1,med2,med3
-        ];
+        // List<OtherMedicationsEntity> othermeds = [
+        //   med1,med2,med3
+        // ];
+        List<OtherMedicationsEntity>? othermeds;
+        OtherMedicationsEntity? med1;
+        OtherMedicationsEntity? med2;
+        OtherMedicationsEntity? med3;
+        if(newMedname != null && newMedamount != null ){
+          med1 = OtherMedicationsEntity();
+          med1.setOthermedicationFields(newMedname, newMedamount);
+        }
+        if(newMedname2 != null && newMedamount2 != null){
+          med2 = OtherMedicationsEntity();
+          med2.setOthermedicationFields(newMedname2, newMedamount2);
+        }
+        if(newMedname3 != null && newMedamount3 != null){
+          med3 = OtherMedicationsEntity();
+          med3.setOthermedicationFields(newMedname3, newMedamount3);
+        }
+
+        if(med1 != null && med2 != null && med3 != null){
+          othermeds = [med1, med2, med3];
+        } else if (med1 != null && med2 != null && med3 == null){
+          othermeds = [med1, med2];
+        }else if (med1 != null && med2 == null && med3 == null){
+          othermeds = [med1];
+        }
+
+
+
+        List<Medications>? currentmedds = widget.sleepDiariesPODO.medications;
+        if(currentmedds != null){
+          if(currentmedds.length == 1){
+            Medications currentMed1 = currentmedds.elementAt(0);
+            currentMed1.setDrugAmount(drugAmount: drugAmount1);
+            currentmedds.insert(0, currentMed1);
+          }else if (currentmedds.length == 2){
+            Medications currentMed1 = currentmedds.elementAt(0);
+            Medications currentMed2 = currentmedds.elementAt(1);
+            currentMed1.setDrugAmount(drugAmount: drugAmount1);
+            currentMed2.setDrugAmount(drugAmount: drugAmount2);
+            currentmedds.insert(0, currentMed1);
+            currentmedds.insert(2, currentMed2);
+          }
+        }
         widget.sleepDiariesPODO.updateVariable(
-            bedTime,
-            tryTosleepTime,
-            durationB4sleep,
-            wakeUptimeCount,
-            awakeningDurations,
-            finalWakeupTime,
-            timeLeftbed,
-            slpQuality,
-            otherThings,
-            othermeds);
+            bedTime: bedTime,
+            tryTosleepTime: tryTosleepTime,
+            durationBeforesleepoff: durationB4sleep,
+            wakeUptimeCount: wakeUptimeCount,
+            totalWakeUpduration: awakeningDurations,
+            finalWakeupTime: finalWakeupTime,
+            timeLeftbed: timeLeftbed,
+            sleepQuality: slpQuality,
+            medications: currentmedds,
+            otherMeds: othermeds,
+            otherThings: otherThings,
+            );
 
          ApiAccess().saveSleepDiaries(sleepDiary: widget.sleepDiariesPODO);
         PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
@@ -900,12 +1039,30 @@ class _SleepDiaryState extends State<SleepDiary> {
     }
   }
 
-  double convertHoursandMinutesToMinutes(String hour, String minutes){
-    double totalhours = double.parse(hour) * 60;
-    return totalhours + double.parse(minutes);
+  double convertHoursandMinutesToMinutes({String? hours, String? mins}){
+    // double hours;
+    // double minutes;
+    // double totaltime;
+    if(hours == null && mins == null ){
+      return 0.0;
+    }else if(hours != null && mins == null){
+      return double.parse(hours) * 60;
+    }else if (hours == null && mins != null){
+      return double.parse(mins);
+    }else if (hours != null && mins != null){
+      double totalhours = double.parse(hours) * 60;
+      return totalhours + double.parse(mins);
+    }else {
+      return 0.0;
+    }
   }
 
-  bool compareTimeSelected(String firstTime, String secondTime){
+
+  bool compareTimeSelected({String? firstTime, String? secondTime}){
+    if(firstTime == null || secondTime == null){
+      return false;
+    }
+
     bool timeIsOkay = true;
 
     DateFormat dateFormat = DateFormat("yyyy-MM-dd hh:mm a");
@@ -918,21 +1075,10 @@ class _SleepDiaryState extends State<SleepDiary> {
       dt2 = dateFormat.parse("0001-01-01 "+ secondTime);
     }
 
-    // if(dt1.compareTo(dt2) == 0){
-    //   print("Both date time are at same moment.");
-    // }
-    // if(dt1.compareTo(dt2) < 0){
-    //   print("DT1 is before DT2");
-    // }
-
     if(dt1.isBefore(dt2)){
       print("DT1 is before DT2");
       return timeIsOkay;
     }
-
-    // if(dt1.compareTo(dt2) > 0){
-    //   print("DT1 is after DT2");
-    // }
     if(dt1.isAfter(dt2)){
       print("DT1 is after DT2");
       timeIsOkay = false;
