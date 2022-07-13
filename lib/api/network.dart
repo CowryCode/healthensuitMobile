@@ -247,7 +247,7 @@ class ApiAccess {
 
     print("IN NETWORK CLASS");
 
-    print("BetTime: ${sleepDiary.bedTime}, \nTryToSleepTime: ${sleepDiary.tryTosleepTime}, "
+    print("ID: ${sleepDiary.id}, \n BetTime: ${sleepDiary.bedTime}, \nTryToSleepTime: ${sleepDiary.tryTosleepTime}, "
         "\nTakeYouToSleep: ${sleepDiary.durationBeforesleepoff}, \nTimesWakeUpCount: ${sleepDiary.wakeUptimeCount}, "
         "\nWakeUpDurationTime: ${sleepDiary.totalWakeUpduration}, \nFinalWakeupTime: ${sleepDiary.finalWakeupTime}, "
         "\nTimeLeftbed: ${sleepDiary.timeLeftbed}, \nSlpQuality: ${sleepDiary.sleepQuality}, "

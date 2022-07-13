@@ -115,7 +115,7 @@ class SleepDiariesPODO {
     data['date_Created'] = this.dateCreated;
     return data;
   }
-  void updateVariable({String? bedTime , String? tryTosleepTime,
+  SleepDiariesPODO updateVariable({String? bedTime , String? tryTosleepTime,
       double? durationBeforesleepoff,int? wakeUptimeCount,double? totalWakeUpduration,
       String? finalWakeupTime,String? timeLeftbed,String? sleepQuality,String? otherThings,
       List<Medications>? medications, List<OtherMedicationsEntity>? otherMeds,
@@ -154,6 +154,8 @@ class SleepDiariesPODO {
     if(this.medications != null){
       this.medications = medications;
     }
+
+    return this;
   }
   List<OtherMedicationsEntity>? getOthermeds(){
     return this.othermedications;

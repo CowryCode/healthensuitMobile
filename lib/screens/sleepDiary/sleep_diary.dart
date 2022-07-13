@@ -53,8 +53,7 @@ class _SleepDiaryState extends State<SleepDiary> {
     final ThemeData themeData = Theme.of(context);
     final sidePad = EdgeInsets.symmetric(horizontal: 20);
     double pad = 18;
-    String drug1 = "Chlopazine";
-    String drug2 = "Oxitocine";
+
     List<String> hours = generateNumbers(23);
     List<String> minutes = generateNumbers(59);
 
@@ -77,6 +76,11 @@ class _SleepDiaryState extends State<SleepDiary> {
     Medications? med2 = Workflow().getMedications(
         widget.sleepDiariesPODO.medications, isfirstmedication: false,
         isSecondmedication: true);
+
+    List<int>? totalWakeupDuration = Workflow().convertMinutestoHRnMin(timeinMinutes: widget.sleepDiariesPODO.totalWakeUpduration);
+    List<int>? durationB4sleep = Workflow().convertMinutestoHRnMin(timeinMinutes: widget.sleepDiariesPODO.durationBeforesleepoff);
+
+
 
     return Scaffold(
       //drawer: NavigationDrawerWidget(indexNum: 2,),
@@ -115,7 +119,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 19, minute: 0),
+                          timeOfDay: bedtime ?? TimeOfDay(hour: 19, minute: 0),
                           question: "1. What time did you get into bed last night? (Required)",
                           valName: "inBed"),
                       // timeQuestion(sidePad, themeData, context, bedtime,
@@ -125,7 +129,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 19, minute: 30),
+                          timeOfDay: trySleepTime ?? TimeOfDay(hour: 19, minute: 30),
                           question: "2. What time did you try to go to sleep? (Required)",
                           valName: "tryBed"),
                       // timeQuestion(sidePad, themeData, context, trySleepTime,
@@ -134,7 +138,7 @@ class _SleepDiaryState extends State<SleepDiary> {
 
                       SizedBox(height: pad,),
 
-                      hourMinute(sidePad, themeData, hours, minutes,
+                      hourMinute(sidePad, themeData, hours, minutes,durationB4sleep,
                           question: "3. How long did it take you to fall asleep? (Please select hour then minute)",
                           hrValName: "hrs1", mnValName: "mns1"),
 
@@ -146,14 +150,14 @@ class _SleepDiaryState extends State<SleepDiary> {
 
                       SizedBox(height: pad,),
 
-                      hourMinute(sidePad, themeData, hours, minutes,
+                      hourMinute(sidePad, themeData, hours, minutes, totalWakeupDuration,
                           question: "5. In total, how long did these awakenings last? (Please select hour then minute)",
                           hrValName: "hrs2", mnValName: "mns2"),
 
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 5, minute: 0),
+                          timeOfDay: finalWakeupTime ?? TimeOfDay(hour: 5, minute: 0),
                           question: "6. What time was your final awakening? (Required)",
                           valName: "finAwake"),
                       // timeQuestion(sidePad, themeData, context, finalWakeupTime,
@@ -163,7 +167,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 5, minute: 30),
+                          timeOfDay: timeLeftbed ?? TimeOfDay(hour: 5, minute: 30),
                           question: "7. What time did you get out of bed? (Required)",
                           valName: "outBed"),
                       // timeQuestion(sidePad, themeData, context, timeLeftbed,
@@ -491,7 +495,7 @@ class _SleepDiaryState extends State<SleepDiary> {
   }
 
   Padding hourMinute(EdgeInsets sidePad, ThemeData themeData,
-      List<String> hours, List<String> minutes,
+      List<String> hours, List<String> minutes, initialTime,
       {required String question, required String hrValName, required String mnValName}) {
     return Padding(
       padding: sidePad,
@@ -509,7 +513,8 @@ class _SleepDiaryState extends State<SleepDiary> {
                   // validator: FormBuilderValidators.compose(
                   //     [FormBuilderValidators.required(context,
                   //     errorText: "Hour is required")]),
-                  hint: Text("Select hours"),
+                 // hint: Text("Select hours"),
+                  hint: Text(initialTime == null ? "Select hours" : "${initialTime[0]}"),
                   style: themeData.textTheme.bodyText1,
                   items: hours.map((hr) =>
                       DropdownMenuItem(
@@ -525,7 +530,8 @@ class _SleepDiaryState extends State<SleepDiary> {
                   // validator: FormBuilderValidators.compose(
                   //     [FormBuilderValidators.required(context,
                   //         errorText: "Minute is required")]),
-                  hint: Text("Select Minutes"),
+                 // hint: Text("Select Minutes"),
+                  hint: Text(initialTime == null ? "Select Minutes" : "${initialTime[1]}"),
                   style: themeData.textTheme.bodyText1,
                   items: minutes.map((mn) =>
                       DropdownMenuItem(
@@ -583,7 +589,7 @@ class _SleepDiaryState extends State<SleepDiary> {
 
   Padding timeQuestion(EdgeInsets sidePad, ThemeData themeData,
       BuildContext context,
-      {required TimeOfDay timeOfDay, required String question, required String valName}) {
+      { required TimeOfDay timeOfDay, required String question, required String valName}) {
     return Padding(
       padding: sidePad,
       child: Column(
@@ -727,17 +733,23 @@ class _SleepDiaryState extends State<SleepDiary> {
       DateFormat dateFormat = DateFormat("hh:mm a");
 
       String? bedTime;
+      String? bedTime_1;
       dynamic? bedtimeField = key.currentState!.fields["inBed"];
       if(bedtimeField != null){
        // String? bedTime = key.currentState!.fields["inBed"]!.value.toString();
          bedTime = key.currentState!.fields["inBed"]!.value.toString();
-        bedTime = dateFormat.format(DateTime.parse(bedTime));
+         print("BEST TIME BEFORE FORMAT: ${bedTime}");
+         bedTime_1 = Workflow().converTimeTo24HoursFormat(dateTime: bedTime);
+         bedTime = dateFormat.format(DateTime.parse(bedTime));
       }
+
       String? tryTosleepTime;
+      String? tryTosleepTime_1;
       dynamic? tryTosleepTimeField = key.currentState!.fields["tryBed"];
       if(tryTosleepTimeField != null){
        // String? tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
         tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
+        tryTosleepTime_1 = Workflow().converTimeTo24HoursFormat(dateTime: tryTosleepTime);
         tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
       }
       String? durationBeforesleepoffHOUR;
@@ -781,18 +793,22 @@ class _SleepDiaryState extends State<SleepDiary> {
           hours: totalWakeUpdurationHOUR,mins: totalWakeUpdurationMINUTE );
 
       String? finalWakeupTime;
+      String? finalWakeupTime_1;
       dynamic? finalWakeupTimeField =  key.currentState!.fields["finAwake"];
       if(finalWakeupTimeField != null){
       //  String? finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
         finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
+        finalWakeupTime_1 = Workflow().converTimeTo24HoursFormat(dateTime: finalWakeupTime);
         finalWakeupTime = dateFormat.format(DateTime.parse(finalWakeupTime));
       }
 
       String? timeLeftbed;
+      String? timeLeftbed_1;
       dynamic? timeLeftbedField = key.currentState!.fields["outBed"];
       if(timeLeftbedField != null){
        // String? timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
         timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
+        timeLeftbed_1 = Workflow().converTimeTo24HoursFormat(dateTime: timeLeftbed);
         timeLeftbed = dateFormat.format(DateTime.parse(timeLeftbed));
       }
 
@@ -876,15 +892,15 @@ class _SleepDiaryState extends State<SleepDiary> {
       }
       else{
         //TODO This is the echoed data
-        print("BetTime: $bedTime, \nTryToSleepTime: $tryTosleepTime, "
-            "\nTakeYouToSleep: $durationB4sleep, \nTimesWakeUpCount: $wakeUptimeCount, "
-            "\nWakeUpDurationTime: $awakeningDurations, \nFinalWakeupTime: $finalWakeupTime, "
-            "\nTimeLeftbed: $timeLeftbed, \nSlpQuality: $slpQuality, "
-            "\nDrugAmount1: $drugAmount1, \nDrugAmount2: $drugAmount2, "
-            "\nNewMedname1: $newMedname, \nNewMedamount1: $newMedamount, "
-            "\nNewMedname2: $newMedname2, \nNewMedamount2: $newMedamount2, "
-            "\nNewMedname3: $newMedname3, \nNewMedamount3: $newMedamount3, "
-            "\nOtherThings: $otherThings");
+        // print("BetTime: $bedTime, \nTryToSleepTime: $tryTosleepTime, "
+        //     "\nTakeYouToSleep: $durationB4sleep, \nTimesWakeUpCount: $wakeUptimeCount, "
+        //     "\nWakeUpDurationTime: $awakeningDurations, \nFinalWakeupTime: $finalWakeupTime, "
+        //     "\nTimeLeftbed: $timeLeftbed, \nSlpQuality: $slpQuality, "
+        //     "\nDrugAmount1: $drugAmount1, \nDrugAmount2: $drugAmount2, "
+        //     "\nNewMedname1: $newMedname, \nNewMedamount1: $newMedamount, "
+        //     "\nNewMedname2: $newMedname2, \nNewMedamount2: $newMedamount2, "
+        //     "\nNewMedname3: $newMedname3, \nNewMedamount3: $newMedamount3, "
+        //     "\nOtherThings: $otherThings");
 
         // List<OtherMedicationsEntity> othermeds = [
         //   med1,med2,med3
@@ -936,23 +952,23 @@ class _SleepDiaryState extends State<SleepDiary> {
             currentmedds.insert(2, currentMed2);
           }
         }
-        widget.sleepDiariesPODO.updateVariable(
-            bedTime: bedTime,
-            tryTosleepTime: tryTosleepTime,
+       SleepDiariesPODO updatedSD =   widget.sleepDiariesPODO.updateVariable(
+            bedTime: bedTime_1,
+            tryTosleepTime: tryTosleepTime_1,
             durationBeforesleepoff: durationB4sleep,
             wakeUptimeCount: wakeUptimeCount,
             totalWakeUpduration: awakeningDurations,
-            finalWakeupTime: finalWakeupTime,
-            timeLeftbed: timeLeftbed,
+            finalWakeupTime: finalWakeupTime_1,
+            timeLeftbed: timeLeftbed_1,
             sleepQuality: slpQuality,
             medications: currentmedds,
             otherMeds: othermeds,
             otherThings: otherThings,
             );
 
-         ApiAccess().saveSleepDiaries(sleepDiary: widget.sleepDiariesPODO);
+         ApiAccess().saveSleepDiaries(sleepDiary: updatedSD);
         PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
-        patientProfilePodo.updateSleepDiary(widget.sleepDiariesPODO);
+        patientProfilePodo.updateSleepDiary(updatedSD);
 
         StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
           Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()));
@@ -966,9 +982,6 @@ class _SleepDiaryState extends State<SleepDiary> {
   }
 
   double convertHoursandMinutesToMinutes({String? hours, String? mins}){
-    // double hours;
-    // double minutes;
-    // double totaltime;
     if(hours == null && mins == null ){
       return 0.0;
     }else if(hours != null && mins == null){
