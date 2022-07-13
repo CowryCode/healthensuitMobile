@@ -7,6 +7,7 @@ import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:healthensuite/models/icon_button.dart';
+import 'line_chart_widget.dart';
 //import 'package:healthensuite/utilities/constants.dart';
 
 
@@ -122,6 +123,11 @@ class _SleepReportState extends State<SleepReport> {
           ),
           sleepReportDataTable(themeData, sleepReport),
           SizedBox(height: pad,),
+          Graph(allBedTimeObject: allBedTime,
+              allAwakeningsObject: allAwakenings,
+              allTimeInBedObject: allAwakenings,
+              allSleepHoursObject: allAwakenings
+          ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -164,10 +170,12 @@ class _SleepReportState extends State<SleepReport> {
               columns: tableHeaderWidget(themeData),
               rows: [
                 rowWidget(themeData, desc: "Average Bed Time", value: "${avgBedtime}"),
-                rowWidget(themeData, desc: "Sleep Latency", value: "${latency}%"),
+                rowWidget(themeData, desc: "Average Time to Fall Asleep", value: "${latency}%"),
+                //TODO The Average Number of Awakenings rowWidget was omitted before. Please add its value
+                rowWidget(themeData, desc: "Average Number of Awakenings", value: "${latency}%"),
                 rowWidget(themeData, desc: "Average Duration of Awakenings (WASO)", value: "${WASO}"),
-                rowWidget(themeData, desc: "Time In Bed (TIB)", value: "${tib}"),
-                rowWidget(themeData, desc: "Total Sleep Time (TST)", value: "${tst}"),
+                rowWidget(themeData, desc: "Average Time In Bed (TIB)", value: "${tib}"),
+                rowWidget(themeData, desc: "Average Total Sleep Time (TST)", value: "${tst}"),
                 rowWidget(themeData, desc: "Sleep Efficiency", value: "${sleepefficiency}%"),
               ],
             )
@@ -260,6 +268,45 @@ class _SleepReportState extends State<SleepReport> {
   }
 
   }
+
+List<dynamic> allAwakenings = [
+  {
+    "date": "2022-04-25",
+    "value": 14.0
+  },
+  {
+    "date": "2022-04-30",
+    "value": 12.0
+  },
+  {
+    "date": "2022-05-30",
+    "value": 11.0
+  },
+  {
+    "date": "2022-05-31",
+    "value": 10.0
+  },
+];
+
+
+List<dynamic> allBedTime = [
+  {
+    "date": "2022-04-25",
+    "value": "21:00:00"
+  },
+  {
+    "date": "2022-04-30",
+    "value": "21:00:00"
+  },
+  {
+    "date": "2022-05-30",
+    "value": "20:12:00"
+  },
+  {
+    "date": "2022-05-31",
+    "value": "20:15:00"
+  },
+];
 
   // Table(
   //   // columnWidths: {

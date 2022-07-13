@@ -337,6 +337,7 @@ class _PatientScreenState extends State<PatientScreen> {
       String? txtField3 = key.currentState!.fields[valName3]!.value;
 
       if(txtField2 == txtField3){
+        //TODO This is the echoed data
         print("TxtField1: $txtField1, \nTxtField2: $txtField2, \nTxtField3: $txtField3");
         Navigator.of(context).pop();
       }else{
