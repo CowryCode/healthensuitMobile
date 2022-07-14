@@ -123,11 +123,16 @@ class _SleepReportState extends State<SleepReport> {
           ),
           sleepReportDataTable(themeData, sleepReport),
           SizedBox(height: pad,),
-          Graph(allBedTimeObject: allBedTime,
-              allAwakeningsObject: allAwakenings,
-              allTimeInBedObject: allAwakenings,
-              allSleepHoursObject: allAwakenings
+          Graph(allBedTimeObject: sleepReport.allbedTime,
+              allAwakeningsObject: sleepReport.allAwakenings,
+              allTimeInBedObject: sleepReport.allTimeinBed,
+              allSleepHoursObject: sleepReport.allSleepHours
           ),
+          // Graph(allBedTimeObject: allBedTime,
+          //     allAwakeningsObject: allAwakenings,
+          //     allTimeInBedObject: allAwakenings,
+          //     allSleepHoursObject: allAwakenings
+          // ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
