@@ -101,7 +101,7 @@ class Graph extends StatelessWidget {
         .entries
         .map((element) => FlSpot(
       element.key.toDouble(),
-      element.value.value,
+      element.value.value.toDouble(),
     ))
         .toList();
 

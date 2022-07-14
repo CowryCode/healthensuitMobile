@@ -37,7 +37,7 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 7,),
+      drawer: NavigationDrawerWidget(indexNum: 8,),
       appBar: AppBar(
         title: Text(VoluntaryWithdrawal.title),
         centerTitle: true,

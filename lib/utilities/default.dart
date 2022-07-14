@@ -13,6 +13,7 @@ class Defaults {
     'Sleep Report',
     'Program Content',
     'Psychoeducation',
+    'Tasks',
     'Contact Us',
     'Voluntary Withdrawal',
   ];
@@ -25,6 +26,7 @@ class Defaults {
     Icons.rate_review,
     Icons.library_books,
     Icons.book,
+    Icons.task,
     Icons.report,
     Icons.departure_board_outlined
   ];
