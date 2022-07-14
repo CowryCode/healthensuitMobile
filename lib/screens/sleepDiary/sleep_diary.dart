@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
@@ -51,8 +53,7 @@ class _SleepDiaryState extends State<SleepDiary> {
     final ThemeData themeData = Theme.of(context);
     final sidePad = EdgeInsets.symmetric(horizontal: 20);
     double pad = 18;
-    String drug1 = "Chlopazine";
-    String drug2 = "Oxitocine";
+
     List<String> hours = generateNumbers(23);
     List<String> minutes = generateNumbers(59);
 
@@ -75,6 +76,11 @@ class _SleepDiaryState extends State<SleepDiary> {
     Medications? med2 = Workflow().getMedications(
         widget.sleepDiariesPODO.medications, isfirstmedication: false,
         isSecondmedication: true);
+
+    List<int>? totalWakeupDuration = Workflow().convertMinutestoHRnMin(timeinMinutes: widget.sleepDiariesPODO.totalWakeUpduration);
+    List<int>? durationB4sleep = Workflow().convertMinutestoHRnMin(timeinMinutes: widget.sleepDiariesPODO.durationBeforesleepoff);
+
+
 
     return Scaffold(
       //drawer: NavigationDrawerWidget(indexNum: 2,),
@@ -113,7 +119,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 19, minute: 0),
+                          timeOfDay: bedtime ?? TimeOfDay(hour: 19, minute: 0),
                           question: "1. What time did you get into bed last night? (Required)",
                           valName: "inBed"),
                       // timeQuestion(sidePad, themeData, context, bedtime,
@@ -123,7 +129,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 19, minute: 30),
+                          timeOfDay: trySleepTime ?? TimeOfDay(hour: 19, minute: 30),
                           question: "2. What time did you try to go to sleep? (Required)",
                           valName: "tryBed"),
                       // timeQuestion(sidePad, themeData, context, trySleepTime,
@@ -132,7 +138,7 @@ class _SleepDiaryState extends State<SleepDiary> {
 
                       SizedBox(height: pad,),
 
-                      hourMinute(sidePad, themeData, hours, minutes,
+                      hourMinute(sidePad, themeData, hours, minutes,durationB4sleep,
                           question: "3. How long did it take you to fall asleep? (Please select hour then minute)",
                           hrValName: "hrs1", mnValName: "mns1"),
 
@@ -144,14 +150,14 @@ class _SleepDiaryState extends State<SleepDiary> {
 
                       SizedBox(height: pad,),
 
-                      hourMinute(sidePad, themeData, hours, minutes,
+                      hourMinute(sidePad, themeData, hours, minutes, totalWakeupDuration,
                           question: "5. In total, how long did these awakenings last? (Please select hour then minute)",
                           hrValName: "hrs2", mnValName: "mns2"),
 
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 5, minute: 0),
+                          timeOfDay: finalWakeupTime ?? TimeOfDay(hour: 5, minute: 0),
                           question: "6. What time was your final awakening? (Required)",
                           valName: "finAwake"),
                       // timeQuestion(sidePad, themeData, context, finalWakeupTime,
@@ -161,7 +167,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                       SizedBox(height: pad,),
 
                       timeQuestion(sidePad, themeData, context,
-                          timeOfDay: TimeOfDay(hour: 5, minute: 30),
+                          timeOfDay: timeLeftbed ?? TimeOfDay(hour: 5, minute: 30),
                           question: "7. What time did you get out of bed? (Required)",
                           valName: "outBed"),
                       // timeQuestion(sidePad, themeData, context, timeLeftbed,
@@ -489,7 +495,7 @@ class _SleepDiaryState extends State<SleepDiary> {
   }
 
   Padding hourMinute(EdgeInsets sidePad, ThemeData themeData,
-      List<String> hours, List<String> minutes,
+      List<String> hours, List<String> minutes, initialTime,
       {required String question, required String hrValName, required String mnValName}) {
     return Padding(
       padding: sidePad,
@@ -507,7 +513,8 @@ class _SleepDiaryState extends State<SleepDiary> {
                   // validator: FormBuilderValidators.compose(
                   //     [FormBuilderValidators.required(context,
                   //     errorText: "Hour is required")]),
-                  hint: Text("Select hours"),
+                 // hint: Text("Select hours"),
+                  hint: Text(initialTime == null ? "Select hours" : "${initialTime[0]}"),
                   style: themeData.textTheme.bodyText1,
                   items: hours.map((hr) =>
                       DropdownMenuItem(
@@ -523,7 +530,8 @@ class _SleepDiaryState extends State<SleepDiary> {
                   // validator: FormBuilderValidators.compose(
                   //     [FormBuilderValidators.required(context,
                   //         errorText: "Minute is required")]),
-                  hint: Text("Select Minutes"),
+                 // hint: Text("Select Minutes"),
+                  hint: Text(initialTime == null ? "Select Minutes" : "${initialTime[1]}"),
                   style: themeData.textTheme.bodyText1,
                   items: minutes.map((mn) =>
                       DropdownMenuItem(
@@ -581,7 +589,7 @@ class _SleepDiaryState extends State<SleepDiary> {
 
   Padding timeQuestion(EdgeInsets sidePad, ThemeData themeData,
       BuildContext context,
-      {required TimeOfDay timeOfDay, required String question, required String valName}) {
+      { required TimeOfDay timeOfDay, required String question, required String valName}) {
     return Padding(
       padding: sidePad,
       child: Column(
@@ -714,6 +722,7 @@ class _SleepDiaryState extends State<SleepDiary> {
 
   void validateForm(GlobalKey<FormBuilderState> key) {
     if (key.currentState!.saveAndValidate()) {
+      // widget.sleepDiariesPODO
 
       extraMedFieldIsOkay = validateExtraMedOptions(_formKey);
       if(!extraMedFieldIsOkay){
@@ -723,43 +732,151 @@ class _SleepDiaryState extends State<SleepDiary> {
 
       DateFormat dateFormat = DateFormat("hh:mm a");
 
-      String? bedTime = key.currentState!.fields["inBed"]!.value.toString();
-      bedTime = dateFormat.format(DateTime.parse(bedTime));
-      String? tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
-      tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
-      String durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
-      String durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!.value.toString();
+      String? bedTime;
+      String? bedTime_1;
+      dynamic? bedtimeField = key.currentState!.fields["inBed"];
+      if(bedtimeField != null){
+       // String? bedTime = key.currentState!.fields["inBed"]!.value.toString();
+         bedTime = key.currentState!.fields["inBed"]!.value.toString();
+         print("BEST TIME BEFORE FORMAT: ${bedTime}");
+         bedTime_1 = Workflow().converTimeTo24HoursFormat(dateTime: bedTime);
+         bedTime = dateFormat.format(DateTime.parse(bedTime));
+      }
+
+      String? tryTosleepTime;
+      String? tryTosleepTime_1;
+      dynamic? tryTosleepTimeField = key.currentState!.fields["tryBed"];
+      if(tryTosleepTimeField != null){
+       // String? tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
+        tryTosleepTime = key.currentState!.fields["tryBed"]!.value.toString();
+        tryTosleepTime_1 = Workflow().converTimeTo24HoursFormat(dateTime: tryTosleepTime);
+        tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
+      }
+      String? durationBeforesleepoffHOUR;
+      dynamic? durationBeforesleepoffHOURField =  key.currentState!.fields["hrs1"];
+      if(durationBeforesleepoffHOURField != null){
+      //  String durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
+        durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
+      }
+      String? durationBeforesleepoffMINUTES;
+      dynamic? durationBeforesleepoffMINUTESField = key.currentState!.fields["mns1"];
+      if(durationBeforesleepoffMINUTESField != null){
+         durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!.value.toString();
+      }
       //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
       // double durationB4sleep = double.parse(
       //     durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
-      double durationB4sleep = convertHoursandMinutesToMinutes(durationBeforesleepoffHOUR,durationBeforesleepoffMINUTES );
-      int wakeUptimeCount = int.parse(
-          key.currentState!.fields["wakeTimes"]!.value);
-      String totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
-      String totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+      double durationB4sleep = convertHoursandMinutesToMinutes(hours: durationBeforesleepoffHOUR, mins: durationBeforesleepoffMINUTES );
+      int? wakeUptimeCount;
+      dynamic? wakeUptimeCountField = key.currentState!.fields["wakeTimes"];
+      if(wakeUptimeCountField != null){
+       // int? wakeUptimeCount = int.parse(key.currentState!.fields["wakeTimes"]!.value);
+        wakeUptimeCount = int.parse(key.currentState!.fields["wakeTimes"]!.value);
+      }
+
+      String? totalWakeUpdurationHOUR;
+      dynamic? totalWakeUpdurationHOURField = key.currentState!.fields["hrs2"];
+      if(totalWakeUpdurationHOURField != null){
+      //  String totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
+        totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
+      }
+      String? totalWakeUpdurationMINUTE;
+      dynamic? totalWakeUpdurationMINUTEField = key.currentState!.fields["mns2"];
+      if(totalWakeUpdurationMINUTEField != null){
+       // String totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+        totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+      }
       //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
       // double awakeningDurations = double.parse(
       //     totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
-      double awakeningDurations = convertHoursandMinutesToMinutes(totalWakeUpdurationHOUR,totalWakeUpdurationMINUTE );
-      String? finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
-      finalWakeupTime = dateFormat.format(DateTime.parse(finalWakeupTime));
-      String? timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
-      timeLeftbed = dateFormat.format(DateTime.parse(timeLeftbed));
-      String? slpQuality = key.currentState!.fields["spQuality"]!.value;
-      //TODO: DRUG AMOUNT WAS NOT CAPTURED IN THE FILING
-      String? drugAmount1 = key.currentState!.fields["drNum1"]!.value;
-      String? drugAmount2 = key.currentState!.fields["drNum2"]!.value;
-      String? newMedname = key.currentState!.fields["medName1"]!.value;
-      String? newMedamount = key.currentState!.fields["amTaken1"]!.value;
-      String? newMedname2 = key.currentState!.fields["medName2"]!.value;
-      String? newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
-      String? newMedname3 = key.currentState!.fields["medName3"]!.value;
-      String? newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
-      String? otherThings = key.currentState!.fields["otherNote"]!.value;
+      double awakeningDurations = convertHoursandMinutesToMinutes(
+          hours: totalWakeUpdurationHOUR,mins: totalWakeUpdurationMINUTE );
 
-      bool sleepTimeIsOkay = compareTimeSelected(bedTime, tryTosleepTime);
-      bool sleepAndAwakeTimeIsOkay = compareTimeSelected(tryTosleepTime, finalWakeupTime);
-      bool wakeTimeIsOkay = compareTimeSelected(finalWakeupTime, timeLeftbed);
+      String? finalWakeupTime;
+      String? finalWakeupTime_1;
+      dynamic? finalWakeupTimeField =  key.currentState!.fields["finAwake"];
+      if(finalWakeupTimeField != null){
+      //  String? finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
+        finalWakeupTime = key.currentState!.fields["finAwake"]!.value.toString();
+        finalWakeupTime_1 = Workflow().converTimeTo24HoursFormat(dateTime: finalWakeupTime);
+        finalWakeupTime = dateFormat.format(DateTime.parse(finalWakeupTime));
+      }
+
+      String? timeLeftbed;
+      String? timeLeftbed_1;
+      dynamic? timeLeftbedField = key.currentState!.fields["outBed"];
+      if(timeLeftbedField != null){
+       // String? timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
+        timeLeftbed = key.currentState!.fields["outBed"]!.value.toString();
+        timeLeftbed_1 = Workflow().converTimeTo24HoursFormat(dateTime: timeLeftbed);
+        timeLeftbed = dateFormat.format(DateTime.parse(timeLeftbed));
+      }
+
+      String? slpQuality;
+      dynamic? slpQualityField = key.currentState!.fields["spQuality"];
+      if(slpQualityField != null){
+       // String? slpQuality = key.currentState!.fields["spQuality"]!.value;
+        slpQuality = key.currentState!.fields["spQuality"]!.value;
+      }
+      //TODO: DRUG AMOUNT WAS NOT CAPTURED IN THE FILING
+      //TODO: TEST WITH PATIENTS THAT HAVE DRUG THEY ARE TAKING
+      String? drugAmount1;
+      dynamic? drugAmount1Field = key.currentState!.fields["drNum1"];
+      if(drugAmount1Field != null){
+       // String? drugAmount1 = key.currentState!.fields["drNum1"]!.value;
+        drugAmount1 = key.currentState!.fields["drNum1"]!.value;
+      }
+      String? drugAmount2;
+      dynamic? drugAmount2Field = key.currentState!.fields["drNum2"];
+      if(drugAmount2Field != null){
+       // String? drugAmount2 = key.currentState!.fields["drNum2"]!.value;
+        drugAmount2 = key.currentState!.fields["drNum2"]!.value;
+      }
+      String? newMedname;
+      dynamic? newMednameField = key.currentState!.fields["medName1"];
+      if(newMednameField != null){
+        // String? newMedname = key.currentState!.fields["medName1"]!.value;
+        newMedname = key.currentState!.fields["medName1"]!.value;
+      }
+      String? newMedamount;
+      dynamic? newMedamountField = key.currentState!.fields["amTaken1"];
+      if(newMedamountField != null){
+     //   String? newMedamount = key.currentState!.fields["amTaken1"]!.value;
+       newMedamount = key.currentState!.fields["amTaken1"]!.value;
+      }
+      String? newMedname2;
+      dynamic? newMedname2Field = key.currentState!.fields["medName2"];
+      if(newMedname2Field != null){
+        //String? newMedname2 = key.currentState!.fields["medName2"]!.value;
+        newMedname2 = key.currentState!.fields["medName2"]!.value;
+      }
+      String? newMedamount2;
+      dynamic? newMedamount2Field = key.currentState!.fields["amTaken2"];
+      if(newMedamount2Field != null){
+       // String? newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
+        newMedamount2 = key.currentState!.fields["amTaken2"]!.value;
+      }
+      String? newMedname3;
+      dynamic? newMedname3Field = key.currentState!.fields["medName3"];
+      if(newMedname3Field != null){
+       // String? newMedname3 = key.currentState!.fields["medName3"]!.value;
+        newMedname3 = key.currentState!.fields["medName3"]!.value;
+      }
+      String? newMedamount3;
+      dynamic? newMedamount3Field  = key.currentState!.fields["amTaken3"];
+      if(newMedamount3Field != null){
+      //  String? newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
+        newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
+      }
+      String? otherThings;
+      dynamic? otherThingsField = key.currentState!.fields["otherNote"];
+      if(otherThingsField != null){
+       // String? otherThings = key.currentState!.fields["otherNote"]!.value;
+        otherThings = key.currentState!.fields["otherNote"]!.value;
+      }
+      bool sleepTimeIsOkay = compareTimeSelected(firstTime: bedTime, secondTime: tryTosleepTime);
+      bool sleepAndAwakeTimeIsOkay = compareTimeSelected(firstTime: tryTosleepTime, secondTime: finalWakeupTime);
+      bool wakeTimeIsOkay = compareTimeSelected(firstTime: finalWakeupTime, secondTime: timeLeftbed);
 
       if(!sleepTimeIsOkay){
         createAlertDialog(context,
@@ -775,176 +892,88 @@ class _SleepDiaryState extends State<SleepDiary> {
       }
       else{
         //TODO This is the echoed data
-        print("BetTime: $bedTime, \nTryToSleepTime: $tryTosleepTime, "
-            "\nTakeYouToSleep: $durationB4sleep, \nTimesWakeUpCount: $wakeUptimeCount, "
-            "\nWakeUpDurationTime: $awakeningDurations, \nFinalWakeupTime: $finalWakeupTime, "
-            "\nTimeLeftbed: $timeLeftbed, \nSlpQuality: $slpQuality, "
-            "\nDrugAmount1: $drugAmount1, \nDrugAmount2: $drugAmount2, "
-            "\nNewMedname1: $newMedname, \nNewMedamount1: $newMedamount, "
-            "\nNewMedname2: $newMedname2, \nNewMedamount2: $newMedamount2, "
-            "\nNewMedname3: $newMedname3, \nNewMedamount3: $newMedamount3, "
-            "\nOtherThings: $otherThings");
+        // print("BetTime: $bedTime, \nTryToSleepTime: $tryTosleepTime, "
+        //     "\nTakeYouToSleep: $durationB4sleep, \nTimesWakeUpCount: $wakeUptimeCount, "
+        //     "\nWakeUpDurationTime: $awakeningDurations, \nFinalWakeupTime: $finalWakeupTime, "
+        //     "\nTimeLeftbed: $timeLeftbed, \nSlpQuality: $slpQuality, "
+        //     "\nDrugAmount1: $drugAmount1, \nDrugAmount2: $drugAmount2, "
+        //     "\nNewMedname1: $newMedname, \nNewMedamount1: $newMedamount, "
+        //     "\nNewMedname2: $newMedname2, \nNewMedamount2: $newMedamount2, "
+        //     "\nNewMedname3: $newMedname3, \nNewMedamount3: $newMedamount3, "
+        //     "\nOtherThings: $otherThings");
 
-        OtherMedicationsEntity med1 = OtherMedicationsEntity();
-        med1.setOthermedicationFields(newMedname!, newMedamount!);
-        OtherMedicationsEntity med2 = OtherMedicationsEntity();
-        med2.setOthermedicationFields(newMedname2!, newMedamount2!);
-        OtherMedicationsEntity med3 = OtherMedicationsEntity();
-        med3.setOthermedicationFields(newMedname3!, newMedamount3!);
-        List<OtherMedicationsEntity> othermeds = [
-          med1,med2,med3
-        ];
-        widget.sleepDiariesPODO.updateVariable(
-            bedTime,
-            tryTosleepTime,
-            durationB4sleep,
-            wakeUptimeCount,
-            awakeningDurations,
-            finalWakeupTime,
-            timeLeftbed,
-            slpQuality,
-            otherThings,
-            othermeds);
+        // List<OtherMedicationsEntity> othermeds = [
+        //   med1,med2,med3
+        // ];
+        List<OtherMedicationsEntity>? othermeds;
+        OtherMedicationsEntity? med1;
+        OtherMedicationsEntity? med2;
+        OtherMedicationsEntity? med3;
+        if(newMedname != null && newMedamount != null ){
+          med1 = OtherMedicationsEntity();
+          med1.setOthermedicationFields(newMedname, newMedamount);
+        }
+        if(newMedname2 != null && newMedamount2 != null){
+          med2 = OtherMedicationsEntity();
+          med2.setOthermedicationFields(newMedname2, newMedamount2);
+        }
+        if(newMedname3 != null && newMedamount3 != null){
+          med3 = OtherMedicationsEntity();
+          med3.setOthermedicationFields(newMedname3, newMedamount3);
+        }
 
-         ApiAccess().saveSleepDiaries(sleepDiary: widget.sleepDiariesPODO);
+        if(med1 != null && med2 != null && med3 != null){
+          othermeds = [med1, med2, med3];
+        } else if (med1 != null && med2 != null && med3 == null){
+          othermeds = [med1, med2];
+        }else if (med1 != null && med2 == null && med3 == null){
+          othermeds = [med1];
+        }
+
+        // Medications? currentMed1 = Workflow().getMedications(
+        //     widget.sleepDiariesPODO.medications, isfirstmedication: true,
+        //     isSecondmedication: false);
+        // Medications? currentMed2 = Workflow().getMedications(
+        //     widget.sleepDiariesPODO.medications, isfirstmedication: false,
+        //     isSecondmedication: true);
+
+        List<Medications>? currentmedds = widget.sleepDiariesPODO.medications;
+        if(currentmedds != null){
+          if(currentmedds.length == 1){
+            Medications currentMed1 = currentmedds.elementAt(0);
+            currentMed1.setDrugAmount(drugAmount: drugAmount1);
+            currentmedds.insert(0, currentMed1);
+          }else if (currentmedds.length == 2){
+            Medications currentMed1 = currentmedds.elementAt(0);
+            Medications currentMed2 = currentmedds.elementAt(1);
+            currentMed1.setDrugAmount(drugAmount: drugAmount1);
+            currentMed2.setDrugAmount(drugAmount: drugAmount2);
+            currentmedds.insert(0, currentMed1);
+            currentmedds.insert(2, currentMed2);
+          }
+        }
+       SleepDiariesPODO updatedSD =   widget.sleepDiariesPODO.updateVariable(
+            bedTime: bedTime_1,
+            tryTosleepTime: tryTosleepTime_1,
+            durationBeforesleepoff: durationB4sleep,
+            wakeUptimeCount: wakeUptimeCount,
+            totalWakeUpduration: awakeningDurations,
+            finalWakeupTime: finalWakeupTime_1,
+            timeLeftbed: timeLeftbed_1,
+            sleepQuality: slpQuality,
+            medications: currentmedds,
+            otherMeds: othermeds,
+            otherThings: otherThings,
+            );
+
+         ApiAccess().saveSleepDiaries(sleepDiary: updatedSD);
         PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
-        patientProfilePodo.updateSleepDiary(widget.sleepDiariesPODO);
+        patientProfilePodo.updateSleepDiary(updatedSD);
 
         StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
           Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()));
 
       }
-
-      if(bedTime == "Select Time (Required)"){
-        bedTime = widget.sleepDiariesPODO.bedTime;
-      }
-
-      if(tryTosleepTime == "Select Time (Required)"){
-        tryTosleepTime = widget.sleepDiariesPODO.tryTosleepTime;
-      }
-
-      if (durationBeforesleepoffHOUR == null ||
-          durationBeforesleepoffMINUTES == null) {
-        durationB4sleep = widget.sleepDiariesPODO.durationBeforesleepoff ?? 0.0;
-      } else {
-        durationB4sleep = double.parse(
-            durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
-      }
-
-      // "In total, how long did these awakenings last?"
-
-      if (totalWakeUpdurationHOUR == null ||
-          totalWakeUpdurationMINUTE == null) {
-        awakeningDurations = widget.sleepDiariesPODO.totalWakeUpduration ?? 0.0;
-      } else {
-        awakeningDurations = double.parse(
-            totalWakeUpdurationHOUR + "." + totalWakeUpdurationMINUTE);
-      }
-      // "Sleep quality"
-      var sleepQuality = slpQuality ?? widget.sleepDiariesPODO.sleepQuality;
-
-
-      if(finalWakeupTime == "Select Time (Required)"){
-        finalWakeupTime = widget.sleepDiariesPODO.finalWakeupTime;
-      }
-
-      if(timeLeftbed == "Select Time (Required)"){
-        timeLeftbed = widget.sleepDiariesPODO.timeLeftbed;
-      }
-
-      OtherMedicationsEntity? othermed;
-
-      if(moreDrugIsVisible == true){
-        var newMedname = key.currentState!.fields["medName1"]!.value;
-        var newMedamount = key.currentState!.fields["amTaken1"]!.value;
-        if(newMedname != null && newMedamount != null){
-          othermed = OtherMedicationsEntity();
-          othermed.setOthermedicationFields(newMedname, newMedamount);
-
-        }
-      }
-
-      Medications? med1 = Workflow().getMedications(
-          widget.sleepDiariesPODO.medications, isfirstmedication: true,
-          isSecondmedication: false);
-      Medications? med2 = Workflow().getMedications(
-          widget.sleepDiariesPODO.medications, isfirstmedication: false,
-          isSecondmedication: true);
-
-      // print("Medication 1 ID is : ${med1!.id}");
-      // print("Medication 2 ID is : ${med2!.id}");
-
-       List<Medications> currentMeds = List.filled(
-           2, new Medications(), growable: true);
-
-      if (med1 != null) {
-        currentMeds.clear();
-        drugAmount1 = key.currentState!.fields["drNum1"]!.value;
-        if (drugAmount1 != null) {
-          med1.setDrugAmount(drugAmount1);
-          currentMeds.add(med1);
-        }
-        if (med2 != null) {
-          drugAmount2 = key.currentState!.fields["drNum2"]!.value;
-          if (drugAmount2 != null) {
-            med2.setDrugAmount(drugAmount2);
-            currentMeds.add(med2);
-          }
-        }
-        widget.sleepDiariesPODO.updateCurrentmeds(currentMeds);
-      }
-
-      //TODO I commented out codes below. Kindly Review
-
-      // widget.sleepDiariesPODO.updateVariable(
-      //     bedTime,
-      //     tryTosleepTime,
-      //     durationB4sleep,
-      //     wakeUptimeCount,
-      //     awakeningDurations,
-      //     finalWakeupTime,
-      //     timeLeftbed,
-      //     sleepQuality,
-      //     otherThings,
-      //     othermed
-      // );
-
-      Future<SleepDiariesPODO> savedSleepDiary = ApiAccess().saveSleepDiaries(
-          sleepDiary: widget.sleepDiariesPODO);
-
-      PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
-      patientProfilePodo.updateSleepDiary(widget.sleepDiariesPODO);
-
-      StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(patientProfilePodo));
-
-      print("Bed : $bedTime , "
-          "Try to sleep : $tryTosleepTime , "
-          "Sleep Quality : $sleepQuality , "
-          "Wake up count : $wakeUptimeCount ,"
-          " Final Wake up : $finalWakeupTime ,"
-          "Time Left Bed : $timeLeftbed , "
-          "Awakening Duration : $awakeningDurations"
-          "Current Med 1 Amount : $drugAmount1 , "
-          "Current Med 2 amount : $drugAmount2 , "
-          "Duration before sleep $durationB4sleep "
-          // "New Med Name : $newMedname ,"
-          // " New Med Amount : $newMedamount ,"
-          " Other things : $otherThings");
-
-      print(
-          "::::::::::::::::::::::::::::::::: SAVED ITEMS ::::::::::::::::::::::::::::::::::::::::::::::::::::");
-      savedSleepDiary.then((value) =>
-      {     print("Bed : ${value.bedTime} , Try to sleep : ${value.tryTosleepTime} , "
-            "Sleep Quality : ${value.sleepQuality} , Wake up count : ${value
-            .wakeUptimeCount} , Final Wake up : ${value.finalWakeupTime} ,"
-            "Time Left Bed : ${value
-            .timeLeftbed}, Current Med 1 Amount : , Awakening Duration : ${value
-            .totalWakeUpduration} "
-            "Current Med 2 amount : , Duration before sleep ${value.bedTime} "
-            "New Med Name : , New Med Amount : , Other things : "),
-        Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
-
-      });
     }else{
       createAlertDialog(context,
           msg: "All required fields are not properly filled. Please review and fill the required fields");
@@ -952,12 +981,27 @@ class _SleepDiaryState extends State<SleepDiary> {
     }
   }
 
-  double convertHoursandMinutesToMinutes(String hour, String minutes){
-    double totalhours = double.parse(hour) * 60;
-    return totalhours + double.parse(minutes);
+  double convertHoursandMinutesToMinutes({String? hours, String? mins}){
+    if(hours == null && mins == null ){
+      return 0.0;
+    }else if(hours != null && mins == null){
+      return double.parse(hours) * 60;
+    }else if (hours == null && mins != null){
+      return double.parse(mins);
+    }else if (hours != null && mins != null){
+      double totalhours = double.parse(hours) * 60;
+      return totalhours + double.parse(mins);
+    }else {
+      return 0.0;
+    }
   }
 
-  bool compareTimeSelected(String firstTime, String secondTime){
+
+  bool compareTimeSelected({String? firstTime, String? secondTime}){
+    if(firstTime == null || secondTime == null){
+      return false;
+    }
+
     bool timeIsOkay = true;
 
     DateFormat dateFormat = DateFormat("yyyy-MM-dd hh:mm a");
@@ -970,21 +1014,10 @@ class _SleepDiaryState extends State<SleepDiary> {
       dt2 = dateFormat.parse("0001-01-01 "+ secondTime);
     }
 
-    // if(dt1.compareTo(dt2) == 0){
-    //   print("Both date time are at same moment.");
-    // }
-    // if(dt1.compareTo(dt2) < 0){
-    //   print("DT1 is before DT2");
-    // }
-
     if(dt1.isBefore(dt2)){
       print("DT1 is before DT2");
       return timeIsOkay;
     }
-
-    // if(dt1.compareTo(dt2) > 0){
-    //   print("DT1 is after DT2");
-    // }
     if(dt1.isAfter(dt2)){
       print("DT1 is after DT2");
       timeIsOkay = false;

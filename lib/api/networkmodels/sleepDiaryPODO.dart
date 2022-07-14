@@ -115,37 +115,52 @@ class SleepDiariesPODO {
     data['date_Created'] = this.dateCreated;
     return data;
   }
-  void updateVariable(String? bedTime ,
-      String? tryTosleepTime,
-      double? durationBeforesleepoff,
-      int? wakeUptimeCount,
-      double? totalWakeUpduration,
-      String? finalWakeupTime,
-      String? timeLeftbed,
-      String? sleepQuality,
-      String? otherThings,
-      List<OtherMedicationsEntity>? otherMeds
-      ) {
-    this.bedTime = bedTime;
-    this.tryTosleepTime = tryTosleepTime;
-    this.durationBeforesleepoff = durationBeforesleepoff;
-    this.wakeUptimeCount = wakeUptimeCount;
-    this.totalWakeUpduration = totalWakeUpduration;
-    this.finalWakeupTime = finalWakeupTime;
-    this.timeLeftbed = timeLeftbed;
-    this.sleepQuality = sleepQuality;
-    this.otherThings = otherThings;
-    this.othermedications = otherMeds;
+  SleepDiariesPODO updateVariable({String? bedTime , String? tryTosleepTime,
+      double? durationBeforesleepoff,int? wakeUptimeCount,double? totalWakeUpduration,
+      String? finalWakeupTime,String? timeLeftbed,String? sleepQuality,String? otherThings,
+      List<Medications>? medications, List<OtherMedicationsEntity>? otherMeds,
+      }) {
 
+    if(bedTime != null){
+      this.bedTime = bedTime;
+    }
+    if(tryTosleepTime != null){
+      this.tryTosleepTime = tryTosleepTime;
+    }
+    if(durationBeforesleepoff != null){
+      this.durationBeforesleepoff = durationBeforesleepoff;
+    }
+    if(wakeUptimeCount != null){
+      this.wakeUptimeCount = wakeUptimeCount;
+    }
+    if(totalWakeUpduration != null){
+      this.totalWakeUpduration = totalWakeUpduration;
+    }
+    if(finalWakeupTime != null){
+      this.finalWakeupTime = finalWakeupTime;
+    }
+    if(timeLeftbed != null){
+      this.timeLeftbed = timeLeftbed;
+    }
+    if(sleepQuality != null){
+      this.sleepQuality = sleepQuality;
+    }
+    if(otherThings != null){
+      this.otherThings = otherThings;
+    }
+    if(othermedications != null){
+      this.othermedications = otherMeds;
+    }
+    if(this.medications != null){
+      this.medications = medications;
+    }
+
+    return this;
   }
   List<OtherMedicationsEntity>? getOthermeds(){
     return this.othermedications;
   }
   List<Medications>? getmedications(){
     return this.medications;
-  }
-
-  void updateCurrentmeds(List<Medications> currentMeds){
-      this.medications = currentMeds;
   }
 }

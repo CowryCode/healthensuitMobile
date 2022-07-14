@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/mysleepreport.dart';
 import 'package:intl/intl.dart';
 import '../../utilities/constants.dart';
 import 'dart:math';
@@ -16,7 +17,7 @@ class _MyData {
 
 class _MyTimeData {
   final DateTime date;
-  final int value;
+   final int value;
 
   _MyTimeData({
     required this.date,
@@ -26,13 +27,17 @@ class _MyTimeData {
 }
 
 class Graph extends StatelessWidget {
-  final List<dynamic> allBedTimeObject;
-  final List<dynamic> allAwakeningsObject;
-  final List<dynamic> allTimeInBedObject;
-  final List<dynamic> allSleepHoursObject;
+  // final List<dynamic> allBedTimeObject;
+  // final List<dynamic> allAwakeningsObject;
+  // final List<dynamic> allTimeInBedObject;
+  // final List<dynamic> allSleepHoursObject;
+  final List<AllbedTime> allBedTimeObject;
+  final List<DateValueObject> allAwakeningsObject;
+  final List<DateValueObject> allTimeInBedObject;
+  final List<DateValueObject> allSleepHoursObject;
 
   Graph({required this.allBedTimeObject, required this.allAwakeningsObject,
-      required this.allTimeInBedObject, required this.allSleepHoursObject});
+        required this.allTimeInBedObject, required this.allSleepHoursObject});
 
   late List<_MyData> _awakeningsData = _generateNumberData(allAwakeningsObject);
   late List<_MyData> _sleepHoursData = _generateNumberData(allSleepHoursObject);
@@ -95,7 +100,7 @@ class Graph extends StatelessWidget {
   //   );
   // }
 
-  Widget _graph(ThemeData themeData, List<_MyData> _data, List<dynamic> dataObject) {
+  Widget _graph(ThemeData themeData, List<_MyData> _data, List<DateValueObject> dataObject) {
     final spots = _data
         .asMap()
         .entries
@@ -106,7 +111,8 @@ class Graph extends StatelessWidget {
         .toList();
 
     DateFormat dateFormat = DateFormat("MM-dd");
-    double maxValue = dataObject.map<double>((e) => e['value']).reduce(max);
+  //  double maxValue = dataObject.map<double>((e) => e['value']).reduce(max);
+    double maxValue = dataObject.map<double>((e) => e.value).reduce(max);
 
     return LineChart(
       LineChartData(
@@ -157,6 +163,69 @@ class Graph extends StatelessWidget {
       swapAnimationCurve: Curves.linear, // Optional
     );
   }
+
+  // Widget _graph(ThemeData themeData, List<_MyData> _data, List<dynamic> dataObject) {
+  //   final spots = _data
+  //       .asMap()
+  //       .entries
+  //       .map((element) => FlSpot(
+  //     element.key.toDouble(),
+  //     element.value.value,
+  //   ))
+  //       .toList();
+  //
+  //   DateFormat dateFormat = DateFormat("MM-dd");
+  //   double maxValue = dataObject.map<double>((e) => e['value']).reduce(max);
+  //
+  //   return LineChart(
+  //     LineChartData(
+  //       minY: 0,
+  //       maxY: maxValue,
+  //       lineTouchData: LineTouchData(
+  //           touchTooltipData: LineTouchTooltipData(
+  //             tooltipBgColor: appItemColorWhite,
+  //           )
+  //       ),
+  //       lineBarsData: [
+  //         LineChartBarData(
+  //           spots: spots,
+  //           colors: [appItemColorBlue],
+  //         ),
+  //       ],
+  //       titlesData: FlTitlesData(
+  //         rightTitles: SideTitles(showTitles: false),
+  //         topTitles: SideTitles(showTitles: false),
+  //         bottomTitles: SideTitles(
+  //           reservedSize: 60,
+  //           margin: 12,
+  //           getTextStyles: (context, xValue) {
+  //             return themeData.textTheme.subtitle1;
+  //           },
+  //           rotateAngle: 30,
+  //           showTitles: true,
+  //           getTitles: (xValue) {
+  //             final date = _data[xValue.toInt()].date;
+  //             return DateFormat.MMMd().format(date);
+  //             // return dateFormat.format(date);
+  //           },
+  //         ),
+  //         leftTitles: SideTitles(
+  //           reservedSize: 50,
+  //           getTextStyles: (context, xValue) {
+  //             return themeData.textTheme.subtitle1;
+  //           },
+  //           getTitles: (xValue) {
+  //             return xValue.toInt().toString();
+  //           },
+  //           // rotateAngle: 30,
+  //           showTitles: true,
+  //         ),
+  //       ),
+  //     ),
+  //     swapAnimationDuration: Duration(milliseconds: 150), // Optional
+  //     swapAnimationCurve: Curves.linear, // Optional
+  //   );
+  // }
 
 
   Widget _graphTime(ThemeData themeData, List<_MyTimeData> _data) {
@@ -248,30 +317,55 @@ class Graph extends StatelessWidget {
   }
 
 
-  List<_MyTimeData> _generateTimeData(List<dynamic> data) {
-    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-    DateFormat timeFormat = DateFormat("yyyy-MM-dd hh:mm:ss");
+  // List<_MyTimeData> _generateTimeData(List<dynamic> data) {
+  //   DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+  //   DateFormat timeFormat = DateFormat("yyyy-MM-dd hh:mm:ss");
+  //
+  //   return List.generate(
+  //     data.length,
+  //         (index) => _MyTimeData(
+  //       date: dateFormat.parse(data[index]['date']),
+  //       value: timeFormat.parse("0001-01-01 "+data[index]['value']).microsecondsSinceEpoch,
+  //     ),
+  //   );
+  // }
 
-    return List.generate(
-      data.length,
-          (index) => _MyTimeData(
-        date: dateFormat.parse(data[index]['date']),
-        value: timeFormat.parse("0001-01-01 "+data[index]['value']).microsecondsSinceEpoch,
-      ),
-    );
-  }
-
-  List<_MyData> _generateNumberData(List<dynamic> data) {
+  // List<_MyData> _generateNumberData(List<dynamic> data) {
+  //   DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+  //
+  //   return List.generate(
+  //     data.length,
+  //         (index) => _MyData(
+  //       date: dateFormat.parse(data[index]['date']),
+  //       value: data[index]['value'],
+  //     ),
+  //   );
+  // }
+  List<_MyData> _generateNumberData(List<DateValueObject> data) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
 
     return List.generate(
       data.length,
           (index) => _MyData(
-        date: dateFormat.parse(data[index]['date']),
-        value: data[index]['value'],
+        date: dateFormat.parse(data[index].date!),
+        value: data[index].value!,
       ),
     );
   }
+
+List<_MyTimeData> _generateTimeData(List<AllbedTime> data) {
+  DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+  DateFormat timeFormat = DateFormat("yyyy-MM-dd hh:mm:ss");
+
+  return List.generate(
+    data.length,
+        (index) => _MyTimeData(
+      date: dateFormat.parse(data[index].date!),
+      value: timeFormat.parse("0001-01-01 "+data[index].time!).microsecondsSinceEpoch,
+    ),
+  );
+}
+
 
   // @override
   // _Graph createState() => _Graph();

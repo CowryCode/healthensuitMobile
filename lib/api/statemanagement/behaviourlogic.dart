@@ -62,6 +62,33 @@ class Workflow{
     return formatted_date;
   }
 
+  List<int>? convertMinutestoHRnMin({double? timeinMinutes}){
+    print("Total Minutes : ${timeinMinutes}");
+    if(timeinMinutes != null){
+      int mins = (timeinMinutes % 60).round();
+      int hour = ((timeinMinutes - mins) / 60).round();
+      print("Hour Part : ${hour}");
+      print("Minutes Part : ${mins}");
+      return [hour, mins];
+    }
+  }
+
+
+  String? converTimeTo24HoursFormat({required String dateTime}){
+    try {
+      if (dateTime != null) {
+        List<String> str = dateTime.split(" ");
+        if (str.length > 1) {
+          String time = str[1];
+          List<String> timesplit = time.split(".");
+          return timesplit[0];
+        }
+      }
+    }catch(e){
+      // Do nothing
+    }
+  }
+
   TimeOfDay? convertStringtoTimeofDay(String?  time){
     if(time != null) {
       var tt = time.split(":");

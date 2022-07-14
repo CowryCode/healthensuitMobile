@@ -29,13 +29,14 @@ class Medications {
     this.id = ID;
   }
 
-  void setDrugAmount(String drugAmount){
-    double amnt = double.parse(drugAmount);
-    this.amount = amnt;
+  void setDrugAmount({String? drugAmount}){
+    if(drugAmount != null){
+      this.amount = double.parse(drugAmount);
+    }
   }
 
   void setOthermedicationFields(String medicationName, String amount){
     this.medicationName = medicationName;
-    setDrugAmount(amount);
+    setDrugAmount(drugAmount: amount);
   }
 }
