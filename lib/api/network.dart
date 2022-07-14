@@ -245,15 +245,15 @@ class ApiAccess {
 
   Future<SleepDiariesPODO> saveSleepDiaries({required SleepDiariesPODO sleepDiary}) async {
 
-    print("IN NETWORK CLASS");
-
-    print("ID: ${sleepDiary.id}, \n BetTime: ${sleepDiary.bedTime}, \nTryToSleepTime: ${sleepDiary.tryTosleepTime}, "
-        "\nTakeYouToSleep: ${sleepDiary.durationBeforesleepoff}, \nTimesWakeUpCount: ${sleepDiary.wakeUptimeCount}, "
-        "\nWakeUpDurationTime: ${sleepDiary.totalWakeUpduration}, \nFinalWakeupTime: ${sleepDiary.finalWakeupTime}, "
-        "\nTimeLeftbed: ${sleepDiary.timeLeftbed}, \nSlpQuality: ${sleepDiary.sleepQuality}, "
-        "\nCurrent Medication: ${sleepDiary.getmedications()},  "
-        "\nOther Medicationa : ${sleepDiary.getOthermeds()},"
-        "\nOtherThings: ${sleepDiary.otherThings}");
+    // print("IN NETWORK CLASS");
+    //
+    // print("ID: ${sleepDiary.id}, \n BetTime: ${sleepDiary.bedTime}, \nTryToSleepTime: ${sleepDiary.tryTosleepTime}, "
+    //     "\nTakeYouToSleep: ${sleepDiary.durationBeforesleepoff}, \nTimesWakeUpCount: ${sleepDiary.wakeUptimeCount}, "
+    //     "\nWakeUpDurationTime: ${sleepDiary.totalWakeUpduration}, \nFinalWakeupTime: ${sleepDiary.finalWakeupTime}, "
+    //     "\nTimeLeftbed: ${sleepDiary.timeLeftbed}, \nSlpQuality: ${sleepDiary.sleepQuality}, "
+    //     "\nCurrent Medication: ${sleepDiary.getmedications()},  "
+    //     "\nOther Medicationa : ${sleepDiary.getOthermeds()},"
+    //     "\nOtherThings: ${sleepDiary.otherThings}");
 
 
       String? token;

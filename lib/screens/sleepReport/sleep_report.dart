@@ -155,6 +155,7 @@ class _SleepReportState extends State<SleepReport> {
       String avgBedtime = sleepreportDTO.averageBedtime?? "00:00";
       double rawlatency =  sleepreportDTO.sleeplatency?? 0.0;
       double latency =  Workflow().changeDecimalplaces(value: rawlatency, decimalplaces: 2);
+      double avgAwakening = sleepreportDTO.averagenumberofawakenings ?? 0.0;
       double rawWASO = sleepreportDTO.waso?? 0.0;
       double WASO = Workflow().changeDecimalplaces(value: rawWASO, decimalplaces: 2);
       double rawtib = sleepreportDTO.tib?? 0.0;
@@ -171,8 +172,7 @@ class _SleepReportState extends State<SleepReport> {
               rows: [
                 rowWidget(themeData, desc: "Average Bed Time", value: "${avgBedtime}"),
                 rowWidget(themeData, desc: "Average Time to Fall Asleep", value: "${latency}%"),
-                //TODO The Average Number of Awakenings rowWidget was omitted before. Please add its value
-                rowWidget(themeData, desc: "Average Number of Awakenings", value: "${latency}%"),
+                rowWidget(themeData, desc: "Average Number of Awakenings", value: "${avgAwakening}%"),
                 rowWidget(themeData, desc: "Average Duration of Awakenings (WASO)", value: "${WASO}"),
                 rowWidget(themeData, desc: "Average Time In Bed (TIB)", value: "${tib}"),
                 rowWidget(themeData, desc: "Average Total Sleep Time (TST)", value: "${tst}"),

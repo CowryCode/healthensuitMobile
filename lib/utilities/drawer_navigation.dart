@@ -40,12 +40,6 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
 
   @override
-  void dispose() {
-    // StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(PatientProfilePodo()));
-    // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
-  }
-
-  @override
   Widget build(BuildContext context) {
    // Future<PatientProfilePodo>?  futureProfile = widget.patientprofile;
 
