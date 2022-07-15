@@ -23,7 +23,8 @@ import 'package:redux/redux.dart';
 int? indexClicked = 0;
 // final name1 = 'Ifeanyi Paul';
 // final email1 = 'mail@mail.com';
-final assetImage ='assets/images/form-user.jpg';
+final assetImage ='assets/images/logo-text.png';
+// final assetImage ='assets/images/form-user.jpg';
 
 class NavigationDrawerWidget extends StatefulWidget {
   final int? indexNum;

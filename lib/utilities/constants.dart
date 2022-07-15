@@ -25,7 +25,8 @@ final kTextStyleNorm = TextStyle(
 );
 
 final kBoxDecorationStyle = BoxDecoration(
-  color: Color(0xFF6CA8F1),
+  color: Colors.blueAccent,
+  // color: Color(0xFF6CA8F1),
   borderRadius: BorderRadius.circular(10.0),
   boxShadow: [
     BoxShadow(
@@ -74,7 +75,7 @@ const TextTheme TEXT_THEME_DEFAULT = TextTheme(
     caption: TextStyle(
         color: COLOR_DARK_BLUE, fontWeight: FontWeight.w700, fontSize: 16),
     labelMedium: TextStyle(
-        color: COLOR_BLACK, fontWeight: FontWeight.w700, fontSize: 14),
+        color: ITEM_COLOR_BLUE, fontWeight: FontWeight.w700, fontSize: 16),
     );
 
 const TextTheme TEXT_THEME_SMALL = TextTheme(
@@ -101,5 +102,5 @@ const TextTheme TEXT_THEME_SMALL = TextTheme(
     caption: TextStyle(
       color: COLOR_DARK_BLUE, fontWeight: FontWeight.w700, fontSize: 14),
     labelMedium: TextStyle(
-        color: COLOR_BLACK, fontWeight: FontWeight.w700, fontSize: 12),
+        color: ITEM_COLOR_BLUE, fontWeight: FontWeight.w700, fontSize: 14),
     );
