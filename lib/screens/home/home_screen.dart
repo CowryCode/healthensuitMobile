@@ -23,8 +23,9 @@ import 'package:healthensuite/utilities/constants.dart';
 class HomeScreen extends StatefulWidget {
  // Future<PatientProfilePodo>? futureProfile;
   bool timedout;
+  bool showdisclaimer;
  // HomeScreen({required this.futureProfile, this.timedout: false });
-  HomeScreen({this.timedout: false });
+  HomeScreen({this.timedout: false, this.showdisclaimer: false });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -41,7 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      createAlertDialog(context);
+      if(widget.showdisclaimer == true){
+        createAlertDialog(context);
+      }
     });
   }
 

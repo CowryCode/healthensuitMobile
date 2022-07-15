@@ -232,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
              StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
              StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
               timer.cancel(),
-              Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true, showdisclaimer: true, )))
             });
             timer.cancel();
             if (timer.tick == 1) {
