@@ -29,14 +29,14 @@ Future<void> main() async {
   // ((){
   //   print("LOGIN STATUS IS ${loginStatus}");
   //   if(loginStatus == true){
-  //     runApp(MyAppHomeScreen());
+  //     runApp(MyAppLoginScreen(loginStatus: true,));
   //   }else{
-  //     runApp(MyAppLoginScreen());
+  //     runApp(MyAppLoginScreen(loginStatus: false,));
   //   }
   // }());
   //************** Update end *******************
 
-  runApp(MyAppLoginScreen()); // 2022-Jul-07
+  runApp(MyAppLoginScreen(loginStatus: false,)); // 2022-Jul-07
 
 }
 
@@ -67,6 +67,8 @@ Future init() async {
 }
 
 class MyAppLoginScreen extends StatelessWidget {
+  bool loginStatus;  // 2022-07-15
+  MyAppLoginScreen({required this.loginStatus});  // 2022-07-15
 
   final Store<AppState> _store = Store<AppState>(
     appStateReducer,
@@ -79,8 +81,6 @@ class MyAppLoginScreen extends StatelessWidget {
   );
 
 
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -90,7 +90,7 @@ class MyAppLoginScreen extends StatelessWidget {
       store: _store,
       child: MaterialApp(
         theme: new ThemeData(primarySwatch: appBackgroundMaterialColor, textTheme: screenWidth < 500 ? TEXT_THEME_SMALL : TEXT_THEME_DEFAULT, fontFamily: "Montserrat"),
-         home: LoginScreen(loginStatus: false,),
+         home: LoginScreen(loginStatus: loginStatus,),
         //home: HomeScreen(futureProfile: null, timedout: true,),
       ),
     );
@@ -115,7 +115,7 @@ class MyAppHomeScreen extends StatelessWidget {
     double screenWidth = window.physicalSize.width;
 
     Future<PatientProfilePodo>? patientprofile =  ApiAccess().getPatientProfile(null);
-      patientprofile!.then((value) => {
+      patientprofile.then((value) => {
       if (value != null && value.firstName != null) {
           StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
       Navigator.push(context, new MaterialPageRoute(

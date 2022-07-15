@@ -103,20 +103,22 @@ class SleepReportDTO {
     data['startDate'] = this.startDate;
     data['endDate'] = this.endDate;
     data['dateShared'] = this.dateShared;
-    if (this.allbedTime != null) {
-      data['allbedTime'] = this.allbedTime!.map((v) => v.toJson()).toList();
-    }
-    if (this.allAwakenings != null) {
-      data['allAwakenings'] =
-          this.allAwakenings!.map((v) => v.toJson()).toList();
-    }
-    if (this.allTimeinBed != null) {
-      data['allTimeinBed'] = this.allTimeinBed!.map((v) => v.toJson()).toList();
-    }
-    if (this.allSleepHours != null) {
-      data['allSleepHours'] =
-          this.allSleepHours!.map((v) => v.toJson()).toList();
-    }
+    // if (this.allbedTime != null) {
+    //   data['allbedTime'] = this.allbedTime.map((v) => v.toJson()).toList();
+    // }
+    data['allbedTime'] = this.allbedTime.map((v) => v.toJson()).toList();
+    // if (this.allAwakenings != null) {
+    //   data['allAwakenings'] =  this.allAwakenings.map((v) => v.toJson()).toList();
+    // }
+    data['allAwakenings'] =  this.allAwakenings.map((v) => v.toJson()).toList();
+    // if (this.allTimeinBed != null) {
+    //   data['allTimeinBed'] = this.allTimeinBed.map((v) => v.toJson()).toList();
+    // }
+    data['allTimeinBed'] = this.allTimeinBed.map((v) => v.toJson()).toList();
+    // if (this.allSleepHours != null) {
+    //   data['allSleepHours'] = this.allSleepHours.map((v) => v.toJson()).toList();
+    // }
+    data['allSleepHours'] = this.allSleepHours.map((v) => v.toJson()).toList();
     return data;
   }
 }

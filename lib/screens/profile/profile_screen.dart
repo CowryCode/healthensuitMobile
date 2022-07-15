@@ -352,7 +352,6 @@ class _PatientScreenState extends State<PatientScreen> {
       }else{
         simpleAlertDialog(context, msg: errorMsg);
       }
-
     }else{
       simpleAlertDialog(context, msg: "All fields are not properly filled.");
       print("All fields are not properly filled!!!");

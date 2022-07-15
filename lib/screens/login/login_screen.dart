@@ -35,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
    bool? loginStatus;
    bool isLoading = false;
 
+  Future<PatientProfilePodo>? patientprofile;// Just added 15/07/2022
+
   @override
   void initState() {
     super.initState();
@@ -42,24 +44,53 @@ class _LoginScreenState extends State<LoginScreen> {
     loginStatus = widget.loginStatus;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future<PatientProfilePodo>? patientprofile =  ApiAccess().getPatientProfile(null);
-      patientprofile!.then((value) => {
-      if (value != null && value.firstName != null) {
+      patientprofile.then((value) => {
+        if (value != null && value.firstName != null) {
           StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
-      Navigator.push(context, new MaterialPageRoute(
-          builder: (context) => HomeScreen(timedout: true)))
-      }
+          Navigator.push(context, new MaterialPageRoute(
+              builder: (context) => HomeScreen(timedout: true)))
+        }
       });
     });
-  }
-
-  // Just added 2022-07-11 START
-  @override
-  void dispose() {
 
   }
 
-  // Just added 2022-7-11 End
-
+  Widget getLoginScreen(){
+    return Container(height: double.infinity,
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.symmetric(
+          horizontal: 40.0,
+          vertical: 120.0,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Patient Sign In',
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Montserrat',
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 30.0),
+            _buildEmailTF(),
+            SizedBox(
+              height: 30.0,
+            ),
+            _buildPasswordTF(),
+            _buildForgotPasswordBtn(),
+            _buildRememberMeCheckbox(),
+            _buildLoginBtn(),
+            //_buildSignInWithText(),
+            //_buildSocialBtnRow(),
+            //_buildSignupBtn(),
+          ],
+        ),
+      ),);
+  }
 
   Widget _buildEmailTF() {
     return Column(
@@ -202,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
              StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
              StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
               timer.cancel(),
-              Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true )))
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true, showdisclaimer: true, )))
             });
             timer.cancel();
             if (timer.tick == 1) {
