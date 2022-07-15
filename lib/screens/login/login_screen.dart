@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    //TODO: Confirm voided patients before giving access from backend
     loginStatus = widget.loginStatus;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future<PatientProfilePodo>? patientprofile =  ApiAccess().getPatientProfile(null);

@@ -109,7 +109,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                        return  getSleepClock();
                       }else{
                         SizedBox(height: 10.0,);
-                    }
+                      }
                     }())
                   ),
                   MenuItem(
@@ -130,6 +130,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       }())
                   ),
                   Center(
+                    //TODO Confirm that the user is randomized
                       child: ((){
                         if(patientprofile.groupID == 1){
                           return   MenuItem(
