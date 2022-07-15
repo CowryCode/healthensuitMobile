@@ -179,8 +179,7 @@ class ApiAccess {
       PatientProfilePodo emptyProfiel = PatientProfilePodo();
       return emptyProfiel;
     } else {
-      PatientProfilePodo profile =
-          await getPatientProfile(null) ?? PatientProfilePodo();
+      PatientProfilePodo profile = await getPatientProfile(null) ;
       StatusEntity? status = profile.statusEntity;
       if (status != null) {
         Localstorage().saveInteger(key_Next_Page, status.nextPage!);
@@ -206,7 +205,7 @@ class ApiAccess {
     }
   }
 
-  Future<PatientProfilePodo>? getPatientProfile(String? code) async {
+  Future<PatientProfilePodo> getPatientProfile(String? code) async {
     print("Got to this point to pull Profile");
     String? token;
     bool? isLoggedin;

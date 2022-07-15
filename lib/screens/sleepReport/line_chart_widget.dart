@@ -113,6 +113,7 @@ class Graph extends StatelessWidget {
     DateFormat dateFormat = DateFormat("MM-dd");
   //  double maxValue = dataObject.map<double>((e) => e['value']).reduce(max);
     double maxValue = dataObject.map<double>((e) => e.value).reduce(max);
+    print("THE MAXIMUM VALUE IS : ${maxValue}");
 
     return LineChart(
       LineChartData(
