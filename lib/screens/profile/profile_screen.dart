@@ -125,7 +125,8 @@ class _PatientScreenState extends State<PatientScreen> {
                         textInputType: TextInputType.emailAddress,
                         otherInitVal: "",
                         dialogHeaderTxt: "Update Email",
-                          errorMsg: "New Email does not match. Please re-type it and try again.",
+                        isEmail: true,
+                        errorMsg: "New Email does not match. Please re-type it and try again.",
                       );
                     },
                   ),
@@ -149,6 +150,7 @@ class _PatientScreenState extends State<PatientScreen> {
                         isObscure: true,
                         otherInitVal: "",
                         dialogHeaderTxt: "Update Password",
+                        isEmail: false,
                         errorMsg: "New Password does not match. Please re-type it and try again.",
                       );
                     },
@@ -173,7 +175,7 @@ class _PatientScreenState extends State<PatientScreen> {
         required String initVal, required String validatorTxt,
         required TextInputType textInputType, required String otherInitVal,
         required String dialogHeaderTxt, required String errorMsg,
-        required isObscure}){
+        required bool isObscure, required bool isEmail}){
     final ThemeData themeData = Theme.of(context);
     double pad = 28;
     return showDialog(
@@ -181,7 +183,7 @@ class _PatientScreenState extends State<PatientScreen> {
         barrierDismissible: false,
         builder: (context){
           return AlertDialog(
-            title: Text(dialogHeaderTxt, style: themeData.textTheme.headline5,),
+            title: Text(dialogHeaderTxt, style: themeData.textTheme.labelMedium,),
             content: FormBuilder(
               key: dialogFormKey,
               child: SingleChildScrollView(
@@ -220,6 +222,7 @@ class _PatientScreenState extends State<PatientScreen> {
                         valName2: fieldName2,
                         valName3: fieldName3,
                         errorMsg: errorMsg,
+                        isEmail: isEmail
                     );
                     // Navigator.of(context).pop();
                   }
@@ -329,7 +332,7 @@ class _PatientScreenState extends State<PatientScreen> {
   // }
 
   void validateForm(GlobalKey<FormBuilderState> key,  BuildContext context, {required String valName1,
-    required String valName2, required String valName3, required String errorMsg}){
+    required String valName2, required String valName3, required String errorMsg, required bool isEmail}){
     if (key.currentState!.saveAndValidate()){
       print(key.currentState!.value);
       String? txtField1 = key.currentState!.fields[valName1]!.value;
@@ -339,7 +342,13 @@ class _PatientScreenState extends State<PatientScreen> {
       if(txtField2 == txtField3){
         //TODO This is the echoed data
         print("TxtField1: $txtField1, \nTxtField2: $txtField2, \nTxtField3: $txtField3");
-        Navigator.of(context).pop();
+        if(isEmail){
+          //TODO Enter the email update function here
+          Navigator.of(context).pop();
+        }else{
+          //TODO Enter the password update function here
+          Navigator.of(context).pop();
+        }
       }else{
         simpleAlertDialog(context, msg: errorMsg);
       }

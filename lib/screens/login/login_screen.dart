@@ -218,7 +218,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Text(
           'LOGIN',
           style: TextStyle(
-            color: Color(0xFF527DAA),
+            color: appItemColorBlue,
+            // color: Color(0xFF527DAA),
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -269,7 +270,8 @@ class _LoginScreenState extends State<LoginScreen> {
           onTap: () => FocusScope.of(context).unfocus(),
           child: Stack(fit: StackFit.expand,
             children: <Widget>[
-              new Background("assets/images/girl.jpg"),
+              new Background("assets/images/back-img.jpg"),
+              // new Background("assets/images/girl.jpg"),
               Container(
                 child: StoreConnector<AppState, LoginPodo>(
                   converter: (store) => store.state.loginPodo,
@@ -288,11 +290,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
+                            'Health enSuite',
+                            style: TextStyle(
+                              color: appItemColorBlue,
+                              fontFamily: 'Montserrat',
+                              fontSize: 40.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 30.0),
+                          Text(
                             'Patient Sign In',
                             style: TextStyle(
                               color: Colors.white,
                               fontFamily: 'Montserrat',
-                              fontSize: 30.0,
+                              fontSize: 25.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

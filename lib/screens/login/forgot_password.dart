@@ -99,7 +99,8 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Text(
           'SUBMIT',
           style: TextStyle(
-            color: Color(0xFF527DAA),
+            color: appItemColorBlue,
+            // color: Color(0xFF527DAA),
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
