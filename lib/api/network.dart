@@ -67,8 +67,7 @@ class ApiAccess {
         Localstorage().saveBoolean(
             key_Level_Six, status.readInterventionGrouplevelsixArticle!);
       }
-      PatientProfilePodo profile = await getPatientProfile(loginPodo.token) ??
-          PatientProfilePodo();
+      PatientProfilePodo profile = await getPatientProfile(loginPodo.token);
       if (profile.firstName != null) {
         uploadDeviceIdentifier(token);
 

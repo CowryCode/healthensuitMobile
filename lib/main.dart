@@ -115,7 +115,7 @@ class MyAppHomeScreen extends StatelessWidget {
     double screenWidth = window.physicalSize.width;
 
     Future<PatientProfilePodo>? patientprofile =  ApiAccess().getPatientProfile(null);
-      patientprofile!.then((value) => {
+      patientprofile.then((value) => {
       if (value != null && value.firstName != null) {
           StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
       Navigator.push(context, new MaterialPageRoute(

@@ -348,8 +348,8 @@ class Graph extends StatelessWidget {
     return List.generate(
       data.length,
           (index) => _MyData(
-        date: dateFormat.parse(data[index].date!),
-        value: data[index].value!,
+        date: dateFormat.parse(data[index].date),
+        value: data[index].value,
       ),
     );
   }

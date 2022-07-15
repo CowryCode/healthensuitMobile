@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:intl/intl.dart';
 import 'package:healthensuite/utilities/constants.dart';
 
 class TaskCard extends StatefulWidget {
-  List<dynamic>? data;
+ // List<dynamic>? data;
+  List<SleepDiariesPODO>? data;
   int? cardIndex;
   bool? isCompleted = false;
   String? taskName = "Task Unavailable";
@@ -35,23 +37,24 @@ class _TaskCardState extends State<TaskCard> {
     super.initState();
   }
 
- setCardDetails(List<dynamic> data, int cardIndex){
+ //setCardDetails(List<dynamic> data, int cardIndex){
+ setCardDetails(List<SleepDiariesPODO> data, int cardIndex){
    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-
-    sleepID = data[cardIndex]['id'];
-    bedTime = data[cardIndex]['bedTime'];
+    // sleepID = data[cardIndex]['id'];
+    // bedTime = data[cardIndex]['bedTime'];
+   sleepID = data.elementAt(cardIndex).id;
+   bedTime = data.elementAt(cardIndex).bedTime;
     stripColor = COLOR_PENDING;
     if(bedTime != null){
       stripColor = COLOR_DONE;
       isChecked = true;
     }
-    String theDate = data[cardIndex]['date_Created'];
-    createdDate = theDate.split('T').first;
-    print("This is the created date: $createdDate");
-    cardTitle = "Sleep Diary For: $createdDate";
-    theDate = dateFormat.parse(createdDate!).add(Duration(days:1)).toString();
-    dueDate = "Due on: ${theDate.split(' ').first}";
-    print("This is the due date: $dueDate");
+   String? theDate = data.elementAt(cardIndex).dateCreated;
+   createdDate = theDate!.split('T').first;
+   cardTitle = "Sleep Diary For: $createdDate";
+   theDate = dateFormat.parse(createdDate!).add(Duration(days:1)).toString();
+   dueDate = "Due on: ${theDate.split(' ').first}";
+   print("This is the due date: $dueDate");
  }
 
  setBasicCardDetails(){
