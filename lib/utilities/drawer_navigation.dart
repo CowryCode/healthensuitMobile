@@ -17,6 +17,7 @@ import 'package:healthensuite/screens/psychoEdu/psychoeducation.dart';
 import 'package:healthensuite/screens/sleepClock/sleep_clock.dart';
 import 'package:healthensuite/screens/sleepReport/sleep_report.dart';
 import 'package:healthensuite/screens/login/login_screen.dart';
+import 'package:healthensuite/screens/pendingTasks/my_tasks.dart';
 import 'package:redux/redux.dart';
 
 int? indexClicked = 0;
@@ -139,16 +140,20 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         }
                       }())
                   ),
-
                   MenuItem(
                       index: 6,
-                    //  onClicked: () => selectedItem(context, 6,futureProfile)
+                      //  onClicked: () => selectedItem(context, 6,futureProfile)
                       onClicked: () => selectedItem(context, 6,)
                   ),
                   MenuItem(
                       index: 7,
-                     // onClicked: () => selectedItem(context, 7,futureProfile)
+                    //  onClicked: () => selectedItem(context, 6,futureProfile)
                       onClicked: () => selectedItem(context, 7,)
+                  ),
+                  MenuItem(
+                      index: 8,
+                     // onClicked: () => selectedItem(context, 7,futureProfile)
+                      onClicked: () => selectedItem(context, 8,)
                   ),
                   SizedBox(height: 10.0,),
                   Divider(
@@ -281,11 +286,18 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       case 6:
         Navigator.of(context).push(MaterialPageRoute(
        //   builder: (context) => MyFeedback(patientProfile: widget.patientprofile,),
-          builder: (context) => MyFeedback(),
+          builder: (context) => MyTasks(),
         ));
         break;
 
       case 7:
+        Navigator.of(context).push(MaterialPageRoute(
+          //   builder: (context) => MyFeedback(patientProfile: widget.patientprofile,),
+          builder: (context) => MyFeedback(),
+        ));
+        break;
+
+      case 8:
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => VoluntaryWithdrawal(),
         ));

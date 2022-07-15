@@ -73,7 +73,8 @@ class _Psycho4 extends State<Psycho4> {
                      ),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet12"]!),
                      bodyTextWidget(themeData, text: LEVEL1_DATA["bullet13"]!),
-                     bodyTextWidget(themeData, text: LEVEL1_DATA["bullet14"]!),
+                     SizedBox(height: pad,),
+                     sectionTitleWidget(themeData, text: LEVEL1_DATA["bullet14"]!, textStyle: themeData.textTheme.headline6),
                      SizedBox(height: pad,),
                      sectionTitleWidget(themeData, text: LEVEL1_DATA["subHead3"]!, textStyle: themeData.textTheme.headline5),
                       RadioGroup(),
@@ -105,12 +106,7 @@ class _Psycho4 extends State<Psycho4> {
                 Navigator.of(context).pop();
               }),
               navIconButton(context, buttonText: "Submit", buttonActon: (){
-                submitAlertDialog(
-                    context: context,
-                    title: "",
-                    message: "Congratulations! You have finished the psychoeducation!",
-                    psychEdu: psychEdu,
-                );
+                validateFieldInputs(context, psychEdu);
 
                 // PsychoeducationDTO completedPsychoeducationObject = getSelectedValue(psychEdu);
                 // ApiAccess().submitPsychoEducation(psychoeducationDTO: completedPsychoeducationObject);
@@ -158,7 +154,7 @@ class _Psycho4 extends State<Psycho4> {
               ),
               Padding(
                 padding: Psycho4.sidePad,
-                child: Text('Intro. to Health enSuite Insomnia',
+                child: Text('Psychoeducation',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
               ),
@@ -234,6 +230,44 @@ class _Psycho4 extends State<Psycho4> {
         });
   }
 
+  void validateFieldInputs(BuildContext context, PsychoeducationDTO psychEdu,){
+    int? num = _RadioGroupState.defaultIndex;
+    if(num == -1){
+      print("Radiobutton is not selected");
+      createAlertDialog(context, head: "Attention", body: "Please select at least one of the radio buttons to proceed.");
+    }else{
+      print("Radiobutton is selected");
+      submitAlertDialog(
+        context: context,
+        title: "",
+        message: "Congratulations! You have finished the psychoeducation!",
+        psychEdu: psychEdu,
+      );
+    }
+  }
+
+  createAlertDialog(BuildContext context, {String? head, String? body}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(head!, style: themeData.textTheme.headline5,),
+            content: Text(body!,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        });
+  }
+
 }
 
 
@@ -245,7 +279,7 @@ class RadioGroup extends StatefulWidget {
 
 class _RadioGroupState extends State<RadioGroup> {
   String? defaultChoice = "";
-    int? defaultIndex = -1;
+   static int? defaultIndex = -1;
 
     List<MyChoice> choices = [
       MyChoice(index: 0, choice: "I feel confident I will be able to stick to this plan.", choiceValue: ""),
@@ -275,19 +309,19 @@ class _RadioGroupState extends State<RadioGroup> {
                          // widget.patientChoice = 5;
                           RadioGroup().patientChoice = 5;
                           patientChoice = 5;
-                          createAlertDialog(context, head: "Great!", body: "You can track your progress in the Medication Log.");
+                          // createAlertDialog(context, head: "Great!", body: "You can track your progress in the Medication Log.");
                         }
                         else if(value == 1){
                          // widget.patientChoice = 6;
                           RadioGroup().patientChoice = 6;
                           patientChoice = 6;
-                          createAlertDialog(context, head: "Change can be difficult!", body: "This app provides tools that should help make it easier for you. If you need to modify the plan please consult your health care provider.");
+                          // createAlertDialog(context, head: "Change can be difficult!", body: "This app provides tools that should help make it easier for you. If you need to modify the plan please consult your health care provider.");
                         }
                         else if(value == 2){
                         //  widget.patientChoice = 7;
                           RadioGroup().patientChoice = 7;
                           patientChoice = 7;
-                          createAlertDialog(context, head: "Attention!", body: "Use the medications tab on the dashboard to view your tapering schedule.");
+                          // createAlertDialog(context, head: "Attention!", body: "Use the medications tab on the dashboard to view your tapering schedule.");
                         }
                         print('You clicked me: $value');         
                     });

@@ -221,7 +221,16 @@ const HOME_DATA  =
     "bullet132": "There can be setbacks as you work towards the goal of sleeping drug-free. Talk with your health care provider about your plan for reducing your use of sleeping pills and discuss any modifications as needed. It is better to modify your plan rather than abandoning it altogether. You might need to adjust the plan because of withdrawal symptoms or events in your life like an especially stressful period at work.",
     "bullet133": "Over the last few weeks you have learned a lot of new strategies to manage your sleep. You can continue to use any of the tools within the Health enSuite app to help support your improved sleep habits.",
     "bullet134": "Over the next few weeks you will learn strategies to help resolve this problem.",
-    "bullet135": "",
+    "subHead20": "",
+    "bullet135": "Try to limit the amount of time you lie awake in bed.",
+    "bullet136": "Only use your bedroom for sleep and sex.",
+    "bullet137": "Don’t try going to sleep until you feel sleepy.",
+    "bullet138": "If you have been awake in bed for 20-30 minutes, get up and do something else. Go to bed again when you start to feel sleepy.",
+    "bullet139": "Try to limit how much alcohol, nicotine, or caffeine you consume. These substances can make it more difficult to sleep well.",
+    "bullet140": "Make your bedroom a comfortable place to sleep. It should not be too hot or too cold. Keep it dark and quiet when try to sleep. Try removing distractions like your phone, computer, or TV.",
+    "bullet141": "Try taking some time to relax before bed. Taking a warm bath, practicing deep breathing, doing yoga or light stretching are all great ways to relax.",
+    "bullet142": "",
+    "bullet143": "",
   };
 
   var hours = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18'];

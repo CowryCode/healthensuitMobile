@@ -45,7 +45,7 @@ class _MyFeedbackState extends State<MyFeedback> {
     double pad = 18;
 
     return Scaffold(
-      drawer: NavigationDrawerWidget(indexNum: 6,),
+      drawer: NavigationDrawerWidget(indexNum: 7,),
       appBar: AppBar(
         title: Text(MyFeedback.title),
         centerTitle: true,

@@ -116,7 +116,7 @@ class _Psycho2 extends State<Psycho2> {
               ),
               Padding(
                 padding: Psycho2.sidePad,
-                child: Text('Intro. to Health enSuite Insomnia',
+                child: Text('Psychoeducation',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
               ),
