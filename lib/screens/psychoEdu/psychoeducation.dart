@@ -29,6 +29,8 @@ class PsychoEducation extends StatefulWidget {
 }
 
 class _PsychoEducationState extends State<PsychoEducation> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
   @override
   void initState() {
     super.initState();
@@ -72,7 +74,6 @@ class _PsychoEducationState extends State<PsychoEducation> {
   //   Future<PatientProfilePodo>? profile = widget.patientProfile;
      final Size size = MediaQuery.of(context).size;
     final ThemeData themeData = Theme.of(context);
-    final _formKey = GlobalKey<FormBuilderState>();
     double pad = 18;
 
     return Scaffold(
@@ -139,7 +140,7 @@ class _PsychoEducationState extends State<PsychoEducation> {
               ),
               Padding(
                 padding: PsychoEducation.sidePad,
-                child: Text('Intro. to Health enSuite Insomnia',
+                child: Text('Psychoeducation',
                 textAlign: TextAlign.right,
                 style: themeData.textTheme.bodyText2,),
               ),
@@ -191,13 +192,7 @@ class _PsychoEducationState extends State<PsychoEducation> {
               }),
 
               navIconButton(context, buttonText: "Next", buttonActon: (){
-                PsychoeducationDTO psyEdu = getSelectedValue(key, widget.updatedPED!);
-                // Intervention Levels ends in 6, we used 7 to represent PsychoEducation
-                 ApiAccess().submitPsychoEducation(psychoeducationDTO: psyEdu);
-
-                Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => Psycho2(psyEdu,))
-                    );
+                  validateFieldInputs(context, key);
                 }
               ),
             ],
@@ -206,6 +201,49 @@ class _PsychoEducationState extends State<PsychoEducation> {
         elevation: 100,
       ),
     );
+  }
+
+  void validateFieldInputs(BuildContext context, GlobalKey<FormBuilderState> key,){
+    _formKey.currentState!.save();
+    if(_formKey.currentState!.validate()){
+      List<String>? theValue = _formKey.currentState!.fields["situationList"]!.value;
+      //print("Checkbox value: $theValue");
+      if(theValue == null || theValue.isEmpty){
+        print("Checkbox is null");
+        createAlertDialog(context, head: "Attention", body: "Please select at least one of the checkboxes to proceed.");
+      }else{
+        print("Checkbox is checked: $theValue");
+        PsychoeducationDTO psyEdu = getSelectedValue(key, widget.updatedPED!);
+        // Intervention Levels ends in 6, we used 7 to represent PsychoEducation
+        ApiAccess().submitPsychoEducation(psychoeducationDTO: psyEdu);
+
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Psycho2(psyEdu,))
+        );
+      }
+    }
+  }
+
+  createAlertDialog(BuildContext context, {String? head, String? body}){
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text(head!, style: themeData.textTheme.headline5,),
+            content: Text(body!,
+              style: themeData.textTheme.bodyText2,),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        });
   }
 
   PsychoeducationDTO getSelectedValue(GlobalKey<FormBuilderState> key, PsychoeducationDTO psychoeducationDTO){
