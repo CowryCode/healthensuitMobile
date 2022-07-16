@@ -104,8 +104,30 @@ class _PatientScreenState extends State<PatientScreen> {
 
                   SizedBox(height: 30.0),
                  // RowItem(rowIcon: Icons.phone_android, rowText: "902-111-3333",),
-                  RowItem(rowIcon: Icons.phone_android, rowText: "${patientprofile.phoneNumber}",),
-
+                 //  RowItem(rowIcon: Icons.phone_android, rowText: "${patientprofile.phoneNumber}",),
+                  RowItemEdit(rowIcon: Icons.phone_android, rowText: "${patientprofile.phoneNumber}", buttonIcon: Icons.edit,
+                    buttonEvent: (){
+                      createAlertDialog(context, sidePad,
+                        dialogFormKey: _emailFormKey,
+                        question1: "Current Phone Number",
+                        fieldName1: "curPh",
+                        question2: "New Phone Number",
+                        fieldName2: "newPh",
+                        question3: "Re-enter New Phone Number",
+                        fieldName3: "reNewPh",
+                        initVal: patientprofile.phoneNumber.toString(),
+                        isObscure: false,
+                        validatorTxt: "CheckPhone",
+                        textInputType: TextInputType.phone,
+                        otherInitVal: "",
+                        dialogHeaderTxt: "Update Phone Number",
+                        isEmail: false,
+                        boolIsPhone: true,
+                        enableFirstField: false,
+                        errorMsg: "New Phone Number does not match. Please re-type it and try again.",
+                      );
+                    },
+                  ),
 
                   SizedBox(height: 20.0),
                 //  RowItemEdit(rowIcon: Icons.email, rowText: widget.email, buttonIcon: Icons.edit, buttonEvent: (){},),
@@ -126,6 +148,8 @@ class _PatientScreenState extends State<PatientScreen> {
                         otherInitVal: "",
                         dialogHeaderTxt: "Update Email",
                         isEmail: true,
+                        boolIsPhone: false,
+                        enableFirstField: false,
                         errorMsg: "New Email does not match. Please re-type it and try again.",
                       );
                     },
@@ -151,6 +175,8 @@ class _PatientScreenState extends State<PatientScreen> {
                         otherInitVal: "",
                         dialogHeaderTxt: "Update Password",
                         isEmail: false,
+                        boolIsPhone: false,
+                        enableFirstField: true,
                         errorMsg: "New Password does not match. Please re-type it and try again.",
                       );
                     },
@@ -175,8 +201,13 @@ class _PatientScreenState extends State<PatientScreen> {
         required String initVal, required String validatorTxt,
         required TextInputType textInputType, required String otherInitVal,
         required String dialogHeaderTxt, required String errorMsg,
-        required bool isObscure, required bool isEmail}){
+        required bool isObscure, required bool isEmail,
+        required boolIsPhone, required bool enableFirstField}){
     final ThemeData themeData = Theme.of(context);
+    bool fieldIsEnabled = false;
+    if(enableFirstField){
+      fieldIsEnabled = true;
+    }
     double pad = 28;
     return showDialog(
         context: context,
@@ -194,15 +225,15 @@ class _PatientScreenState extends State<PatientScreen> {
                   children: [
                     textInput(sidePad, themeData, question: question1, fieldName: fieldName1,
                         initVal: initVal, validatorTxt: validatorTxt, textInputType: textInputType,
-                        isObscure: isObscure),
+                        isObscure: isObscure, enableField: fieldIsEnabled),
                     SizedBox(height: pad,),
                     textInput(sidePad, themeData, question: question2, fieldName: fieldName2,
                         initVal: otherInitVal, validatorTxt: validatorTxt, textInputType: textInputType,
-                        isObscure: isObscure),
+                        isObscure: isObscure, enableField: true),
                     SizedBox(height: pad,),
                     textInput(sidePad, themeData, question: question3, fieldName: fieldName3,
                         initVal: otherInitVal, validatorTxt: validatorTxt, textInputType: textInputType,
-                        isObscure: isObscure),
+                        isObscure: isObscure, enableField: true),
                   ],
                 ),
               ),
@@ -222,7 +253,8 @@ class _PatientScreenState extends State<PatientScreen> {
                         valName2: fieldName2,
                         valName3: fieldName3,
                         errorMsg: errorMsg,
-                        isEmail: isEmail
+                        isEmail: isEmail,
+                        boolIsPhone: boolIsPhone
                     );
                     // Navigator.of(context).pop();
                   }
@@ -235,7 +267,8 @@ class _PatientScreenState extends State<PatientScreen> {
   Padding textInput(EdgeInsets sidePad, ThemeData themeData,
       {required String question, required String fieldName,
       required String initVal, required String validatorTxt,
-      required TextInputType textInputType, required bool isObscure}) {
+      required TextInputType textInputType, required bool isObscure,
+      required bool enableField}) {
     bool isEmail(String input) => EmailValidator.validate(input);
     return Padding(
       padding: sidePad,
@@ -246,6 +279,7 @@ class _PatientScreenState extends State<PatientScreen> {
             style: themeData.textTheme.headline5,),
           FormBuilderTextField(
             name: fieldName,
+            enabled: enableField,
             style: themeData.textTheme.bodyText1,
             keyboardType: textInputType,
             initialValue: initVal,
@@ -331,8 +365,9 @@ class _PatientScreenState extends State<PatientScreen> {
   //   );
   // }
 
-  void validateForm(GlobalKey<FormBuilderState> key,  BuildContext context, {required String valName1,
-    required String valName2, required String valName3, required String errorMsg, required bool isEmail}){
+  void validateForm(GlobalKey<FormBuilderState> key,  BuildContext context,
+      {required String valName1, required String valName2, required String valName3,
+        required String errorMsg, required bool isEmail, required bool boolIsPhone}){
     if (key.currentState!.saveAndValidate()){
       print(key.currentState!.value);
       String? txtField1 = key.currentState!.fields[valName1]!.value;
@@ -345,8 +380,13 @@ class _PatientScreenState extends State<PatientScreen> {
         if(isEmail){
           //TODO Enter the email update function here
           Navigator.of(context).pop();
-        }else{
+        }else if(boolIsPhone){
+          //TODO Enter the phone number update function here
+          Navigator.of(context).pop();
+        }
+        else{
           //TODO Enter the password update function here
+
           Navigator.of(context).pop();
         }
       }else{
@@ -389,5 +429,22 @@ class _PatientScreenState extends State<PatientScreen> {
         });
   }
 
+  //  buildErrorSnackbar(BuildContext context, {required String? message, required Function? performAction()}) {
+  //   ScaffoldMessenger.of(context)
+  //       .showSnackBar(
+  //     SnackBar(
+  //       content: Text("$message"),
+  //       duration: Duration(days: 1),
+  //       backgroundColor: appItemColorBlue,
+  //       action: SnackBarAction(
+  //         textColor: appItemColorWhite,
+  //         label: "Dismiss",
+  //         onPressed: (){
+  //           ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
 
 }

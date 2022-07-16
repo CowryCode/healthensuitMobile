@@ -345,6 +345,12 @@ class Graph extends StatelessWidget {
   List<_MyData> _generateNumberData(List<DateValueObject> data) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
 
+    data.sort((a,b) {
+      var adate = a.date;
+      var bdate = b.date;
+      return adate!.compareTo(bdate!);
+    });
+
     return List.generate(
       data.length,
           (index) => _MyData(
@@ -357,6 +363,12 @@ class Graph extends StatelessWidget {
 List<_MyTimeData> _generateTimeData(List<AllbedTime> data) {
   DateFormat dateFormat = DateFormat("yyyy-MM-dd");
   DateFormat timeFormat = DateFormat("yyyy-MM-dd hh:mm:ss");
+
+  data.sort((a,b) {
+    var adate = a.date;
+    var bdate = b.date;
+    return adate!.compareTo(bdate!);
+  });
 
   return List.generate(
     data.length,
