@@ -753,19 +753,24 @@ class _SleepDiaryState extends State<SleepDiary> {
         tryTosleepTime = dateFormat.format(DateTime.parse(tryTosleepTime));
       }
       String? durationBeforesleepoffHOUR;
-      dynamic? durationBeforesleepoffHOURField =  key.currentState!.fields["hrs1"];
+      dynamic? durationBeforesleepoffHOURField =  key.currentState!.fields["hrs1"]!.value;
       if(durationBeforesleepoffHOURField != null){
       //  String durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
         durationBeforesleepoffHOUR = key.currentState!.fields["hrs1"]!.value.toString();
+      }else{
+        durationBeforesleepoffHOUR = "0";
       }
       String? durationBeforesleepoffMINUTES;
-      dynamic? durationBeforesleepoffMINUTESField = key.currentState!.fields["mns1"];
+      dynamic? durationBeforesleepoffMINUTESField = key.currentState!.fields["mns1"]!.value;
       if(durationBeforesleepoffMINUTESField != null){
          durationBeforesleepoffMINUTES = key.currentState!.fields["mns1"]!.value.toString();
+      }else{
+        durationBeforesleepoffMINUTES = "0";
       }
       //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
       // double durationB4sleep = double.parse(
       //     durationBeforesleepoffHOUR + "." + durationBeforesleepoffMINUTES);
+      print("Show the value here: $durationBeforesleepoffHOUR and the minute: $durationBeforesleepoffMINUTES");
       double durationB4sleep = convertHoursandMinutesToMinutes(hours: durationBeforesleepoffHOUR, mins: durationBeforesleepoffMINUTES );
       int? wakeUptimeCount;
       dynamic? wakeUptimeCountField = key.currentState!.fields["wakeTimes"];
@@ -775,16 +780,21 @@ class _SleepDiaryState extends State<SleepDiary> {
       }
 
       String? totalWakeUpdurationHOUR;
-      dynamic? totalWakeUpdurationHOURField = key.currentState!.fields["hrs2"];
+      dynamic? totalWakeUpdurationHOURField = key.currentState!.fields["hrs2"]!.value;
       if(totalWakeUpdurationHOURField != null){
       //  String totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
         totalWakeUpdurationHOUR = key.currentState!.fields["hrs2"]!.value.toString();
+      }else{
+        totalWakeUpdurationHOUR = "0";
       }
+
       String? totalWakeUpdurationMINUTE;
-      dynamic? totalWakeUpdurationMINUTEField = key.currentState!.fields["mns2"];
+      dynamic? totalWakeUpdurationMINUTEField = key.currentState!.fields["mns2"]!.value;
       if(totalWakeUpdurationMINUTEField != null){
        // String totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
         totalWakeUpdurationMINUTE = key.currentState!.fields["mns2"]!.value.toString();
+      }else{
+        totalWakeUpdurationMINUTE = "0";
       }
       //TODO: CONVERTED EVERYTHING TO MINUTE, KINDLY CONFIRM WITH WEB
       // double awakeningDurations = double.parse(
@@ -869,10 +879,12 @@ class _SleepDiaryState extends State<SleepDiary> {
         newMedamount3 = key.currentState!.fields["amTaken3"]!.value;
       }
       String? otherThings;
-      dynamic? otherThingsField = key.currentState!.fields["otherNote"];
+      dynamic? otherThingsField = key.currentState!.fields["otherNote"]!.value;
       if(otherThingsField != null){
        // String? otherThings = key.currentState!.fields["otherNote"]!.value;
         otherThings = key.currentState!.fields["otherNote"]!.value;
+      }else{
+        otherThings = "";
       }
       bool sleepTimeIsOkay = compareTimeSelected(firstTime: bedTime, secondTime: tryTosleepTime);
       bool sleepAndAwakeTimeIsOkay = compareTimeSelected(firstTime: tryTosleepTime, secondTime: finalWakeupTime);
