@@ -123,6 +123,7 @@ class _SleepReportState extends State<SleepReport> {
           ),
           sleepReportDataTable(themeData, sleepReport),
           SizedBox(height: pad,),
+          //TODO Please can you sort each object by date before passing them?
           Graph(allBedTimeObject: sleepReport.allbedTime,
               allAwakeningsObject: sleepReport.allAwakenings,
               allTimeInBedObject: sleepReport.allTimeinBed,
@@ -137,7 +138,8 @@ class _SleepReportState extends State<SleepReport> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
+              //TODO I commented out the Extract Report button
+              // IconUserButton(buttonText: "Extract Report", buttonEvent: () {}, buttonIcon: Icons.print,),
               IconUserButton(buttonText: "Share Report", buttonEvent: () {
                 shareSleepReport(sleepReportDTO: sleepReport);
               }, buttonIcon: Icons.share)
