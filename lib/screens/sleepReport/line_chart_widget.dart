@@ -318,30 +318,7 @@ class Graph extends StatelessWidget {
   }
 
 
-  // List<_MyTimeData> _generateTimeData(List<dynamic> data) {
-  //   DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-  //   DateFormat timeFormat = DateFormat("yyyy-MM-dd hh:mm:ss");
-  //
-  //   return List.generate(
-  //     data.length,
-  //         (index) => _MyTimeData(
-  //       date: dateFormat.parse(data[index]['date']),
-  //       value: timeFormat.parse("0001-01-01 "+data[index]['value']).microsecondsSinceEpoch,
-  //     ),
-  //   );
-  // }
 
-  // List<_MyData> _generateNumberData(List<dynamic> data) {
-  //   DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-  //
-  //   return List.generate(
-  //     data.length,
-  //         (index) => _MyData(
-  //       date: dateFormat.parse(data[index]['date']),
-  //       value: data[index]['value'],
-  //     ),
-  //   );
-  // }
   List<_MyData> _generateNumberData(List<DateValueObject> data) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
 
@@ -367,53 +344,9 @@ List<_MyTimeData> _generateTimeData(List<AllbedTime> data) {
   );
 }
 
-
-  // @override
-  // _Graph createState() => _Graph();
 }
 
 
-//TODO I will remove code below during refactoring
-
-
-// List<dynamic> allAwakenings = [
-//   {
-//     "date": "2022-04-25",
-//     "value": 14.0
-//   },
-//   {
-//     "date": "2022-04-30",
-//     "value": 12.0
-//   },
-//   {
-//     "date": "2022-05-30",
-//     "value": 11.0
-//   },
-//   {
-//     "date": "2022-05-31",
-//     "value": 10.0
-//   },
-// ];
-//
-//
-// List<dynamic> allBedTime = [
-//   {
-//     "date": "2022-04-25",
-//     "value": "21:00:00"
-//   },
-//   {
-//     "date": "2022-04-30",
-//     "value": "21:00:00"
-//   },
-//   {
-//     "date": "2022-05-30",
-//     "value": "20:12:00"
-//   },
-//   {
-//     "date": "2022-05-31",
-//     "value": "20:15:00"
-//   },
-// ];
 
 // class _Graph extends State<Graph> {
 //   late List<_MyData> _awakeningsData;

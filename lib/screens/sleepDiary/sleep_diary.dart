@@ -818,8 +818,6 @@ class _SleepDiaryState extends State<SleepDiary> {
        // String? slpQuality = key.currentState!.fields["spQuality"]!.value;
         slpQuality = key.currentState!.fields["spQuality"]!.value;
       }
-      //TODO: DRUG AMOUNT WAS NOT CAPTURED IN THE FILING
-      //TODO: TEST WITH PATIENTS THAT HAVE DRUG THEY ARE TAKING
       String? drugAmount1;
       dynamic? drugAmount1Field = key.currentState!.fields["drNum1"];
       if(drugAmount1Field != null){

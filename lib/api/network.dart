@@ -171,6 +171,51 @@ class ApiAccess {
     }
   }
 
+  Future<bool> changeEmail({String? newEmail}) async {
+    String token = await Localstorage().getString(key_login_token)??"";
+    final response = await http.post(
+      Uri.parse(UpdateEmail_URL),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(
+          <String, String?>{"code": newEmail}),
+    );
+
+    if (response.statusCode == 200) {
+      print("Password changed successfully :  ${jsonDecode(response.body)}");
+      // String token = jsonDecode(response.body);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> changePhoneNumber({String? newPhoneNumber}) async {
+    String token = await Localstorage().getString(key_login_token)??"";
+    final response = await http.post(
+      Uri.parse(UpdatePhonenumber_URL),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(
+          <String, String?>{"code": newPhoneNumber}),
+    );
+
+    if (response.statusCode == 200) {
+      print("Password changed successfully :  ${jsonDecode(response.body)}");
+      // String token = jsonDecode(response.body);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
   Future<PatientProfilePodo>? refreshData() async {
     bool? loginStatus = await Localstorage().getBoolean(key_Login_Status);
     print('Login Status ${loginStatus}');
