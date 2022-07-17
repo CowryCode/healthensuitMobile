@@ -322,14 +322,10 @@ class _PatientScreenState extends State<PatientScreen> {
       if (txtField2 == txtField3) {
         print(
             "TxtField1: $txtField1, \nTxtField2: $txtField2, \nTxtField3: $txtField3");
-        PatientProfilePodo patientProfilePodo = StoreProvider
-            .of<AppState>(context)
-            .state
-            .patientProfilePodo;
+        PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
         if (isEmail) {
           if (txtField2 != null) {
-            Future<bool> isSuccessful = ApiAccess().changeEmail(
-                newEmail: txtField2.trim().toString());
+            Future<bool> isSuccessful = ApiAccess().changeEmail(newEmail: txtField2.trim().toString());
             await isSuccessful.then((value) =>
             {
               if(value == true){
@@ -342,8 +338,7 @@ class _PatientScreenState extends State<PatientScreen> {
               } else
                 {
                   Navigator.of(context).pop(),
-                  simpleAlertDialog(
-                      context, msg: "Email update was unsuccessful . . ."),
+                  simpleAlertDialog(context, msg: "Email update was unsuccessful . . ."),
                 }
             });
           } else {
@@ -351,7 +346,26 @@ class _PatientScreenState extends State<PatientScreen> {
           }
         } else if (boolIsPhone) {
           //TODO Enter the phone number update function here
-          Navigator.of(context).pop();
+          if (txtField2 != null) {
+            Future<bool> isSuccessful = ApiAccess().changePhoneNumber(newPhoneNumber: txtField2.trim().toString());
+            await isSuccessful.then((value) =>
+            {
+              if(value == true){
+                patientProfilePodo.updatePhoneNumber(newPhoneNumber: txtField2),
+                StoreProvider.of<AppState>(context).dispatch(
+                    UpdatePatientProfileAction(patientProfilePodo)),
+                Navigator.of(context).pop(),
+                simpleAlertDialog(
+                    context, msg: "Phone number update was successful . . ."),
+              } else
+                {
+                  Navigator.of(context).pop(),
+                  simpleAlertDialog(context, msg: "Phone number update was unsuccessful . . ."),
+                }
+            });
+          } else {
+            Navigator.of(context).pop();
+          }
         } else {
           Future<bool> isSuccessful = ApiAccess().changePasswordInAPP(
               email: patientProfilePodo.email,

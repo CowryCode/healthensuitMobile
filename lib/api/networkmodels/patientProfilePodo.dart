@@ -188,4 +188,7 @@ class PatientProfilePodo {
   void updateEmail({String? newEmail}){
     this.email = newEmail;
   }
+  void updatePhoneNumber({String? newPhoneNumber}){
+    this.phoneNumber = newPhoneNumber;
+  }
 }

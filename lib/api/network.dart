@@ -195,6 +195,32 @@ class ApiAccess {
     }
   }
 
+  Future<bool> changePhoneNumber({String? newPhoneNumber}) async {
+    print("API CALL NEW EMAIL IS ${newPhoneNumber}");
+    String token = await Localstorage().getString(key_login_token)??"";
+    final response = await http.post(
+      Uri.parse(UpdatePhoneNumber_URL),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode(
+          <String, String?>{"code": newPhoneNumber}),
+    );
+
+    if (response.statusCode == 201) {
+      print("Email changed successfully :  ${response.statusCode}");
+      // String token = jsonDecode(response.body);
+      return true;
+    } else {
+      print("Email changed Error :  ${response.statusCode}");
+      return false;
+    }
+  }
+
+
+
   Future<bool> changePasswordInAPP({String? email, String? currentPassword, String? newPassword,}) async {
     String token = await Localstorage().getString(key_login_token)??"";
     final response = await http.post(

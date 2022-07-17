@@ -3,6 +3,7 @@ final baseURL = "http://10.0.2.2:8083";
 final loginURL = "${baseURL}/insomnia/v1/authentication/login";
 final confirmUsername_URL = "${baseURL}/insomnia/v1/authentication/confirmusernamemobile";
 final UpdateEmail_URL = "${baseURL}/insomnia/v1/patient/updateemail";
+final UpdatePhoneNumber_URL = "${baseURL}/insomnia/v1/patient/updatephonenumber";
 final UpdatePassword_InAPP_URL = "${baseURL}/insomnia/v1/authentication/changepasswordinapp";
 final loginwithCode_URL = "${baseURL}/insomnia/v1/authentication/loginwithcode";
 final changepassword_URL = "${baseURL}/insomnia/v1/authentication/mobilechangepassword";
