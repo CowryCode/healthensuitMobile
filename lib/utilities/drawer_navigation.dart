@@ -341,8 +341,8 @@ createAlertDialog(BuildContext context){
                   // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
                    ApiAccess().clearLocalData();
                   Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))
-                );}
+                    context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
+                }
             ),
           ],
         );

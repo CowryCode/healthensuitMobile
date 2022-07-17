@@ -4,8 +4,11 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
+import 'package:healthensuite/api/statemanagement/actions.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
+import 'package:healthensuite/screens/login/login_screen.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'row_item.dart';
@@ -306,95 +309,86 @@ class _PatientScreenState extends State<PatientScreen> {
     );
   }
 
-  // Padding passwordTextInput(EdgeInsets sidePad, ThemeData themeData,
-  //     {required String question, required String fieldName,
-  //       required String initVal, required String validatorTxt,
-  //       required TextInputType textInputType, required bool isObscure}) {
-  //   bool isEmail(String input) => EmailValidator.validate(input);
-  //   return Padding(
-  //     padding: sidePad,
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text(question,
-  //           style: themeData.textTheme.headline5,),
-  //         FormBuilderTextField(
-  //           name: fieldName,
-  //           style: themeData.textTheme.bodyText1,
-  //           keyboardType: textInputType,
-  //           initialValue: initVal,
-  //           obscureText: isObs,
-  //           decoration: InputDecoration(
-  //             labelText: 'Password',
-  //             hintText: 'Enter your password',
-  //             // Here is key idea
-  //             suffixIcon: IconButton(
-  //               icon: Icon(
-  //                 // Based on passwordVisible state choose the icon
-  //                 isObs
-  //                     ? Icons.visibility
-  //                     : Icons.visibility_off,
-  //                 color: Theme.of(context).primaryColorDark,
-  //               ),
-  //               onPressed: () {
-  //                 // Update the state i.e. toogle the state of passwordVisible variable
-  //                 setState(() {
-  //                   isObs = !isObs;
-  //                 });
-  //               },
-  //             ),
-  //           ),
-  //           validator: (value) {
-  //             String? msg = "";
-  //             if (validatorTxt == "CheckEmail") {
-  //               if(value!.isEmpty || !isEmail(value)){
-  //                 msg = "Invalid email address";
-  //                 return msg;
-  //               }
-  //             }else{
-  //               if(value!.isEmpty || value.length < 6){
-  //                 msg = "Enter at least 6 characters";
-  //                 return msg;
-  //               }
-  //             }
-  //           },
-  //           autovalidateMode: AutovalidateMode.onUserInteraction,
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   void validateForm(GlobalKey<FormBuilderState> key,  BuildContext context,
       {required String valName1, required String valName2, required String valName3,
-        required String errorMsg, required bool isEmail, required bool boolIsPhone}){
-    if (key.currentState!.saveAndValidate()){
+        required String errorMsg, required bool isEmail, required bool boolIsPhone}) async {
+    if (key.currentState!.saveAndValidate()) {
       print(key.currentState!.value);
       String? txtField1 = key.currentState!.fields[valName1]!.value;
       String? txtField2 = key.currentState!.fields[valName2]!.value;
       String? txtField3 = key.currentState!.fields[valName3]!.value;
 
-      if(txtField2 == txtField3){
-        //TODO This is the echoed data
-        print("TxtField1: $txtField1, \nTxtField2: $txtField2, \nTxtField3: $txtField3");
-        if(isEmail){
-          //TODO Enter the email update function here
-          Navigator.of(context).pop();
-        }else if(boolIsPhone){
+      if (txtField2 == txtField3) {
+        print(
+            "TxtField1: $txtField1, \nTxtField2: $txtField2, \nTxtField3: $txtField3");
+        PatientProfilePodo patientProfilePodo = StoreProvider.of<AppState>(context).state.patientProfilePodo;
+        if (isEmail) {
+          if (txtField2 != null) {
+            Future<bool> isSuccessful = ApiAccess().changeEmail(newEmail: txtField2.trim().toString());
+            await isSuccessful.then((value) =>
+            {
+              if(value == true){
+                patientProfilePodo.updateEmail(newEmail: txtField2),
+                StoreProvider.of<AppState>(context).dispatch(
+                    UpdatePatientProfileAction(patientProfilePodo)),
+                Navigator.of(context).pop(),
+                simpleAlertDialog(
+                    context, msg: "Email update was successful . . ."),
+              } else
+                {
+                  Navigator.of(context).pop(),
+                  simpleAlertDialog(context, msg: "Email update was unsuccessful . . ."),
+                }
+            });
+          } else {
+            Navigator.of(context).pop();
+          }
+        } else if (boolIsPhone) {
           //TODO Enter the phone number update function here
+          if (txtField2 != null) {
+            Future<bool> isSuccessful = ApiAccess().changePhoneNumber(newPhoneNumber: txtField2.trim().toString());
+            await isSuccessful.then((value) =>
+            {
+              if(value == true){
+                patientProfilePodo.updatePhoneNumber(newPhoneNumber: txtField2),
+                StoreProvider.of<AppState>(context).dispatch(
+                    UpdatePatientProfileAction(patientProfilePodo)),
+                Navigator.of(context).pop(),
+                simpleAlertDialog(
+                    context, msg: "Phone number update was successful . . ."),
+              } else
+                {
+                  Navigator.of(context).pop(),
+                  simpleAlertDialog(context, msg: "Phone number update was unsuccessful . . ."),
+                }
+            });
+          } else {
+            Navigator.of(context).pop();
+          }
+        } else {
+          Future<bool> isSuccessful = ApiAccess().changePasswordInAPP(
+              email: patientProfilePodo.email,
+              currentPassword: txtField1,
+              newPassword: txtField2);
+          await isSuccessful.then((value) =>
+          {
+            if(value == true){
+              Navigator.of(context).pop(),
+              passwordChangeAlertDialog(
+                  context, msg: "Password update was successful . . ."),
+            } else
+              {
+                Navigator.of(context).pop(),
+                passwordChangeAlertDialog(
+                    context, msg: "Password update was unsuccessful . . ."),
+              }});
           Navigator.of(context).pop();
         }
-        else{
-          //TODO Enter the password update function here
-
-          Navigator.of(context).pop();
-        }
-      }else{
-        simpleAlertDialog(context, msg: errorMsg);
+      } else {
+        simpleAlertDialog(context, msg: "All fields are not properly filled.");
+        // simpleAlertDialog(context, msg: errorMsg);
       }
-    }else{
-      simpleAlertDialog(context, msg: "All fields are not properly filled.");
-      print("All fields are not properly filled!!!");
     }
   }
 
@@ -429,6 +423,39 @@ class _PatientScreenState extends State<PatientScreen> {
         });
   }
 
+  passwordChangeAlertDialog(BuildContext context, {required String msg}) {
+    final ThemeData themeData = Theme.of(context);
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context){
+          return AlertDialog(
+            title: Text("Attention", style: themeData.textTheme.headline5,),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: ClampingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(msg,
+                    style: themeData.textTheme.bodyText1,)
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                  child: Text("OK", style: TextStyle(color: appItemColorBlue, fontWeight: FontWeight.w700),),
+                  onPressed: (){
+                    ApiAccess().clearLocalData();
+                    Navigator.of(context).pop();
+                    Navigator.push(context, new MaterialPageRoute(
+                    builder: (context) => LoginScreen(loginStatus: false,)));
+                  }
+              ),
+            ],
+          );
+        });
+  }
   //  buildErrorSnackbar(BuildContext context, {required String? message, required Function? performAction()}) {
   //   ScaffoldMessenger.of(context)
   //       .showSnackBar(
@@ -446,5 +473,4 @@ class _PatientScreenState extends State<PatientScreen> {
   //     ),
   //   );
   // }
-
 }

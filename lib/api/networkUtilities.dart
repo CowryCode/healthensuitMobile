@@ -1,9 +1,10 @@
-// final baseURL = "http://10.0.2.2:8083";
-final baseURL = "https://apiv3.healthensuite.com/"; //just updated 0001
+final baseURL = "http://10.0.2.2:8083";
+// final baseURL = "https://apiv3.healthensuite.com/"; //just updated 0001
 final loginURL = "${baseURL}/insomnia/v1/authentication/login";
 final confirmUsername_URL = "${baseURL}/insomnia/v1/authentication/confirmusernamemobile";
 final UpdateEmail_URL = "${baseURL}/insomnia/v1/patient/updateemail";
-final UpdatePhonenumber_URL = "${baseURL}/insomnia/v1/patient/updatephonenumber";
+final UpdatePhoneNumber_URL = "${baseURL}/insomnia/v1/patient/updatephonenumber";
+final UpdatePassword_InAPP_URL = "${baseURL}/insomnia/v1/authentication/changepasswordinapp";
 final loginwithCode_URL = "${baseURL}/insomnia/v1/authentication/loginwithcode";
 final changepassword_URL = "${baseURL}/insomnia/v1/authentication/mobilechangepassword";
 final patientprofile_url = "${baseURL}/insomnia/v1/patient/accessid";

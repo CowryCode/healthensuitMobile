@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:healthensuite/api/network.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/screens/home/home_screen.dart';
+import 'package:healthensuite/screens/login/login_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:healthensuite/models/icon_button.dart';
@@ -150,9 +151,11 @@ class _VoluntaryWithdrawalState extends State<VoluntaryWithdrawal> {
                 Future<bool> response = ApiAccess().voluntaryWithdrawal(withdrawalNote:txt);
                 response.then((value) => {
                   if(value){
-                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
+                    ApiAccess().clearLocalData(),
+                     Navigator.push(context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))),
                   }else{
-                    Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen()))
+                    ApiAccess().clearLocalData(),
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))),
                   }
                 });
               //  Navigator.of(context).pop();
