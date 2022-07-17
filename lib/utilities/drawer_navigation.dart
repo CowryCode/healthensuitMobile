@@ -342,7 +342,8 @@ createAlertDialog(BuildContext context){
                    ApiAccess().clearLocalData();
                   Navigator.push(
                     context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,))
-                );}
+                );
+                }
             ),
           ],
         );

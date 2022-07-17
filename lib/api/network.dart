@@ -172,6 +172,7 @@ class ApiAccess {
   }
 
   Future<bool> changeEmail({String? newEmail}) async {
+    print("API CALL NEW EMAIL IS ${newEmail}");
     String token = await Localstorage().getString(key_login_token)??"";
     final response = await http.post(
       Uri.parse(UpdateEmail_URL),
@@ -184,26 +185,31 @@ class ApiAccess {
           <String, String?>{"code": newEmail}),
     );
 
-    if (response.statusCode == 200) {
-      print("Password changed successfully :  ${jsonDecode(response.body)}");
+    if (response.statusCode == 201) {
+      print("Email changed successfully :  ${response.statusCode}");
       // String token = jsonDecode(response.body);
       return true;
     } else {
+      print("Email changed Error :  ${response.statusCode}");
       return false;
     }
   }
 
-  Future<bool> changePhoneNumber({String? newPhoneNumber}) async {
+  Future<bool> changePasswordInAPP({String? email, String? currentPassword, String? newPassword,}) async {
     String token = await Localstorage().getString(key_login_token)??"";
     final response = await http.post(
-      Uri.parse(UpdatePhonenumber_URL),
+      Uri.parse(UpdatePassword_InAPP_URL),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token'
       },
       body: jsonEncode(
-          <String, String?>{"code": newPhoneNumber}),
+          <String, String?>{
+            "code": email,
+            "code1": currentPassword,
+            "code2": newPassword
+          }),
     );
 
     if (response.statusCode == 200) {
@@ -211,6 +217,7 @@ class ApiAccess {
       // String token = jsonDecode(response.body);
       return true;
     } else {
+      print("Failed to update password :  ${response.statusCode}");
       return false;
     }
   }

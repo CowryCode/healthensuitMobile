@@ -184,4 +184,8 @@ class PatientProfilePodo {
           ? sleepDiariesPODO : sleepdiary).toList();
     }
   }
+
+  void updateEmail({String? newEmail}){
+    this.email = newEmail;
+  }
 }
