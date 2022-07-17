@@ -238,7 +238,10 @@ class _LoginScreenState extends State<LoginScreen> {
             timer.cancel();
             if (timer.tick == 1) {
               timer.cancel();
-              showAlertDialog(context, "Login failed kindly check your login credentials and try again", "Failed Login");
+              showAlertDialog(
+                  context,
+                  "Login failed kindly check your login credentials and try again. "
+                      "If you have withdrawn from this program at any point, kindly contact the research team ", "Failed Login");
             }
             {
               timer.cancel();
