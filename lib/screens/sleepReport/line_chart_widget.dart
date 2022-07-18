@@ -81,7 +81,7 @@ class Graph extends StatelessWidget {
             // Center(child: Text("Total Sleep Time (TST)", style: themeData.textTheme.headline4,),),
             Text("Total Sleep Time (TST):", style: themeData.textTheme.headline4,),
             SizedBox(height: smallPad,),
-            Expanded(child: _graph(themeData, _sleepHoursData, allAwakeningsObject),),
+            Expanded(child: _graph(themeData, _sleepHoursData, allSleepHoursObject),),
 
           ],
 
@@ -325,7 +325,7 @@ class Graph extends StatelessWidget {
     data.sort((a,b) {
       var adate = a.date;
       var bdate = b.date;
-      return adate!.compareTo(bdate!);
+      return adate.compareTo(bdate);
     });
 
     return List.generate(
