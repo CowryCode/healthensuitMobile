@@ -72,6 +72,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
   Material drawerContent(PatientProfilePodo patientprofile){
      bool enableSleepClock = patientprofile.statusEntity!.enableSleepclock()?? false;
+     bool randomized = patientprofile.statusEntity!.baselineAssessmenPassed ?? false;
    //  int groupID = patientprofile.groupID ?? 2;
     return Material(
       color:  appBackgroundColor,
@@ -119,7 +120,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   ),
                   Center(
                       child: ((){
-                        if(patientprofile.groupID == 0){
+                        if(patientprofile.groupID == 0 && randomized == true ){
                           return  MenuItem(
                               index: 4,
                              // onClicked: () => selectedItem(context, 4,futureProfile));
@@ -132,7 +133,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   Center(
                     //TODO Confirm that the user is randomized
                       child: ((){
-                        if(patientprofile.groupID == 1){
+                        if(patientprofile.groupID == 1 && randomized == true){
                           return   MenuItem(
                               index: 5,
                              // onClicked: () => selectedItem(context, 5,futureProfile));

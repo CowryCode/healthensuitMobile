@@ -6,6 +6,7 @@ import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/networkmodels/sleepDiaryPODO.dart';
 import 'package:healthensuite/api/networkmodels/statusEntityPODO.dart';
 import 'package:healthensuite/api/statemanagement/app_state.dart';
+import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:healthensuite/screens/pendingTasks/task_card.dart';
@@ -51,7 +52,8 @@ class _MyTasksScreenState extends State<MyTasks> {
           child:  Container(
             width: size.width,
             height: size.height * 2,
-            child: Column(
+            child: profile.statusEntity!.baselineAssessmenPassed! == true && profile.sleepDiaries != null ?
+            Column(
               children: [
                 SizedBox(height: pad,),
                 // SizedBox(
@@ -62,25 +64,6 @@ class _MyTasksScreenState extends State<MyTasks> {
                   height: 220,
                   child: getSleepDiariesCards(sleepdiaries: profile.sleepDiaries),
                 ),
-                // Visibility(
-                //   child: SizedBox( //
-                //     height: 110,
-                //     child: TaskCard(
-                //       cardIndex: 1,
-                //       isCompleted: false,
-                //       onTapCallBack: (){},
-                //     ),
-                //   ),
-                //   visible: true,
-                // ),
-                ((){
-                  print("GROUP ID IS :${profile.groupID}");
-                  print("PATIENT ID :${profile.id}");
-                  print("STAATUS ENTITY ID : ${profile.statusEntity!.id}");
-                  print("IS Baseline Completed : ${profile.statusEntity!.baselineAssessmenPassed!}");
-                  print("My Condition : ${profile.groupID == 0 && profile.statusEntity!.baselineAssessmenPassed!? true : false}");
-                  return SizedBox();
-                }()),
                 Visibility(
                   child: SizedBox( //
                     height: 110,
@@ -95,7 +78,41 @@ class _MyTasksScreenState extends State<MyTasks> {
                   visible: profile.groupID == 0 && profile.statusEntity!.baselineAssessmenPassed! == true ? true : false,
                 ),
               ],
-            ),
+            ) :  Center(child: Text("No Task Available at the moment . . ."),)
+            // child: Column(
+            //   children: [
+            //     SizedBox(height: pad,),
+            //     // SizedBox(
+            //     //   height: 220,
+            //     //   child: buildListView(),
+            //     // ),
+            //     SizedBox(
+            //       height: 220,
+            //       child: getSleepDiariesCards(sleepdiaries: profile.sleepDiaries),
+            //     ),
+            //     ((){
+            //       print("GROUP ID IS :${profile.groupID}");
+            //       print("PATIENT ID :${profile.id}");
+            //       print("STAATUS ENTITY ID : ${profile.statusEntity!.id}");
+            //       print("IS Baseline Completed : ${profile.statusEntity!.baselineAssessmenPassed!}");
+            //       print("My Condition : ${profile.groupID == 0 && profile.statusEntity!.baselineAssessmenPassed!? true : false}");
+            //       return SizedBox();
+            //     }()),
+            //     Visibility(
+            //       child: SizedBox( //
+            //         height: 110,
+            //         child: TaskCard(
+            //           cardIndex: 1,
+            //           taskName: getTaskName(level: profile.statusEntity!.interventionLevel),
+            //           isCompleted: isLevelCompleted(patientProfilePodo: profile),
+            //           onTapCallBack: (){},
+            //         ),
+            //       ),
+            //       //visible: true,
+            //       visible: profile.groupID == 0 && profile.statusEntity!.baselineAssessmenPassed! == true ? true : false,
+            //     ),
+            //   ],
+            // ),
           ),
         ),
       ),
@@ -180,7 +197,6 @@ class _MyTasksScreenState extends State<MyTasks> {
       }
     }
   }
-
 }
 
 

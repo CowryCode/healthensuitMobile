@@ -238,12 +238,6 @@ class _LoginScreenState extends State<LoginScreen> {
           });
 
           Timer.periodic(Duration(seconds: timeout_duration), (timer){
-            // loginObject.then((value) => {
-            //   StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
-            //   StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
-            //   timer.cancel(),
-            //   Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true, showdisclaimer: true, )))
-            // });
             profile!.then((value) => {
               StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
               timer.cancel(),
@@ -261,7 +255,6 @@ class _LoginScreenState extends State<LoginScreen> {
               timer.cancel();
             }
           });
-          // 04/07/2022 END
        // Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(futureProfile: profile, timedout: true )));
         },
         child: Text(

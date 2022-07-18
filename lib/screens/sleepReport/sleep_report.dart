@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:healthensuite/api/network.dart';
+import 'package:healthensuite/api/networkUtilities.dart';
 import 'package:healthensuite/api/networkmodels/mysleepreport.dart';
 import 'package:healthensuite/api/networkmodels/patientProfilePodo.dart';
 import 'package:healthensuite/api/statemanagement/behaviourlogic.dart';
+import 'package:healthensuite/screens/home/home_screen.dart';
 import 'package:healthensuite/utilities/drawer_navigation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
@@ -67,6 +71,13 @@ class _SleepReportState extends State<SleepReport> {
       body:   FutureBuilder<SleepReportDTO>(
         future: widget.sleepreport,
         builder: (BuildContext context, AsyncSnapshot<SleepReportDTO> snapshot){
+          Timer.periodic(Duration(seconds: timeout_duration), (timer){
+            timer.cancel();
+            if (timer.tick == 1 && !snapshot.hasData) {
+              timer.cancel();
+              showAlertDialog(context: context, title: "No Report", message: "At this point no report is available for viewing");
+            }
+          });
           if(snapshot.hasData){
             SleepReportDTO sleepReportDTO = snapshot.data!;
             return getContent(themeData, size, pad, _formKey,sleepReportDTO );
@@ -274,66 +285,36 @@ class _SleepReportState extends State<SleepReport> {
       }
   }
 
+
+
+    showAlertDialog({required BuildContext context, required String title, required String message,}) {
+
+      // set up the button
+      Widget okButton = TextButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true, showdisclaimer: false, )));
+        },
+      );
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        // title: Text("My title"),
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
   }
 
-List<dynamic> allAwakenings = [
-  {
-    "date": "2022-04-25",
-    "value": 14.0
-  },
-  {
-    "date": "2022-04-30",
-    "value": 12.0
-  },
-  {
-    "date": "2022-05-30",
-    "value": 11.0
-  },
-  {
-    "date": "2022-05-31",
-    "value": 10.0
-  },
-];
-
-
-List<dynamic> allBedTime = [
-  {
-    "date": "2022-04-25",
-    "value": "21:00:00"
-  },
-  {
-    "date": "2022-04-30",
-    "value": "21:00:00"
-  },
-  {
-    "date": "2022-05-30",
-    "value": "20:12:00"
-  },
-  {
-    "date": "2022-05-31",
-    "value": "20:15:00"
-  },
-];
-
-  // Table(
-  //   // columnWidths: {
-  //   //   0: FlexColumnWidth()
-  //   // },
-  //   children: [
-  //     TableRow(
-  //       children: [
-  //         Text("Average Bed Time", style: themeData.textTheme.headline4,),
-  //         Text("21:00", style: themeData.textTheme.headline5,),
-  //       ],
-  //       decoration: Decoration()
-  //     ),
-      
-  //     TableRow(
-  //       children: [
-  //         Text("Sleep Latency", style: themeData.textTheme.headline5,),
-  //         Text("95%", style: themeData.textTheme.headline5,),
-  //       ],
-  //     ),
-  //   ],
-  // ),
-  

@@ -127,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final ThemeData themeData = Theme.of(context);
     double pad = 18;
 
-    SleepDiariesPODO todaysleepDiary = Workflow().getSleepDiary(profile.sleepDiaries,todaySleepDiary:true,yesterdaySleepDiary:false);
-    SleepDiariesPODO yesterdaysleepDiary = Workflow().getSleepDiary(profile.sleepDiaries,todaySleepDiary:false,yesterdaySleepDiary:true);
+    SleepDiariesPODO? todaysleepDiary = Workflow().getSleepDiary(profile.sleepDiaries,todaySleepDiary:true,yesterdaySleepDiary:false);
+    SleepDiariesPODO? yesterdaysleepDiary = Workflow().getSleepDiary(profile.sleepDiaries,todaySleepDiary:false,yesterdaySleepDiary:true);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,69 +182,80 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: pad,),
         SizedBox(height: pad,),
         ((){
-          if( Workflow().isSleepDiaryavailable(todaysleepDiary)) {
-            if(todaysleepDiary.bedTime != null){
-              return Center(
-                child: OptionButton(
-                  text: "Update Today\'s Sleep Diary?",
-                  icon: Icons.menu_book,
-                  width: size.width * 0.90,
-                  buttonEvent: () {
-                    Navigator.push(context, new MaterialPageRoute(builder: (context) =>
-                        SleepDiary(sleepDiariesPODO:todaysleepDiary)));
-                  },
-                ),
-              );
-            }else {
-              return Center(
-                child: OptionButton(
-                  text: "Complete Today\'s Sleep Diary",
-                  icon: Icons.menu_book,
-                  width: size.width * 0.90,
-                  buttonEvent: () {
-                    Navigator.push(
-                        context, new MaterialPageRoute(builder: (context) =>
-                        SleepDiary(sleepDiariesPODO: todaysleepDiary)));
-                  },
-                ),
-              );
+          if (todaysleepDiary != null) {
+            if (Workflow().isSleepDiaryavailable(todaysleepDiary)) {
+              if (todaysleepDiary.bedTime != null) {
+                return Center(
+                  child: OptionButton(
+                    text: "Update Today\'s Sleep Diary?",
+                    icon: Icons.menu_book,
+                    width: size.width * 0.90,
+                    buttonEvent: () {
+                      Navigator.push(context, new MaterialPageRoute(builder: (
+                          context) =>
+                          SleepDiary(sleepDiariesPODO: todaysleepDiary)));
+                    },
+                  ),
+                );
+              } else {
+                return Center(
+                  child: OptionButton(
+                    text: "Complete Today\'s Sleep Diary",
+                    icon: Icons.menu_book,
+                    width: size.width * 0.90,
+                    buttonEvent: () {
+                      Navigator.push(
+                          context, new MaterialPageRoute(builder: (context) =>
+                          SleepDiary(sleepDiariesPODO: todaysleepDiary)));
+                    },
+                  ),
+                );
+              }
+            } else {
+              return SizedBox(height: 0.0,);
             }
           }else{
-            return  SizedBox(height: 0.0,);
+            return SizedBox(height: pad,);
           }
         }()),
         SizedBox(height: pad,),
         ((){
-          if( Workflow().isSleepDiaryavailable(yesterdaysleepDiary)) {
-            if(yesterdaysleepDiary.bedTime != null){
-              return Center(
-                child: OptionButton(
-                  text: "Update Yesterday\'s Sleep Diary?",
-                  icon: Icons.menu_book,
-                  width: size.width * 0.90,
-                  buttonEvent: () {
-                    Navigator.push(context,
-                        new MaterialPageRoute(builder: (context) =>
-                            SleepDiary(sleepDiariesPODO: yesterdaysleepDiary)));
-                  },
-                ),
-              );
-            }else {
-              return Center(
-                child: OptionButton(
-                  text: "Complete Yesterday\'s Sleep Diary ",
-                  icon: Icons.menu_book,
-                  width: size.width * 0.90,
-                  buttonEvent: () {
-                    Navigator.push(context,
-                        new MaterialPageRoute(builder: (context) =>
-                            SleepDiary(sleepDiariesPODO: yesterdaysleepDiary)));
-                  },
-                ),
-              );
+          if(yesterdaysleepDiary != null) {
+            if (Workflow().isSleepDiaryavailable(yesterdaysleepDiary)) {
+              if (yesterdaysleepDiary.bedTime != null) {
+                return Center(
+                  child: OptionButton(
+                    text: "Update Yesterday\'s Sleep Diary?",
+                    icon: Icons.menu_book,
+                    width: size.width * 0.90,
+                    buttonEvent: () {
+                      Navigator.push(context,
+                          new MaterialPageRoute(builder: (context) =>
+                              SleepDiary(
+                                  sleepDiariesPODO: yesterdaysleepDiary)));
+                    },
+                  ),
+                );
+              } else {
+                return Center(
+                  child: OptionButton(
+                    text: "Complete Yesterday\'s Sleep Diary ",
+                    icon: Icons.menu_book,
+                    width: size.width * 0.90,
+                    buttonEvent: () {
+                      Navigator.push(context,
+                          new MaterialPageRoute(builder: (context) =>
+                              SleepDiary(
+                                  sleepDiariesPODO: yesterdaysleepDiary)));
+                    },
+                  ),
+                );
+              }
+            } else {
+              return SizedBox(height: 0.0,);
             }
-          }else{
-            return  SizedBox(height: 0.0,);
+          } else{
+            return SizedBox(height: 0.0,);
           }
         }()),
         SizedBox(height: pad,),

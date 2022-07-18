@@ -7,24 +7,27 @@ import 'package:healthensuite/screens/sleepDiary/sleep_diary.dart';
 import 'package:intl/intl.dart';
 
 class Workflow{
-  SleepDiariesPODO getSleepDiary(List<SleepDiariesPODO>? sleepdiaries, {bool todaySleepDiary = false, bool yesterdaySleepDiary = false}){
-    final now = DateTime.now();
-    final dummy = DateTime(now.year, now.month, now.day - 10);
-    SleepDiariesPODO sleepDiariesPODO = SleepDiariesPODO();
-
-    sleepdiaries!.forEach((sleepdiary) {
-      String datecreated = sleepdiary.dateCreated ?? dummy.toString();
-      if(todaySleepDiary){
-        if(isToday(datecreated)){
-          sleepDiariesPODO = sleepdiary;
+  SleepDiariesPODO? getSleepDiary(List<SleepDiariesPODO>? sleepdiaries, {bool todaySleepDiary = false, bool yesterdaySleepDiary = false}){
+    if(sleepdiaries == null ){
+      return null;
+    }else{
+      final now = DateTime.now();
+      final dummy = DateTime(now.year, now.month, now.day - 10);
+      SleepDiariesPODO sleepDiariesPODO = SleepDiariesPODO();
+      sleepdiaries.forEach((sleepdiary) {
+        String datecreated = sleepdiary.dateCreated ?? dummy.toString();
+        if (todaySleepDiary) {
+          if (isToday(datecreated)) {
+            sleepDiariesPODO = sleepdiary;
+          }
+        } else if (yesterdaySleepDiary) {
+          if (isYesterday(datecreated)) {
+            sleepDiariesPODO = sleepdiary;
+          }
         }
-      } else if(yesterdaySleepDiary){
-        if(isYesterday(datecreated)){
-          sleepDiariesPODO = sleepdiary;
-        }
-      }
-    });
-    return sleepDiariesPODO;
+      });
+      return sleepDiariesPODO;
+    }
   }
 
   bool isSleepDiaryavailable(SleepDiariesPODO sleepDiariesPODO){
