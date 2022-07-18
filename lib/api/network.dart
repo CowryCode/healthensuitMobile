@@ -31,8 +31,8 @@ import 'package:redux/redux.dart';
 
 class ApiAccess {
 
- // Future<PatientProfilePodo>? login({String? username, String? password}) async {
-  Future<LoginObject> login({String? username, String? password}) async {
+  Future<PatientProfilePodo>? login({String? username, String? password}) async {
+ // Future<LoginObject> login({String? username, String? password}) async {
     final response = await http.post(
       Uri.parse(loginURL),
       headers: <String, String>{
@@ -70,8 +70,8 @@ class ApiAccess {
       PatientProfilePodo profile = await getPatientProfile(loginPodo.token);
       if (profile.firstName != null) {
         uploadDeviceIdentifier(token);
-
-        return LoginObject(loginPodo: loginPodo, patientProfilePodo: profile);
+      //  return LoginObject(loginPodo: loginPodo, patientProfilePodo: profile);
+        return profile;
       } else {
         throw Exception("Could not pull Profile ${response.statusCode}");
       }
