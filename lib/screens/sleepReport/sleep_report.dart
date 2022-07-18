@@ -71,14 +71,22 @@ class _SleepReportState extends State<SleepReport> {
       body:   FutureBuilder<SleepReportDTO>(
         future: widget.sleepreport,
         builder: (BuildContext context, AsyncSnapshot<SleepReportDTO> snapshot){
-          Timer.periodic(Duration(seconds: timeout_duration), (timer){
-            timer.cancel();
-            if (timer.tick == 1 && !snapshot.hasData) {
-              timer.cancel();
-              showAlertDialog(context: context, title: "No Report", message: "At this point no report is available for viewing");
+         Timer tim = Timer.periodic(Duration(seconds: timeout_duration), (timer){
+            if (timer.tick == 1){
+              if(snapshot.connectionState == ConnectionState.done){
+                if(snapshot.hasData){
+                  timer.cancel();
+                }else {
+                  timer.cancel();
+                  showAlertDialog(context: context,
+                      title: "No Report",
+                      message: "You either don't have any report available now or your internet is slow: confirm that you have submitted sleep diary in the past 7 days");
+                }
+              }
             }
           });
           if(snapshot.hasData){
+            tim.cancel();
             SleepReportDTO sleepReportDTO = snapshot.data!;
             return getContent(themeData, size, pad, _formKey,sleepReportDTO );
           }else{
