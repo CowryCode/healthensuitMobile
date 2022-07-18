@@ -262,7 +262,7 @@ class _SleepDiaryState extends State<SleepDiary> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IconUserButton(buttonText: "Submit", buttonEvent: () {
-                            validateForm(_formKey);
+                           validateForm(_formKey);
                           }, buttonIcon: Icons.arrow_forward,),
                           IconUserButton(buttonText: "Cancel",
                               buttonEvent: () {},
@@ -743,7 +743,7 @@ class _SleepDiaryState extends State<SleepDiary> {
       String? bedTime_1;
       dynamic bedtimeField = key.currentState!.fields["inBed"];
       if(bedtimeField != null){
-       // String? bedTime = key.currentState!.fields["inBed"]!.value.toString();
+       //  bedTime = key.currentState!.fields["inBed"]!.value.toString();
          bedTime = key.currentState!.fields["inBed"]!.value.toString();
          print("BEST TIME BEFORE FORMAT: $bedTime");
          bedTime_1 = Workflow().converTimeTo24HoursFormat(dateTime: bedTime);
