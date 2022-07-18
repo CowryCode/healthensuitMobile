@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     buttonEvent: () {
                       Navigator.push(context, new MaterialPageRoute(builder: (
                           context) =>
-                          SleepDiary(sleepDiariesPODO: todaysleepDiary)));
+                          SleepDiary(sleepDiariesPODO: todaysleepDiary, isUpdate: true)));
                     },
                   ),
                 );
@@ -206,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     buttonEvent: () {
                       Navigator.push(
                           context, new MaterialPageRoute(builder: (context) =>
-                          SleepDiary(sleepDiariesPODO: todaysleepDiary)));
+                          SleepDiary(sleepDiariesPODO: todaysleepDiary, isUpdate: false,)));
                     },
                   ),
                 );
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(context,
                           new MaterialPageRoute(builder: (context) =>
                               SleepDiary(
-                                  sleepDiariesPODO: yesterdaysleepDiary)));
+                                  sleepDiariesPODO: yesterdaysleepDiary, isUpdate: true,)));
                     },
                   ),
                 );
@@ -246,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(context,
                           new MaterialPageRoute(builder: (context) =>
                               SleepDiary(
-                                  sleepDiariesPODO: yesterdaysleepDiary)));
+                                  sleepDiariesPODO: yesterdaysleepDiary, isUpdate: false,)));
                     },
                   ),
                 );

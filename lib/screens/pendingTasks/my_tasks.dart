@@ -140,8 +140,11 @@ class _MyTasksScreenState extends State<MyTasks> {
           cardIndex: index,
           data: sleepdiaries,
           onTapCallBack: (){
+            // Just added 2022-07-18
+            bool filledAready = sleepdiaries.elementAt(index).bedTime == null ? false : true;
+            // End Just added
             Navigator.push(context, new MaterialPageRoute(builder: (context) =>
-                SleepDiary(sleepDiariesPODO:sleepdiaries.elementAt(index))));
+                SleepDiary(sleepDiariesPODO:sleepdiaries.elementAt(index), isUpdate: filledAready)));
           },
         ),
       );

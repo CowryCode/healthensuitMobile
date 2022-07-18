@@ -319,7 +319,7 @@ class ApiAccess {
       }
   }
 
-  Future<SleepDiariesPODO> saveSleepDiaries({required SleepDiariesPODO sleepDiary}) async {
+  Future<SleepDiariesPODO?> saveSleepDiaries({required SleepDiariesPODO sleepDiary}) async {
 
     // print("IN NETWORK CLASS");
     //
@@ -364,7 +364,8 @@ class ApiAccess {
         print("${sleepDiary.toString()}");
         return sleepDiary;
       } else {
-        throw Exception("Couldn't save patient profile , status code ${result.statusCode} ");
+        return null;
+        //throw Exception("Couldn't save patient profile , status code ${result.statusCode} ");
       }
   }
 

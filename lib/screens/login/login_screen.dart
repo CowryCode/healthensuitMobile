@@ -247,9 +247,14 @@ class _LoginScreenState extends State<LoginScreen> {
             if (timer.tick == 1) {
               timer.cancel();
               showAlertDialog(
-                  context,
-                  "Login failed kindly check your login credentials and try again. "
-                      "If you have withdrawn from this program at any point, kindly contact the research team ", "Failed Login");
+                  context: context,
+                  title: "Failed Login",
+                  message: "Login failed kindly check your login credentials and try again. If you have withdrawn from this program at any point, kindly contact the research team ",
+                  gotTologin: false);
+              // showAlertDialog(
+              //     context,
+              //     "Login failed kindly check your login credentials and try again. "
+              //         "If you have withdrawn from this program at any point, kindly contact the research team ", "Failed Login");
             }
             {
               timer.cancel();
@@ -273,38 +278,38 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
-  showAlertDialog(BuildContext context, String msg, String title) {
-
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {
-        setState(() {
-          justLoggedin = false;
-        });
-        // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
-        Navigator.of(context).pop();
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text(title),
-      content: Text(msg),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  //
+  // showAlertDialog(BuildContext context, String msg, String title) {
+  //
+  //   // set up the button
+  //   Widget okButton = TextButton(
+  //     child: Text("OK"),
+  //     onPressed: () {
+  //       setState(() {
+  //         justLoggedin = false;
+  //       });
+  //       // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+  //       Navigator.of(context).pop();
+  //     },
+  //   );
+  //
+  //   // set up the AlertDialog
+  //   AlertDialog alert = AlertDialog(
+  //     title: Text(title),
+  //     content: Text(msg),
+  //     actions: [
+  //       okButton,
+  //     ],
+  //   );
+  //
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -319,56 +324,23 @@ class _LoginScreenState extends State<LoginScreen> {
              widget.loginStatus == true && justLoggedin == false ? FutureBuilder<PatientProfilePodo>(
                 future: patientprofile,
                 builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
+                  Timer tm =Timer.periodic(Duration(seconds: timeout_duration), (timer){
+                    if (timer.tick == 1){
+                        if(snapshot.hasData){
+                          timer.cancel();
+                        }else {
+                          timer.cancel();
+                          showAlertDialog(context: context, title: "Failed Login", message: "Couldn't login at this point, kindly wait for few minutes and try again", gotTologin: true);
+                        }
+                    }
+                  });
+
                   if(snapshot.hasData ){
                     if(snapshot.data == null || snapshot.data!.firstName == null){
-                      // return Container(
-                      //   height: double.infinity,
-                      //   child: SingleChildScrollView(
-                      //     physics: AlwaysScrollableScrollPhysics(),
-                      //     padding: EdgeInsets.symmetric(
-                      //       horizontal: 40.0,
-                      //       vertical: 120.0,
-                      //     ),
-                      //     child: Column(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: <Widget>[
-                      //         Text(
-                      //           'Health enSuite',
-                      //           style: TextStyle(
-                      //             color: appItemColorBlue,
-                      //             fontFamily: 'Montserrat',
-                      //             fontSize: 40.0,
-                      //             fontWeight: FontWeight.bold,
-                      //           ),
-                      //         ),
-                      //         SizedBox(height: 30.0),
-                      //         Text(
-                      //           'Patient Sign In',
-                      //           style: TextStyle(
-                      //             color: Colors.white,
-                      //             fontFamily: 'Montserrat',
-                      //             fontSize: 25.0,
-                      //             fontWeight: FontWeight.bold,
-                      //           ),
-                      //         ),
-                      //         SizedBox(height: 30.0),
-                      //         _buildEmailTF(),
-                      //         SizedBox(
-                      //           height: 30.0,
-                      //         ),
-                      //         _buildPasswordTF(),
-                      //         _buildForgotPasswordBtn(),
-                      //         _buildRememberMeCheckbox(),
-                      //         _buildLoginBtn(),
-                      //         //_buildSignInWithText(),
-                      //         //_buildSocialBtnRow(),
-                      //         //_buildSignupBtn(),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // );
+                      tm.cancel();
                       return getLoginScreen();
                     }else{
+                      tm.cancel();
                       return Container(
                         child: Center(child: CircularProgressIndicator(),),
                       );
@@ -377,6 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // );
                     }
                   }else{
+                    tm.cancel();
                     return Container(
                       child: Center(child: CircularProgressIndicator(),),
                     );
@@ -391,39 +364,46 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+
+  showAlertDialog({required BuildContext context, required String title, required String message, required bool gotTologin}) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        if(gotTologin == true) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => LoginScreen(loginStatus: false,)));
+        }else{
+          setState(() {
+            justLoggedin = false;
+          });
+          // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+          Navigator.of(context).pop();
+        }
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      // title: Text("My title"),
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }
-
-
-showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
-
-  // set up the button
-  Widget okButton = TextButton(
-    child: Text("OK"),
-    onPressed: () {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
-    },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    // title: Text("My title"),
-    title: Text(title),
-    content: Text(message),
-    actions: [
-      okButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
