@@ -340,8 +340,17 @@ createAlertDialog(BuildContext context){
                   // StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(PatientProfilePodo()));
                   // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
                    ApiAccess().clearLocalData();
-                  Navigator.push(
-                    context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
+                   Navigator.of(context, rootNavigator: true)
+                       .pushAndRemoveUntil(
+                     MaterialPageRoute(
+                       builder: (BuildContext context) {
+                         return LoginScreen(loginStatus: false,);
+                       },
+                     ),
+                         (_) => false,
+                   );
+                  // Navigator.push(
+                  //   context, new MaterialPageRoute(builder: (context) => LoginScreen(loginStatus: false,)));
                 }
             ),
           ],
