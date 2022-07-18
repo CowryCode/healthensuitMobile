@@ -25,18 +25,18 @@ bool? loginStatus;
 Future<void> main() async {
   await init();
   // *************** Update ************
-  // loginStatus = await Localstorage().getBoolean(key_Login_Status);
-  // ((){
-  //   print("LOGIN STATUS IS ${loginStatus}");
-  //   if(loginStatus == true){
-  //     runApp(MyAppLoginScreen(loginStatus: true,));
-  //   }else{
-  //     runApp(MyAppLoginScreen(loginStatus: false,));
-  //   }
-  // }());
+  loginStatus = await Localstorage().getBoolean(key_Login_Status);
+  ((){
+    print("LOGIN STATUS IS ${loginStatus}");
+    if(loginStatus == true){
+      runApp(MyAppLoginScreen(loginStatus: true,));
+    }else{
+      runApp(MyAppLoginScreen(loginStatus: false,));
+    }
+  }());
   //************** Update end *******************
 
-  runApp(MyAppLoginScreen(loginStatus: false,)); // 2022-Jul-07
+ // runApp(MyAppLoginScreen(loginStatus: false,)); // 2022-Jul-07
 
 }
 

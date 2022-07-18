@@ -19,7 +19,7 @@ import 'package:redux/redux.dart';
 class LoginScreen extends StatefulWidget {
  bool loginStatus;
 
- LoginScreen({required this.loginStatus});
+ LoginScreen({required this.loginStatus,});
 
    @override
    _LoginScreenState createState() => _LoginScreenState();
@@ -33,7 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // LoginPodo? loginDetail1;
    bool? loginStatus;
-   bool isLoading = false;
+  bool justLoggedin = false;
+  bool isLoading = false;
+
 
   Future<PatientProfilePodo>? patientprofile;// Just added 15/07/2022
 
@@ -42,17 +44,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     //TODO: Confirm voided patients before giving access from backend
     loginStatus = widget.loginStatus;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future<PatientProfilePodo>? patientprofile =  ApiAccess().getPatientProfile(null);
-      patientprofile.then((value) => {
-        if (value != null && value.firstName != null) {
-          StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
-          Navigator.push(context, new MaterialPageRoute(
-              builder: (context) => HomeScreen(timedout: true)))
-        }
-      });
-    });
 
+    if(loginStatus == true && justLoggedin == false ) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future<PatientProfilePodo> profile = ApiAccess().getPatientProfile(null);
+        patientprofile = profile;
+        profile.then((value) =>
+        {
+          if (value != null && value.firstName != null) {
+            StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
+            Navigator.push(context, new MaterialPageRoute(
+                builder: (context) => HomeScreen(timedout: true)))
+          }
+        });
+      });
+    }
   }
 
   Widget getLoginScreen(){
@@ -84,9 +90,6 @@ class _LoginScreenState extends State<LoginScreen> {
             _buildForgotPasswordBtn(),
             _buildRememberMeCheckbox(),
             _buildLoginBtn(),
-            //_buildSignInWithText(),
-            //_buildSocialBtnRow(),
-            //_buildSignupBtn(),
           ],
         ),
       ),);
@@ -225,13 +228,24 @@ class _LoginScreenState extends State<LoginScreen> {
           String un = usernamecontroller.value.text.trim();
           String pass = passwordcontroller.value.text.trim();
           // 04/07/2022 START
-          LoginPodo login = LoginPodo(showLoginloading: true);
-          StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(login));
-          Future<LoginObject> loginObject =  ApiAccess().login(username: un, password: pass);
+          // LoginPodo login = LoginPodo(showLoginloading: true);
+          // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(login));
+         // Future<LoginObject> loginObject =  ApiAccess().login(username: un, password: pass);
+          Future<PatientProfilePodo>? profile =  ApiAccess().login(username: un, password: pass);
+
+          setState(() {
+            justLoggedin = true;
+          });
+
           Timer.periodic(Duration(seconds: timeout_duration), (timer){
-            loginObject.then((value) => {
-             StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
-             StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
+            // loginObject.then((value) => {
+            //   StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(value.loginPodo)),
+            //   StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value.getPatientprofile)),
+            //   timer.cancel(),
+            //   Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true, showdisclaimer: true, )))
+            // });
+            profile!.then((value) => {
+              StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
               timer.cancel(),
               Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true, showdisclaimer: true, )))
             });
@@ -273,7 +287,10 @@ class _LoginScreenState extends State<LoginScreen> {
     Widget okButton = TextButton(
       child: Text("OK"),
       onPressed: () {
-        StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
+        setState(() {
+          justLoggedin = false;
+        });
+        // StoreProvider.of<AppState>(context).dispatch(UpdateLoginPodoAction(LoginPodo(showLoginloading: false)));
         Navigator.of(context).pop();
       },
     );
@@ -306,61 +323,75 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Stack(fit: StackFit.expand,
             children: <Widget>[
               new Background("assets/images/back-img.jpg"),
-              // new Background("assets/images/girl.jpg"),
-              Container(
-                child: StoreConnector<AppState, LoginPodo>(
-                  converter: (store) => store.state.loginPodo,
-                  builder: (context, LoginPodo loginpodo) =>
-                  loginpodo.showLoginloading ? Container(
-                    child: Center(child: CircularProgressIndicator(),) ,
-                  ) : Container(
-                    height: double.infinity,
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 40.0,
-                        vertical: 120.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Health enSuite',
-                            style: TextStyle(
-                              color: appItemColorBlue,
-                              fontFamily: 'Montserrat',
-                              fontSize: 40.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 30.0),
-                          Text(
-                            'Patient Sign In',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Montserrat',
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 30.0),
-                          _buildEmailTF(),
-                          SizedBox(
-                            height: 30.0,
-                          ),
-                          _buildPasswordTF(),
-                          _buildForgotPasswordBtn(),
-                          _buildRememberMeCheckbox(),
-                          _buildLoginBtn(),
-                          //_buildSignInWithText(),
-                          //_buildSocialBtnRow(),
-                          //_buildSignupBtn(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              )
+             widget.loginStatus == true && justLoggedin == false ? FutureBuilder<PatientProfilePodo>(
+                future: patientprofile,
+                builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
+                  if(snapshot.hasData ){
+                    if(snapshot.data == null || snapshot.data!.firstName == null){
+                      // return Container(
+                      //   height: double.infinity,
+                      //   child: SingleChildScrollView(
+                      //     physics: AlwaysScrollableScrollPhysics(),
+                      //     padding: EdgeInsets.symmetric(
+                      //       horizontal: 40.0,
+                      //       vertical: 120.0,
+                      //     ),
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: <Widget>[
+                      //         Text(
+                      //           'Health enSuite',
+                      //           style: TextStyle(
+                      //             color: appItemColorBlue,
+                      //             fontFamily: 'Montserrat',
+                      //             fontSize: 40.0,
+                      //             fontWeight: FontWeight.bold,
+                      //           ),
+                      //         ),
+                      //         SizedBox(height: 30.0),
+                      //         Text(
+                      //           'Patient Sign In',
+                      //           style: TextStyle(
+                      //             color: Colors.white,
+                      //             fontFamily: 'Montserrat',
+                      //             fontSize: 25.0,
+                      //             fontWeight: FontWeight.bold,
+                      //           ),
+                      //         ),
+                      //         SizedBox(height: 30.0),
+                      //         _buildEmailTF(),
+                      //         SizedBox(
+                      //           height: 30.0,
+                      //         ),
+                      //         _buildPasswordTF(),
+                      //         _buildForgotPasswordBtn(),
+                      //         _buildRememberMeCheckbox(),
+                      //         _buildLoginBtn(),
+                      //         //_buildSignInWithText(),
+                      //         //_buildSocialBtnRow(),
+                      //         //_buildSignupBtn(),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // );
+                      return getLoginScreen();
+                    }else{
+                      return Container(
+                        child: Center(child: CircularProgressIndicator(),),
+                      );
+                      // return Container(
+                      //   child: Center(child: CircularProgressIndicator(),),
+                      // );
+                    }
+                  }else{
+                    return Container(
+                      child: Center(child: CircularProgressIndicator(),),
+                    );
+                  }
+                },
+              ) : widget.loginStatus == false && justLoggedin == false ? getLoginScreen() : Container(
+               child: Center(child: CircularProgressIndicator(),),
+             )
             ],
           ),
         ),
@@ -368,6 +399,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
 
 showAlertDialog({required BuildContext context, required String title, required String message, required Future<PatientProfilePodo>? patientprofile}) {
 
