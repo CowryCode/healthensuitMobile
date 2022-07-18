@@ -586,10 +586,14 @@ class _SleepDiaryState extends State<SleepDiary> {
     );
   }
 
+
+
   Padding timeQuestion(EdgeInsets sidePad, ThemeData themeData,
       BuildContext context,
       { required TimeOfDay timeOfDay, required String question, required String valName, required bool alreadyFilled}) {
-    String todDay = "${timeOfDay.hour} : ${timeOfDay.minute}";
+   // String todDay = "${timeOfDay.hour} : ${timeOfDay.minute}";
+    String todDay = Workflow().convert24HoursTo12Hours(timeOfDay: timeOfDay) ?? "Select Time (Required)";
+
     return Padding(
       padding: sidePad,
       child: Column(

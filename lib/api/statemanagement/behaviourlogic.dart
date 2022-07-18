@@ -92,6 +92,16 @@ class Workflow{
     }
   }
 
+  String? convert24HoursTo12Hours({ required TimeOfDay timeOfDay}){
+    if(timeOfDay.hour > 12) {
+      return "${timeOfDay.hour - 12} : ${timeOfDay.minute < 10 ? "0${timeOfDay.minute}": "${timeOfDay.minute}"} PM";
+    } else if(timeOfDay.hour == 12){
+      return "${timeOfDay.hour} : ${timeOfDay.minute < 10 ? "0${timeOfDay.minute}": "${timeOfDay.minute}"} PM";
+    }else{
+      return "${timeOfDay.hour} : ${timeOfDay.minute < 10 ? "0${timeOfDay.minute}": "${timeOfDay.minute}"} AM";
+    }
+  }
+
   TimeOfDay? convertStringtoTimeofDay(String?  time){
     if(time != null) {
       var tt = time.split(":");
