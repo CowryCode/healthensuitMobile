@@ -1,10 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.healthensuite">
+    package="com.cowrycode.healthensuite">
+<!--    package="com.example.healthensuite">-->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
    <application
-        android:label="healthensuite"
+        android:label="Health enSuite"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
