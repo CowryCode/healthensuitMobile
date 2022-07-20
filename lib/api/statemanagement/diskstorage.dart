@@ -73,10 +73,14 @@ class Localstorage  {
     return pref.getBool(key);
   }
 
+  Future<bool> getBooleanNotNullable(String key) async{
+    final pref = await SharedPreferences.getInstance();
+      return pref.getBool(key) ?? false;
+  }
+
   // Remove meta data
   void removeItem(String key) async{
     final pref = await SharedPreferences.getInstance();
     pref.remove(key);
   }
-
 }
