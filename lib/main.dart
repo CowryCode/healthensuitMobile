@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cron/cron.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,48 +22,112 @@ import 'dart:ui';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:redux/redux.dart';
 // void main() => runApp(new MyApp());
-bool? loginStatus;
-Future<void> main() async {
-  await init();
+//bool? loginStatus;
+Future<bool>? loginStatus;
+// Future<void> main() async{
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp();
+//   await init();
+//   // *************** Update ************
+//   loginStatus = await Localstorage().getBoolean(key_Login_Status);
+//   ((){
+//     print("LOGIN STATUS IS ${loginStatus}");
+//     if(loginStatus == true){
+//       runApp(MyAppLoginScreen(loginStatus: true,));
+//     }else{
+//       runApp(MyAppLoginScreen(loginStatus: false,));
+//     }
+//   }());
+// }
+
+void main() {
+  //Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  init();
+
+
   // *************** Update ************
-  loginStatus = await Localstorage().getBoolean(key_Login_Status);
+  loginStatus =  Localstorage().getBooleanNotNullable(key_Login_Status);
+
   ((){
-    print("LOGIN STATUS IS ${loginStatus}");
-    if(loginStatus == true){
-      runApp(MyAppLoginScreen(loginStatus: true,));
+    if(loginStatus != null) {
+      loginStatus!.then((value) =>
+      {
+        print("LOGIN STATUS IS ${value}"),
+        if(loginStatus == true){
+          runApp(MyAppLoginScreen(loginStatus: true,)),
+        } else
+          {
+            runApp(MyAppLoginScreen(loginStatus: false,)),
+          }
+      });
     }else{
       runApp(MyAppLoginScreen(loginStatus: false,));
     }
   }());
-  //************** Update end *******************
-
- // runApp(MyAppLoginScreen(loginStatus: false,)); // 2022-Jul-07
-
 }
 
 
-Future init() async {
+// Future init() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp();
+//
+//   //This is a sample comment
+//
+//   FirebaseMessaging.instance   // This is to enable the notification run while app is in terminated mode
+//       .getInitialMessage()
+//       .then((RemoteMessage? message) {
+//     if (message != null) {
+//     }
+//   });
+// //TODO: INTEGRATE NOTIFICATION FOR iOS
+//   FirebaseMessaging.instance.getToken().then((token){
+//     ApiAccess().saveDeviceIdentifier(code: token);
+//     print("token $token");
+//   });
+//
+// }
+
+init(){
+ // Firebase.initializeApp();
+   if (Platform.isIOS) {
+     Firebase.initializeApp(
+         options: FirebaseOptions(
+             apiKey: "your api key Found in GoogleService-info.plist",
+             appId: "Your app id found in Firebase",
+             messagingSenderId: "Your Sender id found in Firebase",
+             projectId: "Your Project id found in Firebase"));
+
+   } else {
+     Firebase.initializeApp();
+   }
+
+//    FirebaseMessaging.instance   // This is to enable the notification run while app is in terminated mode
+//        .getInitialMessage()
+//        .then((RemoteMessage? message) {
+//      if (message != null) {
+//      }
+//    });
+// //TODO: INTEGRATE NOTIFICATION FOR iOS
+//   FirebaseMessaging.instance.getToken().then((token){
+//   ApiAccess().saveDeviceIdentifier(code: token);
+//   print("token $token");
+//   });
+
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
-  //This is a sample comment
 
-  FirebaseMessaging.instance   // This is to enable the notification run while app is in terminated mode
-      .getInitialMessage()
-      .then((RemoteMessage? message) {
-    if (message != null) {
-      // Navigator.pushNamed(
-      //   context,
-      //   '/message',
-      //   arguments: MessageArguments(message, true),
-      // );
-    }
-  });
-//TODO: INTEGRATE NOTIFICATION FOR iOS
-  FirebaseMessaging.instance.getToken().then((token){
-    ApiAccess().saveDeviceIdentifier(code: token);
-    print("token $token");
-  });
+//   FirebaseMessaging.instance   // This is to enable the notification run while app is in terminated mode
+//       .getInitialMessage()
+//       .then((RemoteMessage? message) {
+//     if (message != null) {
+//     }
+//   });
+// //TODO: INTEGRATE NOTIFICATION FOR iOS
+//   FirebaseMessaging.instance.getToken().then((token){
+//     ApiAccess().saveDeviceIdentifier(code: token);
+//     print("token $token");
+//   });
 
 }
 
