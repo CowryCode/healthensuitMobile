@@ -22,50 +22,47 @@ import 'dart:ui';
 import 'package:healthensuite/utilities/constants.dart';
 import 'package:redux/redux.dart';
 // void main() => runApp(new MyApp());
-//bool? loginStatus;
-Future<bool>? loginStatus;
-// Future<void> main() async{
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-//   await init();
-//   // *************** Update ************
-//   loginStatus = await Localstorage().getBoolean(key_Login_Status);
-//   ((){
-//     print("LOGIN STATUS IS ${loginStatus}");
-//     if(loginStatus == true){
-//       runApp(MyAppLoginScreen(loginStatus: true,));
-//     }else{
-//       runApp(MyAppLoginScreen(loginStatus: false,));
-//     }
-//   }());
-// }
-
-void main() async{
-  //Firebase.initializeApp();
-  await WidgetsFlutterBinding.ensureInitialized();
+bool? loginStatus;
+// Future<bool>? loginStatus;
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await init();
-
-
   // *************** Update ************
-  loginStatus =  Localstorage().getBooleanNotNullable(key_Login_Status);
-
+  loginStatus = await Localstorage().getBoolean(key_Login_Status);
   ((){
-    if(loginStatus != null) {
-      loginStatus!.then((value) =>
-      {
-        print("LOGIN STATUS IS ${value}"),
-        if(loginStatus == true){
-          runApp(MyAppLoginScreen(loginStatus: true,)),
-        } else
-          {
-            runApp(MyAppLoginScreen(loginStatus: false,)),
-          }
-      });
+    print("LOGIN STATUS IS ${loginStatus}");
+    if(loginStatus == true){
+      runApp(MyAppLoginScreen(loginStatus: true,));
     }else{
       runApp(MyAppLoginScreen(loginStatus: false,));
     }
   }());
 }
+
+// void main() async{
+//   //Firebase.initializeApp();
+//   await WidgetsFlutterBinding.ensureInitialized();
+//   await init();
+//   // *************** Update ************
+//   loginStatus =  Localstorage().getBooleanNotNullable(key_Login_Status);
+//   ((){
+//     if(loginStatus != null) {
+//       loginStatus!.then((value) =>
+//       {
+//         print("LOGIN STATUS IS ${value}"),
+//         if(loginStatus == true){
+//           runApp(MyAppLoginScreen(loginStatus: true,)),
+//         } else
+//           {
+//             runApp(MyAppLoginScreen(loginStatus: false,)),
+//           }
+//       });
+//     }else{
+//       runApp(MyAppLoginScreen(loginStatus: false,));
+//     }
+//   }());
+// }
 
 
 // Future init() async {

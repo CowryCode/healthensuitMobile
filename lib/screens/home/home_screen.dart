@@ -36,11 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
   static final String title = 'Home';
   final sidePad = EdgeInsets.symmetric(horizontal: 18);
 
+
   Future<PatientProfilePodo>? patientprofile;
 
   @override
   void initState() {
     super.initState();
+    print("WELCOME TO HOME");
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if(widget.showdisclaimer == true){
         createAlertDialog(context);

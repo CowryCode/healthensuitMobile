@@ -18,7 +18,7 @@ import 'package:redux/redux.dart';
 
 class LoginScreen extends StatefulWidget {
  bool loginStatus;
-
+ bool dataloaded = false;
  LoginScreen({required this.loginStatus,});
 
    @override
@@ -44,16 +44,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     //TODO: Confirm voided patients before giving access from backend
     loginStatus = widget.loginStatus;
-
+    print("GOT HERE AT THIS POINT LOGINS STATUS : $loginStatus : : : : : :  JUST LOGIN : $justLoggedin");
     if(loginStatus == true && justLoggedin == false ) {
       print("LOGIN STATUS : $loginStatus");
       print("JUST LOGIN STATUS : $justLoggedin");
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      print("DATA LOADED STATUS : ${widget.dataloaded}");
+      WidgetsBinding.instance.addPostFrameCallback((_) async{
         Future<PatientProfilePodo> profile = ApiAccess().getPatientProfile(null);
         patientprofile = profile;
         profile.then((value) =>
         {
           if (value != null && value.firstName != null) {
+            setState((){
+              widget.dataloaded = true;
+            }),
+            print("Widget check here : ${widget.dataloaded}" ),
             StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
             Navigator.push(context, new MaterialPageRoute(
                 builder: (context) => HomeScreen(timedout: true)))
@@ -242,6 +247,9 @@ class _LoginScreenState extends State<LoginScreen> {
           Timer.periodic(Duration(seconds: timeout_duration), (timer){
             profile!.then((value) => {
               StoreProvider.of<AppState>(context).dispatch(UpdatePatientProfileAction(value)),
+              setState((){
+                widget.dataloaded = true;
+              }),
               timer.cancel(),
               Navigator.push(context, new MaterialPageRoute(builder: (context) => HomeScreen(timedout: true, showdisclaimer: true, )))
             });
@@ -326,43 +334,68 @@ class _LoginScreenState extends State<LoginScreen> {
              widget.loginStatus == true && justLoggedin == false ? FutureBuilder<PatientProfilePodo>(
                 future: patientprofile,
                 builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
-                  Timer tm =Timer.periodic(Duration(seconds: timeout_duration), (timer){
+                  Timer.periodic(Duration(seconds: timeout_duration), (timer){
+                      print(" STEP 1");
+                      print("Ticker Value : ${timer.tick}");
                     if (timer.tick == 1) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        print("FUTURE LOADER DONE :::::::::::");
+                      print(" STEP 2");
                         if (snapshot.hasData) {
+                          print(" STEP 3");
                           timer.cancel();
-                          Navigator.push(context, new MaterialPageRoute(
-                              builder: (context) => HomeScreen(timedout: true)));
                         } else {
-                          print("FUTURE LOADER NO DATA :::::::::");
-                          timer.cancel();
-                          showAlertDialog(context: context,
-                              title: "Failed Login",
-                              message: "Couldn't login at this point, kindly wait for few minutes and try again",
-                              gotTologin: true);
+                          print(" STEP 4");
+                          print(" SNAPSHOT STATE IS : ${snapshot.connectionState}");
+                          print(" Data Loaded is A ?  : ${widget.dataloaded}");
+                          if(widget.dataloaded == false){
+                            timer.cancel();
+                            showAlertDialog(context: context,
+                                title: "Failed Login",
+                                message: "Couldn't login at this point, kindly wait for few minutes and try again",
+                                gotTologin: true);
+                          }else{
+                            timer.cancel();
+                          }
+                          // showAlertDialog(context: context,
+                          //     title: "Failed Login",
+                          //     message: "Couldn't login at this point, kindly wait for few minutes and try again",
+                          //     gotTologin: true);
                         }
-                      }
                     }
+                    // else if (timer.tick >= 1 ){
+                    //   if(widget.dataloaded == true){
+                    //     timer.cancel();
+                    //   }else{
+                    //     timer.cancel();
+                    //         showAlertDialog(context: context,
+                    //             title: "Failed Login",
+                    //             message: "Couldn't login at this point, kindly wait for few minutes and try again",
+                    //             gotTologin: true);
+                    //   }
+                    //   //timer.cancel();
+                    //    print("THE CONNECTION STATE IS : ${snapshot.connectionState}");
+                    //    print("DOES IT HAVE DATA ? : ${snapshot.hasData}");
+                    //    print("TIMER IS DATA ? : ${widget.dataloaded}");
+                    //
+                    // }
                   });
-
                   if(snapshot.hasData ){
+                    print(" STEP 5");
                     if(snapshot.data == null || snapshot.data!.firstName == null){
-                      tm.cancel();
+                      print(" STEP 6");
+                     // tm.cancel();
                       return getLoginScreen();
                     }else{
-                      tm.cancel();
+                      print(" STEP 7");
+                     // tm.cancel();
                       return Container(
                         child: Center(child: CircularProgressIndicator(),),
                       );
-                      // return Container(
-                      //   child: Center(child: CircularProgressIndicator(),),
-                      // );
                     }
                   }else{
-                    tm.cancel();
+                    print(" STEP 8");
+                   // tm.cancel();
                     return Container(
-                      child: Center(child: CircularProgressIndicator(),),
+                       child: Center(child: CircularProgressIndicator(),),
                     );
                   }
                 },
@@ -415,250 +448,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:http/http.dart';
-// import 'dart:convert';
-// import 'package:healthensuite/screens/profile/profile_screen.dart';
-// import 'package:healthensuite/utilities/constants.dart';
-// import 'package:healthensuite/models/background.dart';
-// import 'forgot_password.dart';
-// //import 'package:healthensuite/models/name_logo.dart';
-//
-// class LoginScreen extends StatefulWidget {
-//   @override
-//   _LoginScreenState createState() => _LoginScreenState();
-// }
-//
-// class _LoginScreenState extends State<LoginScreen> {
-//   bool? _rememberMe = false;
-//
-//   getData() async{
-//
-//     Uri url = Uri.parse("https://jsonplaceholder.typicode.com/todos/1");
-//     Response response = await get(url);
-//     Map data = jsonDecode(response.body);
-//     print(data);
-//     print(data["title"]);
-//
-//   }
-//
-//   initializeLogin() async{
-//     var url = Uri.parse("http://health001-env.eba-v5mudubf.us-east-2.elasticbeanstalk.com/insomnia/v1/authentication/login");
-//     var username = "ifeanyiodenigbo10@gmail.com";
-//     var password = "Pass@123";
-//     var response = await post(url, body: {"password": password, "username": username});
-//     //print('Response status: ${response.statusCode}');
-//     print('Login Token: ${response.body}');
-//
-//     //print(await read(Uri.parse('https://example.com/foobar.txt')));
-//   }
-//
-//   @override
-//   void initState(){
-//     super.initState();
-//     //getData();
-//     //initializeLogin();
-//   }
-//
-//   Widget _buildEmailTF() {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: <Widget>[
-//         Text(
-//           'Username',
-//           style: kLabelStyle,
-//         ),
-//         SizedBox(height: 10.0),
-//         Container(
-//           alignment: Alignment.centerLeft,
-//           decoration: kBoxDecorationStyle,
-//           height: 60.0,
-//           child: TextField(
-//             keyboardType: TextInputType.emailAddress,
-//             style: TextStyle(
-//               color: Colors.white,
-//               fontFamily: 'Montserrat',
-//             ),
-//             decoration: InputDecoration(
-//               border: InputBorder.none,
-//               contentPadding: EdgeInsets.only(top: 14.0),
-//               prefixIcon: Icon(
-//                 Icons.person_sharp,
-//                 color: Colors.white,
-//               ),
-//               hintText: 'Enter your Username',
-//               hintStyle: kHintTextStyle,
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildPasswordTF() {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: <Widget>[
-//         Text(
-//           'Password',
-//           style: kLabelStyle,
-//         ),
-//         SizedBox(height: 10.0),
-//         Container(
-//           alignment: Alignment.centerLeft,
-//           decoration: kBoxDecorationStyle,
-//           height: 60.0,
-//           child: TextField(
-//             obscureText: true,
-//             style: TextStyle(
-//               color: Colors.white,
-//               fontFamily: 'Montserrat',
-//             ),
-//             decoration: InputDecoration(
-//               border: InputBorder.none,
-//               contentPadding: EdgeInsets.only(top: 14.0),
-//               prefixIcon: Icon(
-//                 Icons.lock,
-//                 color: Colors.white,
-//               ),
-//               hintText: 'Enter your Password',
-//               hintStyle: kHintTextStyle,
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildForgotPasswordBtn() {
-//     return Container(
-//       alignment: Alignment.centerRight,
-//       child: FlatButton(
-//         onPressed: ()  {Navigator.push(
-//           context, new MaterialPageRoute(builder: (context) => AuthScreen())
-//           );},
-//         padding: EdgeInsets.only(right: 0.0),
-//         child: Text(
-//           'Forgot your Password?',
-//           style: kLabelStyle,
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildRememberMeCheckbox() {
-//     return Container(
-//       height: 20.0,
-//       child: Row(
-//         children: <Widget>[
-//           Theme(
-//             data: ThemeData(unselectedWidgetColor: Colors.white),
-//             child: Checkbox(
-//               value: _rememberMe,
-//               checkColor: Colors.blueAccent,
-//               activeColor: Colors.white,
-//               onChanged: (value) {
-//                 setState(() {
-//                   _rememberMe = value;
-//                 });
-//               },
-//             ),
-//           ),
-//           Text(
-//             'Remember me',
-//             style: kLabelStyle,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildLoginBtn() {
-//     return Container(
-//       padding: EdgeInsets.symmetric(vertical: 25.0),
-//       width: double.infinity,
-//       child: ElevatedButton(
-//         style: ElevatedButton.styleFrom(
-//         primary: Colors.white, // background
-//         //onPrimary: Colors.red, // foreground
-//         elevation: 5.0,
-//         padding: EdgeInsets.all(15.0),
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(30.0),
-//           ),
-//         ),
-//         //onPressed: () => print('Login Button Pressed'),
-//         onPressed: ()  {Navigator.push(
-//           context, new MaterialPageRoute(builder: (context) => PatientScreen())
-//           );},
-//         child: Text(
-//           'LOGIN',
-//           style: TextStyle(
-//             color: Color(0xFF527DAA),
-//             letterSpacing: 1.5,
-//             fontSize: 18.0,
-//             fontWeight: FontWeight.bold,
-//             fontFamily: 'Montserrat',
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: AnnotatedRegion<SystemUiOverlayStyle>(
-//         value: SystemUiOverlayStyle.light,
-//         child: GestureDetector(
-//           onTap: () => FocusScope.of(context).unfocus(),
-//           child: Stack(fit: StackFit.expand,
-//             children: <Widget>[
-//
-//               new Background("assets/images/girl.jpg"),
-//               Container(
-//                 height: double.infinity,
-//                 child: SingleChildScrollView(
-//                   physics: AlwaysScrollableScrollPhysics(),
-//                   padding: EdgeInsets.symmetric(
-//                     horizontal: 40.0,
-//                     vertical: 120.0,
-//                   ),
-//                   child: Column(
-//                     mainAxisAlignment: MainAxisAlignment.center,
-//                     children: <Widget>[
-//                       Text(
-//                         'Patient Sign In',
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontFamily: 'Montserrat',
-//                           fontSize: 30.0,
-//                           fontWeight: FontWeight.bold,
-//                         ),
-//                       ),
-//                       SizedBox(height: 30.0),
-//                       _buildEmailTF(),
-//                       SizedBox(
-//                         height: 30.0,
-//                       ),
-//                       _buildPasswordTF(),
-//                       _buildForgotPasswordBtn(),
-//                       _buildRememberMeCheckbox(),
-//                       _buildLoginBtn(),
-//                       //_buildSignInWithText(),
-//                       //_buildSocialBtnRow(),
-//                       //_buildSignupBtn(),
-//                     ],
-//                   ),
-//                 ),
-//               )
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
