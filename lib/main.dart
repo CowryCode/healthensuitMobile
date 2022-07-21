@@ -40,10 +40,10 @@ Future<bool>? loginStatus;
 //   }());
 // }
 
-void main() {
+void main() async{
   //Firebase.initializeApp();
-  WidgetsFlutterBinding.ensureInitialized();
-  init();
+  await WidgetsFlutterBinding.ensureInitialized();
+  await init();
 
 
   // *************** Update ************
@@ -88,10 +88,10 @@ void main() {
 //
 // }
 
-init(){
+Future init() async{
  // Firebase.initializeApp();
    if (Platform.isIOS) {
-     Firebase.initializeApp(
+     await Firebase.initializeApp(
          options: FirebaseOptions(
              apiKey: "your api key Found in GoogleService-info.plist",
              appId: "Your app id found in Firebase",
@@ -99,7 +99,7 @@ init(){
              projectId: "Your Project id found in Firebase"));
 
    } else {
-     Firebase.initializeApp();
+     await Firebase.initializeApp();
    }
 
 //    FirebaseMessaging.instance   // This is to enable the notification run while app is in terminated mode
@@ -114,7 +114,7 @@ init(){
 //   print("token $token");
 //   });
 
-  WidgetsFlutterBinding.ensureInitialized();
+ await WidgetsFlutterBinding.ensureInitialized();
 
 
 //   FirebaseMessaging.instance   // This is to enable the notification run while app is in terminated mode

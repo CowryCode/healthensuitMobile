@@ -943,14 +943,11 @@ class _SleepDiaryState extends State<SleepDiary> {
           if(currentmedds.length == 1){
             Medications currentMed1 = currentmedds.elementAt(0);
             currentMed1.setDrugAmount(drugAmount: drugAmount1);
-            currentmedds.insert(0, currentMed1);
           }else if (currentmedds.length == 2){
             Medications currentMed1 = currentmedds.elementAt(0);
             Medications currentMed2 = currentmedds.elementAt(1);
             currentMed1.setDrugAmount(drugAmount: drugAmount1);
             currentMed2.setDrugAmount(drugAmount: drugAmount2);
-            currentmedds.insert(0, currentMed1);
-            currentmedds.insert(2, currentMed2);
           }
         }
        SleepDiariesPODO updatedSD =   widget.sleepDiariesPODO.updateVariable(

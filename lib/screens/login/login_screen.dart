@@ -46,6 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
     loginStatus = widget.loginStatus;
 
     if(loginStatus == true && justLoggedin == false ) {
+      print("LOGIN STATUS : $loginStatus");
+      print("JUST LOGIN STATUS : $justLoggedin");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future<PatientProfilePodo> profile = ApiAccess().getPatientProfile(null);
         patientprofile = profile;
