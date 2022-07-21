@@ -325,13 +325,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 future: patientprofile,
                 builder: (BuildContext context, AsyncSnapshot<PatientProfilePodo> snapshot){
                   Timer tm =Timer.periodic(Duration(seconds: timeout_duration), (timer){
-                    if (timer.tick == 1){
-                        if(snapshot.hasData){
+                    if (timer.tick == 1) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        print("FUTURE LOADER DONE :::::::::::");
+                        if (snapshot.hasData) {
                           timer.cancel();
-                        }else {
+                          Navigator.push(context, new MaterialPageRoute(
+                              builder: (context) => HomeScreen(timedout: true)));
+                        } else {
+                          print("FUTURE LOADER NO DATA :::::::::");
                           timer.cancel();
-                          showAlertDialog(context: context, title: "Failed Login", message: "Couldn't login at this point, kindly wait for few minutes and try again", gotTologin: true);
+                          showAlertDialog(context: context,
+                              title: "Failed Login",
+                              message: "Couldn't login at this point, kindly wait for few minutes and try again",
+                              gotTologin: true);
                         }
+                      }
                     }
                   });
 
